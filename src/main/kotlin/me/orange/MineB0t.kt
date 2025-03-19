@@ -7,6 +7,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object MineB0t {
+
     private val logger: Logger = LoggerFactory.getLogger(MineB0t::class.java)
 
     private val jda: JDA
@@ -20,4 +21,5 @@ object MineB0t {
         CommandHandler.registerEvents(jda)
     }
 
+    fun log(msg: String) = logger.info(msg)
 }

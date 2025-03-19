@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.orange.game.Game.world
 import me.orange.game.player.Player
-import me.orange.game.utils.Pos
+import me.orange.game.utils.Vec
 import me.orange.game.utils.isPlayerTile
 import me.orange.game.utils.safeGet
 import me.orange.game.world.chunk.Chunk
@@ -17,10 +17,10 @@ class World(
     private val scope = CoroutineScope(Dispatchers.Default)
     val chunkManager = ChunkManager(scope, OverworldGenerator(seed))
 
-    fun ensureChunksLoadedAround(pos: Pos, async: Boolean = true) =
-        chunkManager.ensureChunksLoadedAround(pos, async)
+    suspend fun ensureChunksLoadedAround(vec: Vec, async: Boolean = true) =
+        chunkManager.ensureChunksLoadedAround(vec, async)
 
-    fun getEnvironment(player: Player): MutableList<MutableList<String>> {
+    suspend fun getEnvironment(player: Player): MutableList<MutableList<String>> {
         val list = mutableListOf<MutableList<String>>()
         ensureChunksLoadedAround(player.pos, false)
 
@@ -31,11 +31,11 @@ class World(
                     row.add(player.emojis[if (dy == 0) 1 else 0])
                     continue
                 }
-                val worldPos = player.pos + Pos(dx, dy)
+                val worldVec = player.pos + Vec(dx, dy)
 
-                val chunk = world.getChunk(worldPos.toChunkPos())
-                val localX = worldPos.x.mod(Chunk.SIZE)
-                val localY = worldPos.y.mod(Chunk.SIZE)
+                val chunk = world.getChunk(worldVec.toChunkPos())
+                val localX = worldVec.x.mod(Chunk.SIZE)
+                val localY = worldVec.y.mod(Chunk.SIZE)
 
                 row.add(chunk?.tiles?.safeGet(localY, localX)?.emoji ?: ":x:")
             }
@@ -45,8 +45,8 @@ class World(
         return list
     }
 
-    fun getChunk(pos: Pos): Chunk? = chunkManager.getChunk(pos)
-    fun getTile(pos: Pos): TileType? = chunkManager.getChunk(pos.toChunkPos())?.getTile(pos.toLocalPos())
-    fun setTile(pos: Pos, tile: TileType) =  chunkManager.getChunk(pos.toChunkPos())?.setTile(pos.toLocalPos(), tile)
+    fun getChunk(vec: Vec): Chunk? = chunkManager.getChunk(vec)
+    fun getTile(vec: Vec): TileType? = chunkManager.getChunk(vec.toChunkPos())?.getTile(vec.toLocalPos())
+    fun setTile(vec: Vec, tile: TileType) =  chunkManager.getChunk(vec.toChunkPos())?.setTile(vec.toLocalPos(), tile)
 }
 

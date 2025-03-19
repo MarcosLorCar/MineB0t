@@ -4,8 +4,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.orange.game.player.Player
-import me.orange.game.utils.Pos
+import me.orange.game.utils.Vec
+import me.orange.game.utils.surroundingChunks
 import me.orange.game.world.TileType
 import me.orange.game.world.World
 import net.dv8tion.jda.api.interactions.InteractionHook
@@ -29,7 +31,7 @@ object Game {
         }
     }
 
-    fun update() {
+    suspend fun update() {
         val currentTime = System.currentTimeMillis()
 
         // Load/Unload chunks
@@ -37,8 +39,8 @@ object Game {
             // Re-Load chunks around loaded players
             world.ensureChunksLoadedAround(player.pos, async = true)
 
-            // Apply gravity
-            player.fall()
+            // Update player
+            player.update()
 
             // Update hooks
             player.hook?.let(::updateHook)
@@ -72,7 +74,7 @@ object Game {
         val userId = hook.interaction.user.idLong
         val player = players.getOrPut(userId) { addPlayer(userId, hook) }
 
-        val env = getView(player)
+        val env = runBlocking(scope.coroutineContext) {getView(player)}
         val ui = player.getActions()
 
         hook.editOriginal(env)
@@ -80,20 +82,38 @@ object Game {
             .queue()
     }
 
-    private fun getView(player: Player): String {
+    private suspend fun getView(player: Player): String {
         val view = world.getEnvironment(player)
 
-        for ((id, iPlayer) in players) {
-            if (id == player.id) continue
-
-            iPlayer.pos.toEnvPos(player)?.let { pos ->
-                pos.y = (view.size - 1) - pos.y
-                if (pos.y in view.indices && pos.x in view[0].indices)
-                    view[pos.y][pos.x] = "\uD83D\uDC7D"
-            }
-        }
+        addPlayersToView(player, view)
 
         return view.joinToString("\n") { it.joinToString("") }
+    }
+
+    private fun addPlayersToView(
+        player: Player,
+        view: MutableList<MutableList<String>>
+    ) {
+        player.pos.surroundingChunks(1).forEach { chunk ->
+            world.chunkManager.players[chunk]?.forEach {
+                if (it == player.id) return@forEach
+
+                val other = players[it]
+
+                other?.pos?.toEnvPos(player)?.let { pos ->
+                    pos.y = (view.size - 1) - pos.y
+
+                    // Body
+                    if (pos.y in view.indices && pos.x in view[0].indices)
+                        view[pos.y][pos.x] = "\uD83E\uDDBA"
+
+                    // Head
+                    val headPos = pos.plus(0, 1)
+                    if (headPos.y in view.indices && headPos.x in view[0].indices)
+                        view[headPos.y][headPos.x] = "\uD83D\uDC7D"
+                }
+            }
+        }
     }
 
     fun refreshPlayer(userId: Long) {
@@ -107,7 +127,7 @@ object Game {
         inputHandlers[userId]?.handle(string)
     }
 
-    fun breakTile(player: Player, pos: Pos) {
-        world.setTile(pos, TileType.AIR)
+    fun breakTile(player: Player, vec: Vec) {
+        world.setTile(vec, TileType.AIR)
     }
 }

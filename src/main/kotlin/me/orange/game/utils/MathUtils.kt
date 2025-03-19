@@ -1,9 +1,9 @@
 package me.orange.game.utils
 
-fun Pos.surroundingChunks(size: Int = 1): Sequence<Pos> = sequence {
+fun Vec.surroundingChunks(size: Int = 1): Sequence<Vec> = sequence {
     for (dx in -size..size) {
         for (dy in -size..size) {
-            yield(this@surroundingChunks + Pos(dx, dy))
+            yield(this@surroundingChunks + Vec(dx, dy))
         }
     }
 }

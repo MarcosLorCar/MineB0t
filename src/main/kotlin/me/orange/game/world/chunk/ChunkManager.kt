@@ -2,9 +2,10 @@ package me.orange.game.world.chunk
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import me.orange.game.utils.Pos
+import me.orange.MineB0t
+import me.orange.game.utils.Vec
 import me.orange.game.utils.surroundingChunks
 import java.util.concurrent.ConcurrentHashMap
 
@@ -12,64 +13,64 @@ class ChunkManager(
     val scope: CoroutineScope,
     private var chunkGenerator: ChunkGenerator? = null,
 ) {
-    private val chunks = ConcurrentHashMap<Pos, Chunk>()
-    private val chunkLastUsed = ConcurrentHashMap<Pos, Long>()
-    private val loadingChunks = ConcurrentHashMap<Pos, CompletableDeferred<Unit>>()
-    val players: MutableMap<Pos, MutableList<Long>> = mutableMapOf()
+    private val chunks = ConcurrentHashMap<Vec, Chunk>()
+    private val chunkLastUsed = ConcurrentHashMap<Vec, Long>()
+    private val loadingChunks = ConcurrentHashMap<Vec, CompletableDeferred<Unit>>()
+    val players: MutableMap<Vec, MutableList<Long>> = mutableMapOf()
 
     companion object {
         private const val UNLOAD_DELAY = 30_000L
     }
 
-     fun ensureChunksLoadedAround(pos: Pos, async: Boolean = true) = runBlocking(scope.coroutineContext) {
-         val centerChunk = pos.toChunkPos()
+    suspend fun ensureChunksLoadedAround(vec: Vec, async: Boolean = true) {
+        val centerChunk = vec.toChunkPos()
 
-         centerChunk.surroundingChunks().forEach { chunkPos ->
-             loadOrWaitForChunk(chunkPos, async)
-             chunkLastUsed[chunkPos] = System.currentTimeMillis()
-         }
+        centerChunk.surroundingChunks().forEach { chunkPos ->
+            loadOrWaitForChunk(chunkPos, async)
+            chunkLastUsed[chunkPos] = System.currentTimeMillis()
+        }
 
-         if (async) unloadUnusedChunks()
-     }
+        if (async) unloadUnusedChunks()
+    }
 
-    private fun loadOrWaitForChunk(chunkPos: Pos, async: Boolean) {
+    private suspend fun loadOrWaitForChunk(chunkVec: Vec, async: Boolean) {
         when {
-            shouldLoadChunk(chunkPos) ->
-                loadChunk(chunkPos, async)
+            shouldLoadChunk(chunkVec) ->
+                loadChunk(chunkVec, async)
             !async ->
-                while (loadingChunks.containsKey(chunkPos)) {
-                    println("Waiting for chunk ${chunkPos}...")
-                    Thread.sleep(10) // Wait a bit for it to load
+                while (loadingChunks.containsKey(chunkVec)) {
+                    MineB0t.log("Waiting for chunk ${chunkVec}...")
+                    delay(10) // Wait a bit for it to load
                 }
         }
     }
 
-    private fun shouldLoadChunk(chunkPos: Pos): Boolean =
-        !chunks.containsKey(chunkPos) && loadingChunks.putIfAbsent(chunkPos, CompletableDeferred()) == null
+    private fun shouldLoadChunk(chunkVec: Vec): Boolean =
+        !chunks.containsKey(chunkVec) && loadingChunks.putIfAbsent(chunkVec, CompletableDeferred()) == null
 
-    private fun loadChunk(chunkPos: Pos, async: Boolean) {
+    private fun loadChunk(chunkVec: Vec, async: Boolean) {
         if (!async) {
-            loadingChunks.putIfAbsent(chunkPos, CompletableDeferred())
-            chunks[chunkPos] = generateChunk(chunkPos)
-            loadingChunks.remove(chunkPos)
+            loadingChunks.putIfAbsent(chunkVec, CompletableDeferred())
+            chunks[chunkVec] = generateChunk(chunkVec)
+            loadingChunks.remove(chunkVec)
             return
         }
 
         val deferred = CompletableDeferred<Unit>()
-        loadingChunks[chunkPos] = deferred
+        loadingChunks[chunkVec] = deferred
 
         scope.launch {
             try {
-                chunks[chunkPos] = generateChunk(chunkPos)
+                chunks[chunkVec] = generateChunk(chunkVec)
             } finally {
                 deferred.complete(Unit)
-                loadingChunks.remove(chunkPos)
+                loadingChunks.remove(chunkVec)
             }
         }
     }
 
-    private fun generateChunk(pos: Pos): Chunk {
-        return chunkGenerator?.generateChunk(pos) ?: Chunk.nullChunk(pos)
+    private fun generateChunk(vec: Vec): Chunk {
+        return chunkGenerator?.generateChunk(vec) ?: Chunk.nullChunk(vec)
     }
 
     private fun unloadUnusedChunks() {
@@ -82,5 +83,5 @@ class ChunkManager(
         }
     }
 
-    fun getChunk(pos: Pos): Chunk? = chunks[pos]
+    fun getChunk(vec: Vec): Chunk? = chunks[vec]
 }

@@ -8,14 +8,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ec1ed97b-b2ba-4c93-b2c8-b4aa983278f4" name="Changes" comment="Pseudo Multiplayer Working">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/Inventory.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemStack.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionMenu.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionQueue.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerMovement.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/commands/CommandHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/commands/CommandHandler.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/InputHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/InputHandler.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/MathUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/MathUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Pos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Pos.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Pos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Vec.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkGenerator.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/OverworldGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/OverworldGenerator.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +81,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
@@ -109,6 +119,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="me.orange.game.inventory" />
       <recent name="me.orange" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
@@ -175,7 +186,9 @@
       <workItem from="1742380252887" duration="381000" />
       <workItem from="1742388205488" duration="400000" />
       <workItem from="1742388628221" duration="1827000" />
-      <workItem from="1742393570804" duration="7640000" />
+      <workItem from="1742393570804" duration="10058000" />
+      <workItem from="1742412956783" duration="4457000" />
+      <workItem from="1742420512337" duration="1819000" />
     </task>
     <task id="LOCAL-00001" summary="Day 1">
       <option name="closed" value="true" />
@@ -185,7 +198,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742333802070</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Pseudo Multiplayer Working">
+      <option name="closed" value="true" />
+      <created>1742401292820</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1742401292820</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

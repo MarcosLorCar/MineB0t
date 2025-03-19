@@ -1,8 +1,10 @@
+@file:Suppress("EmptyMethod", "EmptyMethod", "EmptyMethod")
+
 package me.orange.game
 
 import me.orange.game.player.GameMode
 import me.orange.game.player.Player
-import me.orange.game.utils.Pos
+import me.orange.game.utils.Vec
 
 class InputHandler(
     val player: Player
@@ -30,11 +32,13 @@ class InputHandler(
         }
     }
 
-    private fun handleBreak(string: String) {
-        val pos = getPosFromDir(string)
+    private fun handleBreak(string: String) = player.queueAction { player ->
+        val pos = getVecFromDir(string)
 
         if (pos.y == 0)
-            Game.breakTile(player, player.pos + pos + Pos(0, 1))
+            Game.breakTile(player, player.pos + pos + Vec(0, 1))
+        else
+            player.falling = true
 
         Game.breakTile(player, player.pos + pos)
     }
@@ -43,29 +47,24 @@ class InputHandler(
 
     }
 
-    private fun handleChangeMode(input: String) {
+    private fun handleChangeMode(input: String) = player.queueAction { player ->
         player.mode = when (input) {
             "place" -> GameMode.PLACE
             "break" -> GameMode.BREAK
-            else -> return
+            else -> return@queueAction
         }
     }
 
-    private fun handleMove(dir: String) {
-        player.pos += getPosFromDir(dir)
-
-        if (player.mode == GameMode.BREAK && player.world.getTile(player.pos)?.breakable == true) {
-            Game.breakTile(player, player.pos)
-            Game.breakTile(player, player.pos + Pos(0, 1))
-        }
+    private fun handleMove(dir: String) = player.queueAction { player ->
+        player.move(getVecFromDir(dir))
     }
 
-    private fun getPosFromDir(dir: String): Pos =
+    private fun getVecFromDir(dir: String): Vec =
         when (dir) {
-            "down" -> Pos(0, -1)
-            "left" -> Pos(-1, 0)
-            "right" -> Pos(1, 0)
-            "up" -> Pos(0, 2)
-            else -> Pos(0, 0)
+            "down" -> Vec(0, -1)
+            "left" -> Vec(-1, 0)
+            "right" -> Vec(1, 0)
+            "up" -> Vec(0, 2)
+            else -> Vec(0, 0)
         }
 }
