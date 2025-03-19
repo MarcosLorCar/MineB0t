@@ -17,11 +17,13 @@ object CommandHandler {
         ChangeModeInteraction("break"),
         ChangeModeInteraction("move"),
         ActionInteraction("break_left"),
+        ActionInteraction("break_down"),
         ActionInteraction("break_right"),
         ActionInteraction("break_up"),
         ActionInteraction("place_left"),
         ActionInteraction("place_down"),
         ActionInteraction("place_right"),
+        ActionInteraction("place_up"),
     )
 
     fun registerEvents(jda: JDA) {

@@ -61,6 +61,7 @@ object Game {
             world = world,
         )
 
+        world.chunkManager.players.getOrPut(player.pos.toChunkPos()){mutableListOf()}.add(id)
         players[id] = player
         inputHandlers[id] = InputHandler(player)
 
@@ -71,12 +72,28 @@ object Game {
         val userId = hook.interaction.user.idLong
         val player = players.getOrPut(userId) { addPlayer(userId, hook) }
 
-        val env = world.getEnvironment(player)
+        val env = getView(player)
         val ui = player.getActions()
 
         hook.editOriginal(env)
             .setComponents(ui)
             .queue()
+    }
+
+    private fun getView(player: Player): String {
+        val view = world.getEnvironment(player)
+
+        for ((id, iPlayer) in players) {
+            if (id == player.id) continue
+
+            iPlayer.pos.toEnvPos(player)?.let { pos ->
+                pos.y = (view.size - 1) - pos.y
+                if (pos.y in view.indices && pos.x in view[0].indices)
+                    view[pos.y][pos.x] = "\uD83D\uDC7D"
+            }
+        }
+
+        return view.joinToString("\n") { it.joinToString("") }
     }
 
     fun refreshPlayer(userId: Long) {

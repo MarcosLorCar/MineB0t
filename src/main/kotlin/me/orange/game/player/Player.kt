@@ -15,18 +15,21 @@ class Player(
     var age: Long,
     val hook: InteractionHook?
 ) {
-    var pos : Pos = Pos(0, 5)
+    var pos : Pos = Pos(0, 1)
     var mode = GameMode.BREAK
     var zoom: Pair<Int, Int> = Pair(7, 5)
     val emojis = listOf(
         "\uD83D\uDC37",
         "\uD83D\uDC54"
     )
+    fun move(x: Int, y: Int) {
+        pos.move(x, y)
+    }
 
     fun fall() {
         world.getTile(pos - Pos(0, 1))?.let { tile ->
             if (tile.airy) {
-                pos.move(0, -1)
+                move(0, -1)
             }
         }
     }
@@ -35,11 +38,11 @@ class Player(
         val actions = mutableListOf<LayoutComponent>()
 
         actions.add(ActionRow.of(
-            getMoveButtons()
+            getActionButtons()
         ))
 
         actions.add(ActionRow.of(
-            getActionButtons()
+            getMoveButtons()
         ))
 
         return actions
@@ -47,7 +50,7 @@ class Player(
 
     fun getModeButton(): Button {
         val style = if (mode == GameMode.PLACE) ButtonStyle.SUCCESS else ButtonStyle.DANGER
-        val emoji = if (mode == GameMode.PLACE) Emoji.fromUnicode("\uD83D\uDD28") else Emoji.fromUnicode("⛏\uFE0F")
+        val emoji = Emoji.fromUnicode("\uD83D\uDD01")
         val newMode = if (mode == GameMode.PLACE) "break" else "place"
 
         return Button.of(style, "changeMode_$newMode", emoji)
@@ -56,21 +59,24 @@ class Player(
     private fun getMoveButtons(): List<Button> {
         return listOf(
             moveButton(Pos(-1, 0), "left", "◀\uFE0F"),
-            moveButton(Pos(0, -1), "down", "\uD83D\uDD3D"),
+            if(mode == GameMode.BREAK)
+                actionButton("break_down", "⛏", ButtonStyle.DANGER)
+            else
+                actionButton("place_down", "\uD83E\uDEF3", ButtonStyle.SUCCESS),
             moveButton(Pos(1, 0), "right", "▶\uFE0F"),
         )
     }
 
     private fun getActionButtons(): List<Button> {
         return if(mode == GameMode.PLACE) listOf(
-            actionButton(Pos(-1, 0), "place_left", "\uD83E\uDEF2", ButtonStyle.SUCCESS),
-            actionButton(Pos(0, 0), "place_down", "\uD83E\uDEF3", ButtonStyle.SUCCESS),
-            actionButton(Pos(1, 0), "place_right", "\uD83E\uDEF1", ButtonStyle.SUCCESS),
+            actionButton("place_left", "\uD83E\uDEF2", ButtonStyle.SUCCESS),
+            actionButton("place_up", "\uD83E\uDEF4", ButtonStyle.SUCCESS),
+            actionButton("place_right", "\uD83E\uDEF1", ButtonStyle.SUCCESS),
             getModeButton(),
         ) else listOf(
-            actionButton(Pos(-1, 0), "break_left", "\uD83E\uDD1B", ButtonStyle.DANGER),
-            actionButton(Pos(0, 2), "break_up", "✊", ButtonStyle.DANGER),
-            actionButton(Pos(1, 0), "break_right", "\uD83E\uDD1C", ButtonStyle.DANGER),
+            actionButton("break_left", "\uD83E\uDD1B", ButtonStyle.DANGER),
+            actionButton("break_up", "✊", ButtonStyle.DANGER),
+            actionButton("break_right", "\uD83E\uDD1C", ButtonStyle.DANGER),
             getModeButton(),
         )
     }
@@ -79,14 +85,12 @@ class Player(
         Button.of(ButtonStyle.SECONDARY, "move_$inputStr", Emoji.fromUnicode(emojiCode)).withDisabled(run {
             val nextPos = pos + move
 
-            return@run !((mode == GameMode.BREAK && canBreakThrough(nextPos)) ||
-                    (mode == GameMode.PLACE && canWalkThrough(nextPos)))
+            return@run !(canWalkThrough(nextPos) ||
+                    mode == GameMode.BREAK && inputStr == "down")
         })
 
-    private fun actionButton(direction: Pos, inputStr: String, emojiCode: String, style: ButtonStyle): Button =
-        Button.of(style, "action_$inputStr", Emoji.fromUnicode(emojiCode)).withDisabled(run {
-            return@run false
-        })
+    private fun actionButton(inputStr: String, emojiCode: String, style: ButtonStyle): Button =
+        Button.of(style, "action_$inputStr", Emoji.fromUnicode(emojiCode))
 
     fun canWalkThrough(pos: Pos): Boolean {
         val tileBottom = world.getTile(pos) ?: return false

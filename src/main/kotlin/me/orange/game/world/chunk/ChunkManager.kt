@@ -15,6 +15,7 @@ class ChunkManager(
     private val chunks = ConcurrentHashMap<Pos, Chunk>()
     private val chunkLastUsed = ConcurrentHashMap<Pos, Long>()
     private val loadingChunks = ConcurrentHashMap<Pos, CompletableDeferred<Unit>>()
+    val players: MutableMap<Pos, MutableList<Long>> = mutableMapOf()
 
     companion object {
         private const val UNLOAD_DELAY = 30_000L

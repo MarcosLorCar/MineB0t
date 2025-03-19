@@ -15,20 +15,20 @@ class World(
     seed: Long,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val chunkManager = ChunkManager(scope, OverworldGenerator(seed))
+    val chunkManager = ChunkManager(scope, OverworldGenerator(seed))
 
     fun ensureChunksLoadedAround(pos: Pos, async: Boolean = true) =
         chunkManager.ensureChunksLoadedAround(pos, async)
 
-    fun getEnvironment(player: Player): String {
+    fun getEnvironment(player: Player): MutableList<MutableList<String>> {
+        val list = mutableListOf<MutableList<String>>()
         ensureChunksLoadedAround(player.pos, false)
 
-        val sb = StringBuilder()
-
         for (dy in player.zoom.second downTo -player.zoom.second) {
+            val row = mutableListOf<String>()
             for (dx in -player.zoom.first..player.zoom.first) {
                 if (isPlayerTile(dx, dy)) {
-                    sb.append(player.emojis[if (dy == 0) 1 else 0])
+                    row.add(player.emojis[if (dy == 0) 1 else 0])
                     continue
                 }
                 val worldPos = player.pos + Pos(dx, dy)
@@ -37,12 +37,12 @@ class World(
                 val localX = worldPos.x.mod(Chunk.SIZE)
                 val localY = worldPos.y.mod(Chunk.SIZE)
 
-                sb.append(chunk?.tiles?.safeGet(localY, localX)?.emoji ?: ":x:")
+                row.add(chunk?.tiles?.safeGet(localY, localX)?.emoji ?: ":x:")
             }
-            sb.append('\n')
+            list.add(row)
         }
 
-        return sb.toString()
+        return list
     }
 
     fun getChunk(pos: Pos): Chunk? = chunkManager.getChunk(pos)
