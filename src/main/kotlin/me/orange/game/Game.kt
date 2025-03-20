@@ -11,12 +11,14 @@ import me.orange.game.utils.surroundingChunks
 import me.orange.game.world.TileType
 import me.orange.game.world.World
 import net.dv8tion.jda.api.interactions.InteractionHook
+import net.dv8tion.jda.api.interactions.components.LayoutComponent
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 
 object Game {
     val world: World = World(Random.nextLong())
     private val players: ConcurrentHashMap<Long, Player> = ConcurrentHashMap()
+    private val playerEnvUiCache: MutableMap<Long, Pair<String, MutableList<LayoutComponent>>> = HashMap()
     private val inputHandlers: ConcurrentHashMap<Long, InputHandler> = ConcurrentHashMap()
     private var running = true
 
@@ -27,7 +29,7 @@ object Game {
     fun start() = scope.launch {
         while (running) {
             update()
-            delay(1000) // 1 fps
+            delay(500) // 1 fps
         }
     }
 
@@ -46,12 +48,16 @@ object Game {
             player.hook?.let(::updateHook)
 
             // Player timed out
-            if (currentTime - player.age >= PLAYER_TIMEOUT) {
-                println("Player timed out")
-                player.hook?.deleteOriginal()?.queue()
-                players.remove(id)
-                inputHandlers.remove(id)
-            }
+            timeoutPlayer(currentTime, player, id)
+        }
+    }
+
+    private fun timeoutPlayer(currentTime: Long, player: Player, id: Long) {
+        if (currentTime - player.age >= PLAYER_TIMEOUT) {
+            println("Player timed out")
+            player.hook?.deleteOriginal()?.queue()
+            players.remove(id)
+            inputHandlers.remove(id)
         }
     }
 
@@ -74,12 +80,20 @@ object Game {
         val userId = hook.interaction.user.idLong
         val player = players.getOrPut(userId) { addPlayer(userId, hook) }
 
-        val env = runBlocking(scope.coroutineContext) {getView(player)}
+        val env = runBlocking {getView(player)}
         val ui = player.getActions()
 
-        hook.editOriginal(env)
-            .setComponents(ui)
-            .queue()
+        val curr = Pair(env, ui)
+        val cache = playerEnvUiCache[userId]
+
+        if (cache == null || cache != curr) {
+            println("Updated hook")
+            hook.editOriginal(env)
+                .setComponents(ui)
+                .queue()
+
+            playerEnvUiCache[userId] = curr
+        }
     }
 
     private suspend fun getView(player: Player): String {
@@ -129,5 +143,9 @@ object Game {
 
     fun breakTile(player: Player, vec: Vec) {
         world.setTile(vec, TileType.AIR)
+    }
+
+    fun placeTile(player: Player, vec: Vec) {
+        world.setTile(vec, TileType.DIRT)
     }
 }

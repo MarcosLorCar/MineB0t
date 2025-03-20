@@ -19,13 +19,16 @@ class Player(
     private val actionQueue = PlayerActionQueue(this)
 
     fun move(vec: Vec) = movement.move(vec)
+    fun move(x: Int, y: Int) = move(Vec(x, y))
     fun fall() = movement.fall()
     fun getActions(): MutableList<LayoutComponent> = actionMenu.getActions()
     fun queueAction(action: (Player) -> Unit) = actionQueue.queueAction(action)
     fun applyQueuedActions() = actionQueue.applyQueuedActions()
+    fun placeBlock(vec: Vec) {}
 
     fun update() {
         fall()
         applyQueuedActions()
     }
+
 }

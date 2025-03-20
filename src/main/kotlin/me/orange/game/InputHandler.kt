@@ -43,15 +43,23 @@ class InputHandler(
         Game.breakTile(player, player.pos + pos)
     }
 
-    private fun handlePlace(dir: String) {
+    private fun handlePlace(dir: String) = player.queueAction { player ->
+        val vec = getVecFromDir(dir)
 
+        if (vec == Vec(0, -1)) {
+            if (player.world.getTile(player.pos.plus(0, 2))?.airy == false) return@queueAction
+
+            player.move(0, 1)
+        }
+
+        Game.placeTile(player, player.pos + vec)
     }
 
-    private fun handleChangeMode(input: String) = player.queueAction { player ->
+    private fun handleChangeMode(input: String) {
         player.mode = when (input) {
             "place" -> GameMode.PLACE
             "break" -> GameMode.BREAK
-            else -> return@queueAction
+            else -> return
         }
     }
 

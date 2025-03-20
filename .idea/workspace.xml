@@ -7,25 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec1ed97b-b2ba-4c93-b2c8-b4aa983278f4" name="Changes" comment="Pseudo Multiplayer Working">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/Inventory.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemStack.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemType.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionMenu.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionQueue.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerMovement.kt" afterDir="false" />
+    <list default="true" id="ec1ed97b-b2ba-4c93-b2c8-b4aa983278f4" name="Changes" comment="Modularized and refactored things">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/InputHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/InputHandler.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/MathUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/MathUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Pos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Vec.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkGenerator.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/OverworldGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/OverworldGenerator.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,6 +52,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -101,7 +92,7 @@
     &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Marcos/Documents/Dev/IntelliJIdeaProjects/LabProject&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -140,6 +131,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.MainKt" />
+        <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.MainKt" />
       </list>
     </recent_temporary>
@@ -188,7 +181,8 @@
       <workItem from="1742388628221" duration="1827000" />
       <workItem from="1742393570804" duration="10058000" />
       <workItem from="1742412956783" duration="4457000" />
-      <workItem from="1742420512337" duration="1819000" />
+      <workItem from="1742420512337" duration="2506000" />
+      <workItem from="1742459365654" duration="1854000" />
     </task>
     <task id="LOCAL-00001" summary="Day 1">
       <option name="closed" value="true" />
@@ -206,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742401292820</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Modularized and refactored things">
+      <option name="closed" value="true" />
+      <created>1742422536865</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1742422536865</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,6 +228,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Day 1" />
     <MESSAGE value="Pseudo Multiplayer Working" />
-    <option name="LAST_COMMIT_MESSAGE" value="Pseudo Multiplayer Working" />
+    <MESSAGE value="Modularized and refactored things" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modularized and refactored things" />
   </component>
 </project>
