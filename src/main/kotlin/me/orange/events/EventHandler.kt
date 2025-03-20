@@ -1,9 +1,14 @@
-package me.orange.commands
+package me.orange.events
 
+import me.orange.events.commands.PlayCommand
+import me.orange.events.commands.TestCommand
+import me.orange.events.interactions.ActionInteraction
+import me.orange.events.interactions.ChangeModeInteraction
+import me.orange.events.interactions.MoveInteraction
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object CommandHandler {
+object EventHandler {
     private val commands = listOf(
         PlayCommand,
         TestCommand,

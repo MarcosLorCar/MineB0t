@@ -1,6 +1,6 @@
-package me.orange.commands
+package me.orange.events.commands
 
-import me.orange.commands.base.SlashCommand
+import me.orange.events.commands.base.SlashCommand
 import me.orange.game.Game
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 

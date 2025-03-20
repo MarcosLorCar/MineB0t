@@ -1,6 +1,6 @@
 package me.orange
 
-import me.orange.commands.CommandHandler
+import me.orange.events.EventHandler
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import org.slf4j.Logger
@@ -18,7 +18,7 @@ object MineB0t {
             .build()
 
         // Updates the commands list and resisters listeners
-        CommandHandler.registerEvents(jda)
+        EventHandler.registerEvents(jda)
     }
 
     fun log(msg: String) = logger.info(msg)

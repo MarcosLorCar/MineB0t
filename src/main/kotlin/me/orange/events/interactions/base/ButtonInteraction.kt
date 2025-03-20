@@ -1,4 +1,4 @@
-package me.orange.commands.base
+package me.orange.events.interactions.base
 
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter

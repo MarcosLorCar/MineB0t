@@ -1,6 +1,6 @@
-package me.orange.commands
+package me.orange.events.interactions
 
-import me.orange.commands.base.ButtonInteraction
+import me.orange.events.interactions.base.ButtonInteraction
 import me.orange.game.Game
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 
