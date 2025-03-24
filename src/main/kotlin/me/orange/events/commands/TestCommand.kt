@@ -1,6 +1,8 @@
 package me.orange.events.commands
 
-import me.orange.events.commands.base.SlashCommand
+import me.orange.events.base.SlashCommand
+import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
 object TestCommand : SlashCommand(
@@ -9,6 +11,9 @@ object TestCommand : SlashCommand(
 ) {
 
     override fun execute(event: SlashCommandInteractionEvent) {
-        event.reply("TEST").queue()
+        val embed = EmbedBuilder()
+            .addField(MessageEmbed.Field("⬛⬛⬛⬛⬛\n⬛⬛⬛⬛⬛", "⬛⬛⬛⬛⬛\n⬛⬛⬛⬛⬛", false))
+
+        event.replyEmbeds(embed.build()).queue()
     }
 }

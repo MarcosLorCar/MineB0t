@@ -19,6 +19,8 @@ object MineB0t {
 
         // Updates the commands list and resisters listeners
         EventHandler.registerEvents(jda)
+
+        Emojis.loadEmojis()
     }
 
     fun log(msg: String) = logger.info(msg)

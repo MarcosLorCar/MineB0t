@@ -2,11 +2,9 @@ package me.orange.game.world.chunk
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.orange.MineB0t
 import me.orange.game.utils.Vec
-import me.orange.game.utils.surroundingChunks
+import me.orange.game.world.generation.ChunkGenerator
 import java.util.concurrent.ConcurrentHashMap
 
 class ChunkManager(
@@ -38,10 +36,7 @@ class ChunkManager(
             shouldLoadChunk(chunkVec) ->
                 loadChunk(chunkVec, async)
             !async ->
-                while (loadingChunks.containsKey(chunkVec)) {
-                    MineB0t.log("Waiting for chunk ${chunkVec}...")
-                    delay(10) // Wait a bit for it to load
-                }
+                loadingChunks[chunkVec]?.await()
         }
     }
 

@@ -1,6 +1,7 @@
 package me.orange.events.commands
 
-import me.orange.events.commands.base.SlashCommand
+import kotlinx.coroutines.launch
+import me.orange.events.base.SlashCommand
 import me.orange.game.Game
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
@@ -13,7 +14,9 @@ object PlayCommand : SlashCommand(
         event.deferReply()
             .setEphemeral(true)
             .queue {
-                Game.updateHook(it)
+                Game.scope.launch {
+                    Game.updateHook(it, true)
+                }
             }
     }
 }

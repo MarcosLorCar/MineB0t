@@ -6,26 +6,28 @@ class PlayerMovement(
     private val player: Player
 ) {
     fun move(vec: Vec) = with(player) {
+        world.chunkManager.players[pos.toChunkPos()]?.remove(player.id)
         if (falling) vec.x = 0
 
         val newPos = pos + vec
-        if (!canWalkThrough(newPos)) return
+        if (!canWalkThrough(newPos)) {
+            if (canStepUp(pos, vec))
+                pos.move(vec.plus(0, 1))
+            return@with
+        }
 
         pos.move(vec)
+        world.chunkManager.players.getOrPut(pos.toChunkPos()){mutableListOf()}.add(player.id)
     }
 
-    fun fall() = with(player) {
+    fun fall(time: Long) = with(player) {
+
         val below = world.getTile(player.pos - Vec(0, 1))
         if (below?.airy == true) {
+            falling = true
             move(Vec(0, -1))
         } else {
             falling = false
         }
-    }
-
-    fun canWalkThrough(vec: Vec): Boolean {
-        val tileBottom = player.world.getTile(vec) ?: return false
-        val tileTop = player.world.getTile(vec + Vec(0, 1)) ?: return false
-        return tileTop.airy && tileBottom.airy
     }
 }

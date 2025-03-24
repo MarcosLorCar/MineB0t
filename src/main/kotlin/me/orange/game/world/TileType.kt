@@ -5,8 +5,8 @@ enum class TileType(
     val airy: Boolean = false,
     val breakable: Boolean = false,
 ) {
-    AIR("⬛", airy = true),
-    GRASS("\uD83D\uDFE9", breakable = true),
-    DIRT("🟫", breakable = true),
+    AIR("<:03:1352306492723695736>", airy = true),
+    GRASS("<:02:1352306218278064218>", breakable = true),
+    DIRT("<:01:1352297912515694655>", breakable = true),
     NULL("❌"),
 }

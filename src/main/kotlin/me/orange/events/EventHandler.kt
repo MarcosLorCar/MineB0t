@@ -14,21 +14,21 @@ object EventHandler {
         TestCommand,
     )
 
-    private val interactions = listOf(
+    private val interactions = mutableListOf(
         MoveInteraction("left"),
         MoveInteraction("down"),
         MoveInteraction("right"),
         ChangeModeInteraction("place"),
         ChangeModeInteraction("break"),
         ChangeModeInteraction("move"),
-        ActionInteraction("break_left"),
-        ActionInteraction("break_down"),
-        ActionInteraction("break_right"),
-        ActionInteraction("break_up"),
-        ActionInteraction("place_left"),
-        ActionInteraction("place_down"),
-        ActionInteraction("place_right"),
-        ActionInteraction("place_up"),
+        ActionInteraction("up_left"),
+        ActionInteraction("up_up"),
+        ActionInteraction("up_right"),
+        ActionInteraction("left"),
+        ActionInteraction("right"),
+        ActionInteraction("down_left"),
+        ActionInteraction("down"),
+        ActionInteraction("down_right"),
     )
 
     fun registerEvents(jda: JDA) {
@@ -36,7 +36,9 @@ object EventHandler {
 
         commands.forEach { command ->
             // Register signature
-            updateCommands.addCommands(Commands.slash(command.name, command.description))
+            updateCommands.addCommands(
+                Commands.slash(command.name, command.description)
+            )
 
             // Add a listener
             jda.addEventListener(command)

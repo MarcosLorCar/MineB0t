@@ -1,9 +1,6 @@
-@file:Suppress("EmptyMethod", "EmptyMethod", "EmptyMethod")
+package me.orange.game.player
 
-package me.orange.game
-
-import me.orange.game.player.GameMode
-import me.orange.game.player.Player
+import me.orange.game.utils.GameMode
 import me.orange.game.utils.Vec
 
 class InputHandler(
@@ -23,28 +20,28 @@ class InputHandler(
     }
 
     private fun handleAction(args: List<String>) {
-        val actionType = args[0]
+        val actionType = player.gameMode
+        val actionArgs = args
 
         when (actionType) {
-            "place" -> handlePlace(args[1])
+            GameMode.PLACE -> handlePlace(actionArgs)
 
-            "break" -> handleBreak(args[1])
+            GameMode.BREAK -> handleBreak(actionArgs)
         }
     }
 
-    private fun handleBreak(string: String) = player.queueAction { player ->
-        val pos = getVecFromDir(string)
+    private fun handleBreak(args: List<String>) = player.queueAction { player ->
+        val vec = args.fold(Vec(0, 0)) { acc, arg ->
+            acc + getVecFromDir(arg)
+        }
 
-        if (pos.y == 0)
-            Game.breakTile(player, player.pos + pos + Vec(0, 1))
-        else
-            player.falling = true
-
-        Game.breakTile(player, player.pos + pos)
+        player.breakTile(player, player.pos + vec)
     }
 
-    private fun handlePlace(dir: String) = player.queueAction { player ->
-        val vec = getVecFromDir(dir)
+    private fun handlePlace(args: List<String>) = player.queueAction { player ->
+        val vec = args.fold(Vec(0, 0)) { acc, arg ->
+            acc + getVecFromDir(arg)
+        }
 
         if (vec == Vec(0, -1)) {
             if (player.world.getTile(player.pos.plus(0, 2))?.airy == false) return@queueAction
@@ -52,11 +49,11 @@ class InputHandler(
             player.move(0, 1)
         }
 
-        Game.placeTile(player, player.pos + vec)
+        player.placeTile(player, player.pos + vec)
     }
 
     private fun handleChangeMode(input: String) {
-        player.mode = when (input) {
+        player.gameMode = when (input) {
             "place" -> GameMode.PLACE
             "break" -> GameMode.BREAK
             else -> return
@@ -72,7 +69,7 @@ class InputHandler(
             "down" -> Vec(0, -1)
             "left" -> Vec(-1, 0)
             "right" -> Vec(1, 0)
-            "up" -> Vec(0, 2)
+            "up" -> Vec(0, 1)
             else -> Vec(0, 0)
         }
 }

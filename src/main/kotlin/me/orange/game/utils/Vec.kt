@@ -23,5 +23,20 @@ data class Vec(var x: Int, var y: Int) {
     fun move(vec: Vec) = move(vec.x, vec.y)
 
     fun toEnvPos(player: Player): Vec? =
-        Vec(x - player.pos.x + player.zoom.first, y - player.pos.y + player.zoom.second)
+        Vec(
+            (x - player.pos.x) + (player.pos.x - (player.pos.x - Player.zoom.first)),
+            (y - player.pos.y) + (player.pos.y - (player.pos.y - Player.zoom.second))
+        )
+
+    override fun toString(): String {
+        return "($x, $y)"
+    }
+
+    fun surroundingChunks(size: Int = 1): Sequence<Vec> = sequence {
+        for (dx in -size..size) {
+            for (dy in -size..size) {
+                yield(this@Vec + Vec(dx, dy))
+            }
+        }
+    }
 }
