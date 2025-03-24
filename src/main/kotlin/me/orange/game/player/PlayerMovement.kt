@@ -3,8 +3,10 @@ package me.orange.game.player
 import me.orange.game.utils.Vec
 
 class PlayerMovement(
-    private val player: Player
+    private val player: Player,
 ) {
+    val world = player.game.world
+
     fun move(vec: Vec) = with(player) {
         world.chunkManager.players[pos.toChunkPos()]?.remove(player.id)
         if (falling) vec.x = 0

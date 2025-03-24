@@ -1,6 +1,6 @@
 package me.orange.game.player
 
-import java.util.Queue
+import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.function.Consumer
 

@@ -44,7 +44,7 @@ class InputHandler(
         }
 
         if (vec == Vec(0, -1)) {
-            if (player.world.getTile(player.pos.plus(0, 2))?.airy == false) return@queueAction
+            if (player.game.world.getTile(player.pos.plus(0, 2))?.airy == false) return@queueAction
 
             player.move(0, 1)
         }

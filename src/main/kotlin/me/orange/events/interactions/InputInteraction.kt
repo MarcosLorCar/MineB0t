@@ -5,12 +5,15 @@ import me.orange.events.base.ButtonInteraction
 import me.orange.game.Game
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 
-class MoveInteraction(val direction: String) : ButtonInteraction("move_$direction") {
-    override fun execute(event: ButtonInteractionEvent) {
+class InputInteraction(val input: String) : ButtonInteraction(input) {
+    override fun execute(
+        event: ButtonInteractionEvent,
+        game: Game
+    ) {
         event.deferEdit().queue {
-            Game.scope.launch {
-                Game.handleInput(it, "move_$direction")
-                Game.updateHook(it)
+            game.scope.launch {
+                game.handleInput(it, input)
+                game.updateHook(it, true)
             }
         }
     }

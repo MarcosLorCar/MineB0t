@@ -10,9 +10,9 @@ object MineB0t {
 
     private val logger: Logger = LoggerFactory.getLogger(MineB0t::class.java)
 
-    private val jda: JDA
+    private lateinit var jda: JDA
 
-    init {
+    fun start() {
         val token = System.getenv("DISCORD_BOT_TOKEN") ?: error("Missing token!")
         jda = JDABuilder.createDefault(token)
             .build()

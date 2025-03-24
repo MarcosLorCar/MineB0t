@@ -1,7 +1,6 @@
 package me.orange.game
 
 import me.orange.Emojis
-import me.orange.game.Game.players
 import me.orange.game.player.Player
 import me.orange.game.utils.Vec
 import me.orange.game.utils.isPlayerTile
@@ -9,17 +8,20 @@ import me.orange.game.utils.safeGet
 import me.orange.game.world.chunk.Chunk
 
 object GameRenderer {
-    suspend fun getView(player: Player): String {
-        val view = getEnvironment(player)
+    suspend fun getView(
+        game: Game,
+        player: Player,
+    ): String {
+        val view = getEnvironment(game, player)
 
-        addPlayersToView(player, view)
+        addPlayersToView(game, player, view)
 
         return view.joinToString("\n") { it.joinToString("") }
     }
 
-    suspend fun getEnvironment(player: Player): MutableList<MutableList<String>> {
+    suspend fun getEnvironment(game: Game, player: Player): MutableList<MutableList<String>> {
         val list = mutableListOf<MutableList<String>>()
-        Game.world.ensureChunksLoadedAround(player.pos, false)
+        game.world.ensureChunksLoadedAround(player.pos, false)
 
         for (dy in Player.zoom.second downTo -Player.zoom.second) {
             val row = mutableListOf<String>()
@@ -30,7 +32,7 @@ object GameRenderer {
                 }
                 val worldVec = player.pos + Vec(dx, dy)
 
-                val chunk = Game.world.getChunk(worldVec.toChunkPos())
+                val chunk = game.world.getChunk(worldVec.toChunkPos())
                 val localX = worldVec.x.mod(Chunk.SIZE)
                 val localY = worldVec.y.mod(Chunk.SIZE)
 
@@ -43,14 +45,15 @@ object GameRenderer {
     }
 
     private fun addPlayersToView(
+        game: Game,
         player: Player,
         view: MutableList<MutableList<String>>
     ) {
         player.pos.toChunkPos().surroundingChunks().forEach { chunk ->
-            player.world.chunkManager.players[chunk]?.forEach { otherId ->
+            game.world.chunkManager.players[chunk]?.forEach { otherId ->
                 if (player.id == otherId) return@forEach
 
-                players[otherId]?.pos?.toEnvPos(player)?.let { envPos ->
+                game.players[otherId]?.pos?.toEnvPos(player)?.let { envPos ->
                     envPos.y = (Player.zoom.second*2+1) - (envPos.y + 1)
 
                     if (envPos.y in view.indices && envPos.x in view[0].indices)

@@ -7,42 +7,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec1ed97b-b2ba-4c93-b2c8-b4aa983278f4" name="Changes" comment="Event re/modularization">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/Config.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/Emojis.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/Test.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/base/ButtonInteraction.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/GameRenderer.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/InputHandler.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerData.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerDataManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/GameMode.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/ChunkGenerator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/OverworldGenerator.kt" afterDir="false" />
+    <list default="true" id="ec1ed97b-b2ba-4c93-b2c8-b4aa983278f4" name="Changes" comment="Player persistence and basic heightmap">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/GamesManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/InputInteraction.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkDataManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/Config.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/Config.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/EventHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/EventHandler.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/base/ButtonInteraction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/base/ButtonInteraction.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/PlayCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/PlayCommand.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/TestCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/TestCommand.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/base/SlashCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/base/SlashCommand.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ActionInteraction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ActionInteraction.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ChangeModeInteraction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ChangeModeInteraction.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/MoveInteraction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/MoveInteraction.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/base/ButtonInteraction.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ActionInteraction.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ChangeModeInteraction.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/MoveInteraction.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/InputHandler.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/GameMode.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/GameRenderer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/GameRenderer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/InputHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/InputHandler.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionMenu.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionQueue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionQueue.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerMovement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerMovement.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/MathUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/MathUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Vec.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/utils/Vec.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerDataManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerDataManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/TileType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/TileType.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkGenerator.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/OverworldGenerator.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/ChunkGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/ChunkGenerator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/OverworldGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/OverworldGenerator.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -241,7 +235,7 @@
       <workItem from="1742680888454" duration="1229000" />
       <workItem from="1742682187183" duration="3771000" />
       <workItem from="1742767091135" duration="3336000" />
-      <workItem from="1742807796428" duration="190000" />
+      <workItem from="1742807796428" duration="7683000" />
     </task>
     <task id="LOCAL-00001" summary="Day 1">
       <option name="closed" value="true" />
@@ -283,7 +277,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742470847838</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Player persistence and basic heightmap">
+      <option name="closed" value="true" />
+      <created>1742808027070</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1742808027070</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Player persistence and basic heightmap">
+      <option name="closed" value="true" />
+      <created>1742808061609</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742808061609</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -294,7 +304,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="dev" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -305,6 +327,7 @@
     <MESSAGE value="Pseudo Multiplayer Working" />
     <MESSAGE value="Modularized and refactored things" />
     <MESSAGE value="Event re/modularization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Event re/modularization" />
+    <MESSAGE value="Player persistence and basic heightmap" />
+    <option name="LAST_COMMIT_MESSAGE" value="Player persistence and basic heightmap" />
   </component>
 </project>

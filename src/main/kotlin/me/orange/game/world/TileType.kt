@@ -1,5 +1,8 @@
 package me.orange.game.world
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class TileType(
     val emoji: String,
     val airy: Boolean = false,

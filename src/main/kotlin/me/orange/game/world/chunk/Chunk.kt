@@ -6,7 +6,7 @@ import me.orange.game.world.TileType
 
 @Serializable
 data class Chunk(
-    val vec: Vec,
+    val worldPos: Vec,
     val tiles: MutableList<MutableList<TileType>> = MutableList(SIZE) { MutableList(SIZE) { TileType.AIR } }
 ) {
     fun getTile(vec: Vec): TileType = tiles[vec.y][vec.x]

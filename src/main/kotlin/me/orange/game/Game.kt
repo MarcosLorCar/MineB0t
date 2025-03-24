@@ -1,6 +1,10 @@
 package me.orange.game
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import me.orange.Config
 import me.orange.game.GameRenderer.getView
 import me.orange.game.player.InputHandler
 import me.orange.game.player.Player
@@ -10,21 +14,24 @@ import me.orange.game.world.World
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.InteractionHook
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.random.Random
 
-object Game {
+class Game(
+    guildId : String,
+) {
+    val gameDataDir = "${Config.GAME_DATA_DIR}/$guildId"
     val scope = CoroutineScope(Dispatchers.Default)
-    val world: World = World(Random.nextLong(), scope)
+    val world: World = World(this, guildId.hashCode(), scope)
     var time: Long = 0
     val players: ConcurrentHashMap<Long, Player> = ConcurrentHashMap()
     private val playerEnvUiCache: MutableMap<Long, String> = HashMap()
     private val inputHandlers: ConcurrentHashMap<Long, InputHandler> = ConcurrentHashMap()
     private var running = true
 
-    private const val PLAYER_TIMEOUT = 30_000L
+    companion object {
+        private const val PLAYER_TIMEOUT = 30_000L
+    }
 
-
-    fun start() = scope.launch {
+    suspend fun run() {
         while (running) {
             update()
             delay(1000) // 1 fps
@@ -35,7 +42,6 @@ object Game {
         time++
         val currentTime = System.currentTimeMillis()
 
-        // Load/Unload chunks
         players.forEach { (id, player) ->
             // Re-Load chunks around loaded players
             world.ensureChunksLoadedAround(player.pos, async = true)
@@ -51,6 +57,8 @@ object Game {
             // Player timed out
             timeoutPlayer(currentTime, player, id)
         }
+
+        world.chunkManager.unloadUnusedChunks()
     }
 
     private fun timeoutPlayer(currentTime: Long, player: Player, id: Long) {
@@ -66,11 +74,11 @@ object Game {
     }
 
     fun addPlayer(id: Long, hook: InteractionHook): Player {
-        val player = Player.loadPlayer(id) ?: Player(
+        val player = Player.loadPlayer(id, this) ?: Player(
             id,
             age = System.currentTimeMillis(),
             hook = hook,
-            world = world,
+            game = this,
         )
 
         world.chunkManager.players.getOrPut(player.pos.toChunkPos()){mutableListOf()}.add(id)
@@ -86,7 +94,7 @@ object Game {
 
         player.hook = hook
 
-        val env = getView(player)
+        val env = getView(this, player)
 
         val cache = playerEnvUiCache[userId]
 
@@ -123,5 +131,13 @@ object Game {
     fun placeTile(player: Player, pos: Vec) {
         if (world.getTile(pos)?.airy == true)
             world.setTile(pos, TileType.DIRT)
+    }
+
+    fun saveAll() {
+        players.forEach { (id, player) ->
+            player.saveData()
+        }
+
+        world.chunkManager.saveChunks()
     }
 }

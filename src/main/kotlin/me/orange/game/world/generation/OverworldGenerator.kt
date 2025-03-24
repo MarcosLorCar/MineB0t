@@ -8,10 +8,10 @@ import me.orange.game.world.TileType
 import me.orange.game.world.chunk.Chunk
 import kotlin.math.floor
 
-class OverworldGenerator(seed: Long) : ChunkGenerator(seed) {
+class OverworldGenerator(seed: Int) : ChunkGenerator(seed) {
     val noise = JNoise.newBuilder()
         .perlin(
-            seed,
+            seed.toLong(),
             Interpolation.COSINE,
             FadeFunction.QUINTIC_POLY
         ).build()

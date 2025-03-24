@@ -4,13 +4,12 @@ import me.orange.game.Game
 import me.orange.game.player.data.PlayerDataManager
 import me.orange.game.utils.GameMode
 import me.orange.game.utils.Vec
-import me.orange.game.world.World
 import net.dv8tion.jda.api.interactions.InteractionHook
 import net.dv8tion.jda.api.interactions.components.LayoutComponent
 
 class Player(
     val id: Long,
-    val world: World,
+    val game: Game,
     var age: Long,
     var pos: Vec = Vec(0, 1),
     var hook: InteractionHook? = null,
@@ -19,14 +18,13 @@ class Player(
     var falling = false
 
     companion object {
-        fun loadPlayer(id: Long): Player? {
-            val data = PlayerDataManager.loadData(id)
-
+        fun loadPlayer(id: Long, game: Game): Player? {
+            val data = PlayerDataManager.loadData(id, game)
 
             return if (data != null) {
                 Player(
                     id = id,
-                    world = Game.world,
+                    game = game,
                     age = System.currentTimeMillis(),
                     pos = data.position,
                     gameMode = data.gameMode,
@@ -56,8 +54,8 @@ class Player(
     fun getActions(): MutableList<LayoutComponent> = actionMenu.getActions()
     fun queueAction(action: (Player) -> Unit) = actionQueue.queueAction(action)
     fun applyQueuedActions() = actionQueue.applyQueuedActions()
-    fun placeTile(player: Player, pos: Vec) = Game.placeTile(player, pos)
-    fun breakTile(player: Player, vec: Vec) = Game.breakTile(player, vec)
+    fun placeTile(player: Player, pos: Vec) = game.placeTile(player, pos)
+    fun breakTile(player: Player, vec: Vec) = game.breakTile(player, vec)
     fun handle(input: String) = inputHandler.handle(input)
     fun saveData() = playerDataManager.saveData()
 

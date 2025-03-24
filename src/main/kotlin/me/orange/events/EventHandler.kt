@@ -2,9 +2,7 @@ package me.orange.events
 
 import me.orange.events.commands.PlayCommand
 import me.orange.events.commands.TestCommand
-import me.orange.events.interactions.ActionInteraction
-import me.orange.events.interactions.ChangeModeInteraction
-import me.orange.events.interactions.MoveInteraction
+import me.orange.events.interactions.InputInteraction
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
@@ -15,20 +13,18 @@ object EventHandler {
     )
 
     private val interactions = mutableListOf(
-        MoveInteraction("left"),
-        MoveInteraction("down"),
-        MoveInteraction("right"),
-        ChangeModeInteraction("place"),
-        ChangeModeInteraction("break"),
-        ChangeModeInteraction("move"),
-        ActionInteraction("up_left"),
-        ActionInteraction("up_up"),
-        ActionInteraction("up_right"),
-        ActionInteraction("left"),
-        ActionInteraction("right"),
-        ActionInteraction("down_left"),
-        ActionInteraction("down"),
-        ActionInteraction("down_right"),
+        InputInteraction("move_left"),
+        InputInteraction("move_right"),
+        InputInteraction("changeMode_place"),
+        InputInteraction("changeMode_break"),
+        InputInteraction("action_up_left"),
+        InputInteraction("action_up_up"),
+        InputInteraction("action_up_right"),
+        InputInteraction("action_left"),
+        InputInteraction("action_right"),
+        InputInteraction("action_down_left"),
+        InputInteraction("action_down"),
+        InputInteraction("action_down_right"),
     )
 
     fun registerEvents(jda: JDA) {

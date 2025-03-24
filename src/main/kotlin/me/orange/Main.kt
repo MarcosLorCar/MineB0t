@@ -1,8 +1,16 @@
 package me.orange
 
-import me.orange.game.Game
+fun saveAll() {
+    println("Saving all chunks before shutdown...")
+    GamesManager.saveAll()
+    println("All chunks saved!")
+}
 
 fun main() {
-    Game.start()
-    MineB0t
+    // Add shutdown hook
+    Runtime.getRuntime().addShutdownHook(Thread {
+        saveAll()
+    })
+
+    MineB0t.start()
 }

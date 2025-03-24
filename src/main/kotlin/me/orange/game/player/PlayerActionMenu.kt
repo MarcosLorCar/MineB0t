@@ -87,8 +87,8 @@ class PlayerActionMenu(
     }
 
     fun canWalkThrough(vec: Vec): Boolean = with(player) {
-        val tileBottom = world.getTile(vec) ?: return false
-        val tileTop = world.getTile(vec + Vec(0, 1)) ?: return false
+        val tileBottom = game.world.getTile(vec) ?: return false
+        val tileTop = game.world.getTile(vec + Vec(0, 1)) ?: return false
 
         return tileTop.airy && tileBottom.airy
     }
