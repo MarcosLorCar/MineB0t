@@ -1,7 +1,7 @@
 package me.orange.events.commands
 
 import kotlinx.coroutines.launch
-import me.orange.GamesManager
+import me.orange.game.GamesManager
 import me.orange.events.base.SlashCommand
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
@@ -18,7 +18,7 @@ object PlayCommand : SlashCommand(
                 val game = GamesManager.getGame(event.guild!!.id)
 
                 game.scope.launch {
-                    game.updateHook(it, true)
+                    game.showWorldToHook(it)
                 }
             }
     }

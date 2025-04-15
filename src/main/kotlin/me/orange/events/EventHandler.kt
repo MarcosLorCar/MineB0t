@@ -3,6 +3,7 @@ package me.orange.events
 import me.orange.events.commands.PlayCommand
 import me.orange.events.commands.TestCommand
 import me.orange.events.interactions.InputInteraction
+import me.orange.events.interactions.PlayInteraction
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
@@ -25,6 +26,11 @@ object EventHandler {
         InputInteraction("action_down_left"),
         InputInteraction("action_down"),
         InputInteraction("action_down_right"),
+        InputInteraction("inventory_open"),
+        InputInteraction("inventory_left"),
+        InputInteraction("inventory_right"),
+        InputInteraction("inventory_close"),
+        PlayInteraction
     )
 
     fun registerEvents(jda: JDA) {

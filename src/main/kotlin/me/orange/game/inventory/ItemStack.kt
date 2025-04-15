@@ -1,6 +1,9 @@
 package me.orange.game.inventory
 
-class ItemStack(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ItemStack(
     val itemType: ItemType,
-    val count: Int,
+    var count: Int,
 )

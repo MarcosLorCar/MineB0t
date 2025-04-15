@@ -1,4 +1,4 @@
-package me.orange
+package me.orange.bot
 
 import me.orange.events.EventHandler
 import net.dv8tion.jda.api.JDA

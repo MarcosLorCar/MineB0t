@@ -1,15 +1,16 @@
 package me.orange.game
 
-import me.orange.Emojis
+import me.orange.bot.Emojis
 import me.orange.game.player.Player
 import me.orange.game.utils.Vec
 import me.orange.game.utils.isPlayerTile
 import me.orange.game.utils.safeGet
 import me.orange.game.world.chunk.Chunk
 
-object GameRenderer {
+class GameRenderer(
+    val game: Game,
+) {
     suspend fun getView(
-        game: Game,
         player: Player,
     ): String {
         val view = getEnvironment(game, player)
@@ -53,7 +54,8 @@ object GameRenderer {
             game.world.chunkManager.players[chunk]?.forEach { otherId ->
                 if (player.id == otherId) return@forEach
 
-                game.players[otherId]?.pos?.toEnvPos(player)?.let { envPos ->
+                val otherPlayer = game.players[otherId]
+                otherPlayer?.pos?.toEnvPos(player)?.let { envPos ->
                     envPos.y = (Player.zoom.second*2+1) - (envPos.y + 1)
 
                     if (envPos.y in view.indices && envPos.x in view[0].indices)
@@ -61,7 +63,7 @@ object GameRenderer {
 
                     val headPos = envPos.plus(0, -1)
                     if (headPos.y in view.indices && headPos.x in view[0].indices)
-                        view[headPos.y][headPos.x] = Emojis.getEmojiCode("other_head")
+                        view[headPos.y][headPos.x] = Emojis.getEmojiCode(if (otherPlayer is Player) "other_head" else "sleepy_head")
                 }
             }
         }

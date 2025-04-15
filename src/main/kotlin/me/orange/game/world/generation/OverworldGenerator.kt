@@ -8,13 +8,23 @@ import me.orange.game.world.TileType
 import me.orange.game.world.chunk.Chunk
 import kotlin.math.floor
 
-class OverworldGenerator(seed: Int) : ChunkGenerator(seed) {
+class OverworldGenerator(seed: Long) : ChunkGenerator(seed) {
     val noise = JNoise.newBuilder()
         .perlin(
-            seed.toLong(),
+            seed,
             Interpolation.COSINE,
             FadeFunction.QUINTIC_POLY
         ).build()
+
+    val caveNoise = JNoise.newBuilder()
+        .perlin(seed, Interpolation.COSINE, FadeFunction.QUINTIC_POLY)
+        .scale(0.1)
+        .build()
+
+    companion object {
+        const val STONE_LAYER_DEPTH = 4
+        const val CAVE_THRESHOLD = 0.25
+    }
 
     override fun generateChunk(chunkVec: Vec): Chunk {
         val tiles = MutableList(Chunk.Companion.SIZE) { MutableList(Chunk.Companion.SIZE) { TileType.NULL } }
@@ -25,20 +35,40 @@ class OverworldGenerator(seed: Int) : ChunkGenerator(seed) {
 
             for (y in 0 until Chunk.Companion.SIZE) {
                 val worldVec = Vec(x, y).toWorldPos(chunkVec)
-                when {
-                    (worldVec.y == height) -> tiles[y][x] = TileType.GRASS
 
-                    (worldVec.y < height) -> tiles[y][x] = TileType.DIRT
+                var type = when {
+                    // The most superficial layer
+                    (worldVec.y == height) -> TileType.GRASS
 
-                    else -> tiles[y][x] = TileType.AIR
+                    // Cave depth
+                    (worldVec.y < (height - STONE_LAYER_DEPTH)) -> TileType.STONE
+
+                    // Between surface and stone
+                    (worldVec.y < height) -> TileType.DIRT
+
+                    // Above surface
+                    else -> TileType.AIR
                 }
+
+                if (type == TileType.STONE && isCave(worldVec.x, worldVec.y))
+                    type = TileType.AIR
+
+                tiles[y][x] = type
             }
+            println()
         }
+
+        println()
 
         return Chunk(chunkVec, tiles)
     }
 
     fun heightMap(x: Int): Int {
         return floor(noise.evaluateNoise(x / 20.0) * 10).toInt()
+    }
+
+    fun isCave(x: Int, y: Int): Boolean {
+        val noiseValue = caveNoise.evaluateNoise(x.toDouble(), y.toDouble())
+        return noiseValue > CAVE_THRESHOLD
     }
 }

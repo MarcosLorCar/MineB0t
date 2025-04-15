@@ -7,33 +7,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec1ed97b-b2ba-4c93-b2c8-b4aa983278f4" name="Changes" comment="Player persistence and basic heightmap">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/GamesManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/InputInteraction.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkDataManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="ec1ed97b-b2ba-4c93-b2c8-b4aa983278f4" name="Changes" comment="Cave generation and random spawnpoints">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/bot/Config.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/bot/Emojis.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/bot/MineB0t.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/PlayInteraction.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/GamesManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/InventoryRenderer.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/ViewState.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/offline/OfflinePlayer.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/Config.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/Config.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/Config.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/Emojis.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/GamesManager.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/MineB0t.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/Test.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/EventHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/EventHandler.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/base/ButtonInteraction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/base/ButtonInteraction.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/PlayCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/PlayCommand.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ActionInteraction.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/ChangeModeInteraction.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/MoveInteraction.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/TestCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/commands/TestCommand.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/InputInteraction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/events/interactions/InputInteraction.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/Game.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/GameRenderer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/GameRenderer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/InputHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/InputHandler.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/Inventory.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/Inventory.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemStack.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemStack.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/inventory/ItemType.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/InputHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/action/InputHandler.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/Player.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionMenu.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionQueue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionQueue.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/action/PlayerActionMenu.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerActionQueue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/action/PlayerActionQueue.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerMovement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/PlayerMovement.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerData.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerDataManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/player/data/PlayerDataManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/TileType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/TileType.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/World.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/Chunk.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkDataManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkDataManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/chunk/ChunkManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/ChunkGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/ChunkGenerator.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/OverworldGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/orange/game/world/generation/OverworldGenerator.kt" afterDir="false" />
@@ -118,6 +128,7 @@
     &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
     &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,
     &quot;Kotlin.TestKt.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.TestKtKt.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
@@ -130,26 +141,33 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.38799077&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.editor&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="me.orange.game.player" />
       <recent name="me.orange.game.inventory" />
       <recent name="me.orange" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="me.orange.game.data" />
+      <recent name="me.orange.bot" />
+      <recent name="me.orange.game" />
+      <recent name="me.orange.game.player.action" />
       <recent name="me.orange.game.player.data" />
-      <recent name="me.orange.game.world.generation" />
-      <recent name="me.orange.game.player" />
-      <recent name="me.orange.game.utils" />
-      <recent name="me.orange.events.base" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.MainKt">
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="clr" />
+      <command value="calc" />
+    </option>
+  </component>
+  <component name="RunManager">
     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="me.orange.MainKt" />
       <module name="MineB0t.main" />
@@ -157,18 +175,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TestKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="me.orange.TestKt" />
-      <module name="MineB0t.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.MainKt" />
-        <item itemvalue="Kotlin.TestKt" />
-        <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.MainKt" />
       </list>
     </recent_temporary>
@@ -236,6 +244,41 @@
       <workItem from="1742682187183" duration="3771000" />
       <workItem from="1742767091135" duration="3336000" />
       <workItem from="1742807796428" duration="7683000" />
+      <workItem from="1742829334998" duration="76000" />
+      <workItem from="1742829428736" duration="70000" />
+      <workItem from="1742829508663" duration="17000" />
+      <workItem from="1742829561125" duration="19000" />
+      <workItem from="1742829638968" duration="2843000" />
+      <workItem from="1742893757594" duration="67000" />
+      <workItem from="1742897383660" duration="199000" />
+      <workItem from="1742908355213" duration="240000" />
+      <workItem from="1742979807193" duration="943000" />
+      <workItem from="1743066632850" duration="265000" />
+      <workItem from="1743072070634" duration="2512000" />
+      <workItem from="1743264722174" duration="2791000" />
+      <workItem from="1743273035028" duration="4569000" />
+      <workItem from="1743285728721" duration="78000" />
+      <workItem from="1743489692600" duration="4785000" />
+      <workItem from="1743494634098" duration="28000" />
+      <workItem from="1743538161058" duration="170000" />
+      <workItem from="1743691316003" duration="125000" />
+      <workItem from="1744018510090" duration="4746000" />
+      <workItem from="1744023342673" duration="496000" />
+      <workItem from="1744024636211" duration="70000" />
+      <workItem from="1744027889636" duration="10000" />
+      <workItem from="1744036430116" duration="220000" />
+      <workItem from="1744279306474" duration="313000" />
+      <workItem from="1744279707829" duration="1778000" />
+      <workItem from="1744281566579" duration="416000" />
+      <workItem from="1744282027435" duration="220000" />
+      <workItem from="1744282264844" duration="88000" />
+      <workItem from="1744282692985" duration="1366000" />
+      <workItem from="1744285957197" duration="858000" />
+      <workItem from="1744308155759" duration="952000" />
+      <workItem from="1744412535248" duration="178000" />
+      <workItem from="1744458683053" duration="1668000" />
+      <workItem from="1744710412587" duration="3061000" />
+      <workItem from="1744725210313" duration="52000" />
     </task>
     <task id="LOCAL-00001" summary="Day 1">
       <option name="closed" value="true" />
@@ -293,7 +336,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742808061609</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Game instances and basic world persistence">
+      <option name="closed" value="true" />
+      <created>1742829378869</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1742829378869</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -328,6 +379,12 @@
     <MESSAGE value="Modularized and refactored things" />
     <MESSAGE value="Event re/modularization" />
     <MESSAGE value="Player persistence and basic heightmap" />
-    <option name="LAST_COMMIT_MESSAGE" value="Player persistence and basic heightmap" />
+    <MESSAGE value="Game instances and basic world persistence" />
+    <MESSAGE value="Cave generation and random spawnpoints" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cave generation and random spawnpoints" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

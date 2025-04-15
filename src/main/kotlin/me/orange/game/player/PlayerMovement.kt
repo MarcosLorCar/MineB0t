@@ -22,8 +22,7 @@ class PlayerMovement(
         world.chunkManager.players.getOrPut(pos.toChunkPos()){mutableListOf()}.add(player.id)
     }
 
-    fun fall(time: Long) = with(player) {
-
+    fun fall() = with(player) {
         val below = world.getTile(player.pos - Vec(0, 1))
         if (below?.airy == true) {
             falling = true
