@@ -241,7 +241,7 @@
       <workItem from="1744412535248" duration="178000" />
       <workItem from="1744458683053" duration="1668000" />
       <workItem from="1744710412587" duration="3061000" />
-      <workItem from="1744725210313" duration="240000" />
+      <workItem from="1744725210313" duration="397000" />
     </task>
     <task id="LOCAL-00001" summary="Day 1">
       <option name="closed" value="true" />
@@ -315,7 +315,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744725274659</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Cave generation and random spawnpoints">
+      <option name="closed" value="true" />
+      <created>1744725543216</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1744725543216</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
