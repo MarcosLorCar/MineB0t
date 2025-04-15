@@ -1,9 +1,10 @@
 package me.orange.game.world.chunk
 
 import kotlinx.coroutines.*
-import me.orange.MineB0t
+import me.orange.bot.MineB0t
 import me.orange.game.utils.Vec
 import me.orange.game.world.World
+import me.orange.game.world.chunk.Chunk.Companion.SIZE
 import me.orange.game.world.generation.ChunkGenerator
 import java.util.concurrent.ConcurrentHashMap
 
@@ -72,6 +73,23 @@ class ChunkManager(
             chunks.remove(chunkPos)
             chunkLastUsed.remove(chunkPos)
         }
+    }
+
+    suspend fun getHighestAt(x: Int): Int {
+        val localX = x.mod(SIZE)
+        for (chunkY in 2 downTo -2) {
+            val worldPos = Vec(x, chunkY * SIZE)
+            loadChunkSync(worldPos.toChunkPos())
+            val chunk = getChunk(worldPos.toChunkPos())!!
+            for (localY in (SIZE-1) downTo 0) {
+                if (
+                    chunk.getTile(Vec(localX, localY))?.airy == true &&
+                    chunk.getTile(Vec(localX, localY-1))?.airy == false
+                    )
+                    return localY + SIZE * chunkY
+            }
+        }
+        return 0
     }
 
     fun saveChunks() {

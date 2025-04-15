@@ -29,8 +29,9 @@ class ChunkDataManager(
         file.writeBytes(Cbor.encodeToByteArray(Chunk.serializer(), chunk))
     }
 
-    private fun fileOf(chunkPos: Vec): File = File(world.worldDataDir + buildString {
-        append("/chunkData/")
+    private fun fileOf(chunkPos: Vec): File = File(buildString {
+        append(world.worldDataDir)
+        append("/")
         append(chunkPos.x)
         append(".")
         append(chunkPos.y)

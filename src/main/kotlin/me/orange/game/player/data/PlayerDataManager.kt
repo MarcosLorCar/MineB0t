@@ -9,7 +9,7 @@ class PlayerDataManager(
     private val player: Player
 ) {
     fun saveData() = with(player) {
-        val data = PlayerData(pos, gameMode)
+        val data = PlayerData(pos, gameMode, inventory.getData())
 
         val file = fileOf(id, player.game.gameDataDir)
 

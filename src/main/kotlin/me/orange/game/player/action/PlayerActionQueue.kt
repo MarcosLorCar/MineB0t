@@ -1,5 +1,6 @@
-package me.orange.game.player
+package me.orange.game.player.action
 
+import me.orange.game.player.Player
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.function.Consumer

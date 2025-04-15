@@ -1,4 +1,4 @@
-package me.orange
+package me.orange.bot
 
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji
 import net.dv8tion.jda.api.entities.emoji.Emoji
@@ -10,7 +10,10 @@ object Emojis {
         "place" to Emoji.fromUnicode("\uD83E\uDEF3"),
         "null" to Emoji.fromUnicode("❌"),
         "other_head" to Emoji.fromUnicode("\uD83D\uDC7D"),
+        "sleepy_head" to Emoji.fromUnicode("\uD83D\uDE34"),
         "other_body" to Emoji.fromUnicode("\uD83E\uDDBA"),
+        "return" to Emoji.fromUnicode("↩\uFE0F"),
+        "selected" to Emoji.fromUnicode("\uD83D\uDD3C"),
     )
 
     fun loadEmojis() {
@@ -24,9 +27,11 @@ object Emojis {
         loadEmoji("down_left", "down_left_arrow", 1352674684931543160)
         loadEmoji("down", "down_arrow", 1352674630384484372)
         loadEmoji("down_right", "down_right_arrow", 1352674531529199737)
-        loadEmoji("air", "_", 1352306492723695736)
-        loadEmoji("dirt", "_", 1352297912515694655)
-        loadEmoji("grass", "_", 1352306218278064218)
+        loadEmoji("air", "_", 1356533932765741216)
+        loadEmoji("dirt", "_", 1356538992111128657)
+        loadEmoji("grass", "_", 1356538859487236231)
+        loadEmoji("stone", "_", 1356534787745255524)
+        loadEmoji("backpack", "backpack", 1355610066702827741)
     }
 
     fun loadEmoji(name: String, nameId: String, id: Long, animated: Boolean = false) =
@@ -39,4 +44,18 @@ object Emojis {
 
     fun getEmoji(name: String) = emojis[name]!!
     fun getEmojiCode(name: String): String = emojis[name]!!.formatted
+
+    fun getNumber(i: Int) = when (i) {
+        0 -> "0\uFE0F⃣"
+        1 -> "1\uFE0F⃣"
+        2 -> "2\uFE0F⃣"
+        3 -> "3\uFE0F⃣"
+        4 -> "4\uFE0F⃣"
+        5 -> "5\uFE0F⃣"
+        6 -> "6\uFE0F⃣"
+        7 -> "7\uFE0F⃣"
+        8 -> "8\uFE0F⃣"
+        9 -> "9\uFE0F⃣"
+        else -> getEmoji("null").formatted
+    }
 }

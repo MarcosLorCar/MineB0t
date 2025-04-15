@@ -1,8 +1,10 @@
-package me.orange.game.player
+package me.orange.game.player.action
 
-import me.orange.Emojis
+import me.orange.bot.Emojis
+import me.orange.game.player.Player
 import me.orange.game.utils.GameMode
 import me.orange.game.utils.Vec
+import me.orange.game.world.TileType
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.LayoutComponent
 import net.dv8tion.jda.api.interactions.components.buttons.Button
@@ -24,7 +26,7 @@ class PlayerActionMenu(
                 actionButton("up_left", "up_left", style),
                 actionButton("up_up", "up", style),
                 actionButton("up_right", "up_right", style),
-                getPlaceholderButton(),
+                getInventoryButton(),
             )
         )
 
@@ -46,7 +48,7 @@ class PlayerActionMenu(
                 actionButton("down_left", "down_left", style),
                 actionButton("down", "down", style),
                 actionButton("down_right", "down_right", style),
-                getPlaceholderButton(),
+                getInventoryPreviewButton(),
             )
         )
 
@@ -63,6 +65,18 @@ class PlayerActionMenu(
         val newMode = if (gameMode == GameMode.PLACE) "break" else "place"
 
         return Button.of(style, "changeMode_$newMode", emoji)
+    }
+
+    fun getInventoryButton(): Button =
+        Button.of(ButtonStyle.SECONDARY, "inventory_open", Emojis.getCustom("backpack"))
+        .withDisabled(player.inventory.isEmpty())
+
+    fun getInventoryPreviewButton(): Button {
+        val selectedItemStack = player.inventory.getSelectedItemStack()
+        return if (selectedItemStack == null)
+            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", Emojis.getEmoji("null")).asDisabled()
+        else
+            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", " ${selectedItemStack.count}", selectedItemStack.itemType.emoji).asDisabled()
     }
 
     private fun moveButton(move: Vec, inputStr: String, emojiCode: String): Button = with(player) {
@@ -84,6 +98,20 @@ class PlayerActionMenu(
 
     private fun actionButton(inputStr: String, emojiCode: String, style: ButtonStyle): Button {
         return Button.of(style, "action_$inputStr", Emojis.getCustom(emojiCode))
+            .withDisabled(!run {
+                // return ENABLED state
+
+                return@run when (player.gameMode) {
+                    GameMode.BREAK -> true
+                    GameMode.PLACE -> {
+                        val stack = player.inventory.getSelectedItemStack()
+                        if (stack == null)
+                            false
+                        else
+                            stack.itemType.getTileType() != TileType.NULL
+                    }
+                }
+            })
     }
 
     fun canWalkThrough(vec: Vec): Boolean = with(player) {

@@ -1,10 +1,10 @@
-package me.orange
+package me.orange.game
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import me.orange.game.Game
+import me.orange.game.data.GameDataManager
 
 object GamesManager {
     val scope = CoroutineScope(Dispatchers.Default)
@@ -14,7 +14,7 @@ object GamesManager {
     fun startGame(guildId: String) : Game {
         if (games.containsKey(guildId)) return games[guildId]!!
 
-        val game = newGame(guildId)
+        val game = GameDataManager.loadGame(guildId) ?: newGame(guildId)
 
         gameJobs[guildId] = scope.launch {
             game.run()
@@ -24,7 +24,9 @@ object GamesManager {
     }
 
     fun newGame(guildId: String): Game {
-        val game = Game(guildId)
+        val game = Game(
+            guildId,
+        )
         games[guildId] = game
 
         return game

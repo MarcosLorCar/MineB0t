@@ -1,7 +1,13 @@
-package me.orange.game.player
+package me.orange.game.player.action
 
+import kotlinx.coroutines.launch
+import me.orange.bot.Emojis
+import me.orange.game.player.Player
+import me.orange.game.player.ViewState
 import me.orange.game.utils.GameMode
 import me.orange.game.utils.Vec
+import net.dv8tion.jda.api.interactions.components.buttons.Button
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 
 class InputHandler(
     val player: Player
@@ -16,8 +22,46 @@ class InputHandler(
             "changeMode" -> handleChangeMode(inputArgs[0])
 
             "action" -> handleAction(inputArgs)
+
+            "inventory" -> handleInventory(inputArgs[0])
         }
     }
+
+    private fun handleInventory(arg: String) = player.game.scope.launch {
+        if (player.inventory.isEmpty()) return@launch
+
+        when (arg) {
+            "open" -> {}
+            "close" -> {
+                player.viewState = ViewState.WORLD
+                player.queueAction {
+                    it.game.playerEnvUiCache.remove(player.id)
+                }
+                return@launch
+            }
+            else -> {
+                val value = getVecFromDir(arg).x
+                val size = player.inventory.contents.size
+                val selectedSlot = player.inventory.selectedSlot
+                player.inventory.selectedSlot = (selectedSlot + value + size) % size
+            }
+        }
+
+        player.queueAction { player ->
+            player.viewState = ViewState.INVENTORY
+
+            player.hook
+                ?.editOriginalEmbeds(player.inventory.getEmbed()!!)
+                ?.setActionRow(selectButton("left") ,returnButton(), selectButton("right"))
+                ?.queue()
+        }
+    }
+
+    private fun returnButton(): Button =
+        Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.getEmoji("return"))
+
+    private fun selectButton(direction: String) =
+        Button.of(ButtonStyle.SECONDARY, "inventory_$direction", Emojis.getCustom(direction))
 
     private fun handleAction(args: List<String>) {
         val actionType = player.gameMode
