@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.orange.bot.Config
-import me.orange.game.data.GameDataManager
+import me.orange.game.gameData.GameDataManager
 import me.orange.game.inventory.ItemStack
 import me.orange.game.player.Player
 import me.orange.game.player.ViewState
@@ -116,14 +116,14 @@ class Game(
 
     suspend fun showWorldToHook(hook: InteractionHook) {
         val userId = hook.interaction.user.idLong
-        var player = getOrCreatePlayer(userId, hook)
+        val player = getOrCreatePlayer(userId, hook)
         player.viewState = ViewState.WORLD
         updateHook(hook, true)
     }
 
     suspend fun updateHook(hook: InteractionHook, force: Boolean = false) {
         val userId = hook.interaction.user.idLong
-        var player = getOrCreatePlayer(userId, hook)
+        val player = getOrCreatePlayer(userId, hook)
 
         if (player.viewState == ViewState.WORLD) {
             val env = gameRenderer.getView(player)

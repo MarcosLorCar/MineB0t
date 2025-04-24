@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import me.orange.game.data.GameDataManager
+import me.orange.game.gameData.GameDataManager
 
 object GamesManager {
     val scope = CoroutineScope(Dispatchers.Default)
