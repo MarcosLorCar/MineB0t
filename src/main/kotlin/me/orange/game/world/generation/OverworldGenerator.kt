@@ -55,10 +55,7 @@ class OverworldGenerator(seed: Long) : ChunkGenerator(seed) {
 
                 tiles[y][x] = type
             }
-            println()
         }
-
-        println()
 
         return Chunk(chunkVec, tiles)
     }

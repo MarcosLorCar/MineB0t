@@ -9,6 +9,8 @@ data class Chunk(
     val worldPos: Vec,
     val tiles: MutableList<MutableList<TileType>> = MutableList(SIZE) { MutableList(SIZE) { TileType.AIR } }
 ) {
+    var decorated = false
+
     fun getTile(vec: Vec): TileType? = tiles.getOrNull(vec.y)?.getOrNull(vec.x)
     fun setTile(vec: Vec, tile: TileType) {
         tiles[vec.y][vec.x] = tile
