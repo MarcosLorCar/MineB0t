@@ -5,10 +5,15 @@ import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFuncti
 import de.articdive.jnoise.pipeline.JNoise
 import me.orange.game.utils.Vec
 import me.orange.game.world.TileType
+import me.orange.game.world.World
 import me.orange.game.world.chunk.Chunk
 import kotlin.math.floor
+import kotlin.random.Random
 
-class OverworldGenerator(seed: Long) : ChunkGenerator(seed) {
+class OverworldGenerator(
+    seed: Long,
+    val world: World
+) : ChunkGenerator(seed) {
     val noise = JNoise.newBuilder()
         .perlin(
             seed,
@@ -36,28 +41,48 @@ class OverworldGenerator(seed: Long) : ChunkGenerator(seed) {
             for (y in 0 until Chunk.Companion.SIZE) {
                 val worldVec = Vec(x, y).toWorldPos(chunkVec)
 
-                var type = when {
-                    // The most superficial layer
-                    (worldVec.y == height) -> TileType.GRASS
-
-                    // Cave depth
-                    (worldVec.y < (height - STONE_LAYER_DEPTH)) -> TileType.STONE
-
-                    // Between surface and stone
-                    (worldVec.y < height) -> TileType.DIRT
-
-                    // Above surface
-                    else -> TileType.AIR
-                }
-
-                if (type == TileType.STONE && isCave(worldVec.x, worldVec.y))
-                    type = TileType.AIR
+                val type = getTileType(worldVec, height)
 
                 tiles[y][x] = type
             }
         }
 
+        // For each chunk around this one *C, if all around *C are generated, decorate *C
+
+
+        // If this chunk has all chunks around it generated, decorate it
+
+
         return Chunk(chunkVec, tiles)
+    }
+
+    private fun decorate(chunk: Chunk) {
+        TODO("Not yet implemented")
+    }
+
+    private fun getTileType(worldVec: Vec, height: Int): TileType {
+        var type = when {
+            // The most superficial layer
+            (worldVec.y == height) -> TileType.GRASS
+
+            // Cave depth
+            (worldVec.y < (height - STONE_LAYER_DEPTH)) -> TileType.STONE
+
+            // Between surface and stone
+            (worldVec.y < height) -> TileType.DIRT
+
+            // Above surface
+            else -> TileType.AIR
+        }
+
+        // Carve out caves
+        if (type == TileType.STONE && isCave(worldVec.x, worldVec.y))
+            type = TileType.AIR
+
+        // Ores
+        if (type == TileType.STONE && Random.nextFloat() < 0.05f)
+            type = TileType.IRON_ORE
+        return type
     }
 
     fun heightMap(x: Int): Int {

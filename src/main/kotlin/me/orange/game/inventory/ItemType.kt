@@ -14,4 +14,5 @@ enum class ItemType(
     GRASS(Emojis.getCustom("grass"), getTileType = { TileType.GRASS }),
     DIRT(Emojis.getCustom("dirt"), getTileType = { TileType.DIRT }),
     STONE(Emojis.getCustom("stone"), getTileType = { TileType.STONE }),
+    IRON_CHUNK(Emojis.getCustom("iron_chunk")),
 }

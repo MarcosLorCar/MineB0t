@@ -2,6 +2,7 @@ package me.orange.game.inventory
 
 import kotlinx.serialization.Serializable
 import me.orange.game.utils.Vec
+import me.orange.game.world.TileType
 
 class Inventory(
     val size: Vec = Vec(5, 5),
@@ -33,6 +34,8 @@ class Inventory(
         contents.add(itemStack)
 
     fun getSelectedItemStack(): ItemStack? = contents.getOrNull(selectedSlot)
+
+    fun hasBlocks(): Boolean = contents.any { it.itemType.getTileType() != TileType.NULL }
 
     fun getEmbed() = renderer.getEmbed()
     fun isEmpty(): Boolean = contents.isEmpty()
