@@ -56,7 +56,7 @@ class OverworldGenerator(
         return Chunk(chunkVec, tiles)
     }
 
-    private fun decorate(chunk: Chunk) {
+    private fun decorate(chunk: Chunk?) {
         TODO("Not yet implemented")
     }
 
