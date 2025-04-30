@@ -14,7 +14,7 @@ class World(
     val seed: Long,
     scope: CoroutineScope,
 ) {
-    val chunkManager = ChunkManager(this, scope, OverworldGenerator(seed))
+    val chunkManager = ChunkManager(this, scope, OverworldGenerator(seed, this))
 
     val worldDataDir = "${game.gameDataDir}/world"
 

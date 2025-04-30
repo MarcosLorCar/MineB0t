@@ -10,7 +10,7 @@ fun saveAll() {
 }
 
 fun main() {
-    // Add shutdown hook
+    // Add a shutdown hook
     Runtime.getRuntime().addShutdownHook(Thread {
         saveAll()
     })

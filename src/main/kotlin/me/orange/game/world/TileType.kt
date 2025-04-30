@@ -15,5 +15,6 @@ enum class TileType(
     GRASS(Emojis.getCustom("grass").formatted, breakable = true, item = ItemType.GRASS),
     DIRT(Emojis.getCustom("dirt").formatted, breakable = true, item = ItemType.DIRT),
     STONE(Emojis.getCustom("stone").formatted, breakable = true, item = ItemType.STONE),
+    IRON_ORE(Emojis.getCustom("iron_ore").formatted, breakable = true, item = ItemType.IRON_CHUNK),
     NULL("❌"),
 }

@@ -35,11 +35,13 @@ class InputHandler(
             "close" -> {
                 player.viewState = ViewState.WORLD
                 player.queueAction {
+                    // Reset this player's view cache so that he gets the world rendered at least once
                     it.game.playerEnvUiCache.remove(player.id)
                 }
                 return@launch
             }
             else -> {
+                // right or left was inputted so the select cursor moves
                 val value = getVecFromDir(arg).x
                 val size = player.inventory.contents.size
                 val selectedSlot = player.inventory.selectedSlot
@@ -60,7 +62,7 @@ class InputHandler(
     private fun returnButton(): Button =
         Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.getEmoji("return"))
 
-    private fun selectButton(direction: String) =
+    private fun selectButton(direction: String): Button =
         Button.of(ButtonStyle.SECONDARY, "inventory_$direction", Emojis.getCustom(direction))
 
     private fun handleAction(args: List<String>) {

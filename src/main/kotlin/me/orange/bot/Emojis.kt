@@ -17,6 +17,7 @@ object Emojis {
     )
 
     fun loadEmojis() {
+        // Ui emojis
         loadEmoji("move_right", "play_button", 1352675305218637844)
         loadEmoji("move_left", "reverse_button", 1352675269202415626)
         loadEmoji("up_left", "up_left_arrow", 1352674935981604894)
@@ -27,11 +28,17 @@ object Emojis {
         loadEmoji("down_left", "down_left_arrow", 1352674684931543160)
         loadEmoji("down", "down_arrow", 1352674630384484372)
         loadEmoji("down_right", "down_right_arrow", 1352674531529199737)
+        loadEmoji("backpack", "backpack", 1355610066702827741)
+
+        // Block emojis
         loadEmoji("air", "_", 1356533932765741216)
         loadEmoji("dirt", "_", 1356538992111128657)
         loadEmoji("grass", "_", 1356538859487236231)
         loadEmoji("stone", "_", 1356534787745255524)
-        loadEmoji("backpack", "backpack", 1355610066702827741)
+        loadEmoji("iron_ore", "_", 1365275718006866011)
+
+        // Item emojis
+        loadEmoji("iron_chunk", "iron_chunk", 1365268724118065224)
     }
 
     fun loadEmoji(name: String, nameId: String, id: Long, animated: Boolean = false) =
