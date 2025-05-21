@@ -24,6 +24,8 @@ class InputHandler(
             "action" -> handleAction(inputArgs)
 
             "inventory" -> handleInventory(inputArgs[0])
+
+            "craft" -> handleInventory(inputArgs[0])
         }
     }
 
@@ -31,7 +33,11 @@ class InputHandler(
         if (player.inventory.isEmpty()) return@launch
 
         when (arg) {
-            "open" -> {}
+            "open" -> {
+                player.queueAction { player ->
+                    player.viewState = ViewState.INVENTORY
+                }
+            }
             "close" -> {
                 player.viewState = ViewState.WORLD
                 player.queueAction {
@@ -50,8 +56,41 @@ class InputHandler(
         }
 
         player.queueAction { player ->
-            player.viewState = ViewState.INVENTORY
+            player.hook
+                ?.editOriginalEmbeds(player.inventory.getEmbed()!!)
+                ?.setActionRow(selectButton("left") ,returnButton(), selectButton("right"))
+                ?.queue()
+        }
+    }
 
+    private fun handleCraft(arg: String) = player.game.scope.launch {
+        val recipes = player.recipeManager.getSemiRecipes()
+        if (recipes.isEmpty()) return@launch
+
+        when (arg) {
+            "open" -> {
+                player.queueAction { player ->
+                    player.viewState = ViewState.CRAFTING
+                }
+            }
+            "close" -> {
+                player.viewState = ViewState.WORLD
+                player.queueAction {
+                    // Reset this player's view cache so that he gets the world rendered at least once
+                    it.game.playerEnvUiCache.remove(player.id)
+                }
+                return@launch
+            }
+            else -> {
+                // right or left was inputted so the select cursor moves
+                val value = getVecFromDir(arg).x
+                val size = recipes.size
+                val selectedSlot = player.recipeManager.selectedSlot
+                player.recipeManager.selectedSlot = (selectedSlot + value + size) % size
+            }
+        }
+
+        player.queueAction { player ->
             player.hook
                 ?.editOriginalEmbeds(player.inventory.getEmbed()!!)
                 ?.setActionRow(selectButton("left") ,returnButton(), selectButton("right"))

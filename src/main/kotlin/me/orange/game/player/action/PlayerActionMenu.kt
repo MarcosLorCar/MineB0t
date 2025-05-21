@@ -71,6 +71,10 @@ class PlayerActionMenu(
         Button.of(ButtonStyle.SECONDARY, "inventory_open", Emojis.getCustom("backpack"))
         .withDisabled(player.inventory.isEmpty())
 
+    fun getCraftingButton(): Button =
+        Button.of(ButtonStyle.SECONDARY, "craft_open", Emojis.getCustom("craft_icon"))
+            .withDisabled(player.recipeManager.getSemiRecipes().isEmpty())
+
     fun getInventoryPreviewButton(): Button {
         val selectedItemStack = player.inventory.getSelectedItemStack()
         return if (selectedItemStack == null)
@@ -85,7 +89,7 @@ class PlayerActionMenu(
             "move_$inputStr",
             Emojis.getCustom("move_$inputStr"),
         ).withDisabled(!run {
-            // Determine if button should be enabled
+            // Determine if the button should be enabled
 
             val nextPos = pos + move
 

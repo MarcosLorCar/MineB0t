@@ -26,6 +26,7 @@ class Game(
     val gameDataDir: String = "${Config.GAME_DATA_DIR}/$guildId",
     var time: Long = 0
 ) {
+    val preferencesManager: PreferencesManager = PreferencesManager(this)
     var world: World = World(this, seed ?: Random.nextLong(), scope)
     val gameDataManager = GameDataManager(this)
     val players: ConcurrentHashMap<Long, OfflinePlayer> = ConcurrentHashMap()

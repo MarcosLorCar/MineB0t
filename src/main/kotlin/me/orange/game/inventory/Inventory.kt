@@ -41,6 +41,10 @@ class Inventory(
     fun isEmpty(): Boolean = contents.isEmpty()
     fun getData(): InventoryData = InventoryData(size, contents)
 
+    fun getUniqueSet(): Set<ItemType> {
+        return contents.map { it.itemType }.toSet()
+    }
+
     @Serializable
     data class InventoryData(
         val size: Vec,

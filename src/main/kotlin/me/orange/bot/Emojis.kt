@@ -29,6 +29,7 @@ object Emojis {
         loadEmoji("down", "down_arrow", 1352674630384484372)
         loadEmoji("down_right", "down_right_arrow", 1352674531529199737)
         loadEmoji("backpack", "backpack", 1355610066702827741)
+        loadEmoji("craft_icon", "_", 1369251709557149716)
 
         // Block emojis
         loadEmoji("air", "_", 1356533932765741216)

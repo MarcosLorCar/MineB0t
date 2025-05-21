@@ -1,6 +1,7 @@
 package me.orange.game.player
 
 import me.orange.game.Game
+import me.orange.game.craft.RecipeManager
 import me.orange.game.inventory.Inventory
 import me.orange.game.player.action.InputHandler
 import me.orange.game.player.action.PlayerActionMenu
@@ -21,6 +22,7 @@ class Player(
     var hook: InteractionHook? = null,
     val inventory: Inventory = Inventory(),
 ) : OfflinePlayer(id, pos, gameMode) {
+    val recipeManager = RecipeManager(this)
     var falling = false
     var viewState: ViewState = ViewState.WORLD
 

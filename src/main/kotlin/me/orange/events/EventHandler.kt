@@ -30,6 +30,7 @@ object EventHandler {
         InputInteraction("inventory_left"),
         InputInteraction("inventory_right"),
         InputInteraction("inventory_close"),
+        InputInteraction("craft_open"),
         PlayInteraction
     )
 
