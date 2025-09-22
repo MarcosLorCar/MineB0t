@@ -1,10 +1,12 @@
 package me.orange.events
 
+import me.orange.events.base.GuildJoin
 import me.orange.events.commands.PlayCommand
 import me.orange.events.commands.TestCommand
 import me.orange.events.interactions.InputInteraction
 import me.orange.events.interactions.PlayInteraction
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
 object EventHandler {
@@ -35,19 +37,24 @@ object EventHandler {
     )
 
     fun registerEvents(jda: JDA) {
-        val updateCommands = jda.updateCommands()
+        // Register listeners
+        commands.forEach(jda::addEventListener)
+        interactions.forEach(jda::addEventListener)
+        jda.addEventListener(GuildJoin())
+
+        // Register commands signatures
+        jda.guilds.forEach(this::registerCommands)
+    }
+
+    fun registerCommands(guild: Guild) {
+        val updateCommands = guild.updateCommands()
 
         commands.forEach { command ->
             // Register signature
             updateCommands.addCommands(
                 Commands.slash(command.name, command.description)
             )
-
-            // Add a listener
-            jda.addEventListener(command)
         }
-
-        interactions.forEach(jda::addEventListener)
 
         updateCommands.queue()
     }

@@ -4,7 +4,7 @@ import kotlinx.coroutines.launch
 import me.orange.bot.Emojis
 import me.orange.game.player.Player
 import me.orange.game.player.ViewState
-import me.orange.game.utils.GameMode
+import me.orange.game.player.GameMode
 import me.orange.game.utils.Vec
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle

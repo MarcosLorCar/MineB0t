@@ -1,4 +1,4 @@
-package me.orange.game.utils
+package me.orange.game.player
 
 import kotlinx.serialization.Serializable
 

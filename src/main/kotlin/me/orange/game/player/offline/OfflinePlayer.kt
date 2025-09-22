@@ -1,6 +1,6 @@
 package me.orange.game.player.offline
 
-import me.orange.game.utils.GameMode
+import me.orange.game.player.GameMode
 import me.orange.game.utils.Vec
 
 open class OfflinePlayer(

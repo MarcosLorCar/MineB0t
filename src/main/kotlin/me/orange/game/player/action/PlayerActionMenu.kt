@@ -2,7 +2,7 @@ package me.orange.game.player.action
 
 import me.orange.bot.Emojis
 import me.orange.game.player.Player
-import me.orange.game.utils.GameMode
+import me.orange.game.player.GameMode
 import me.orange.game.utils.Vec
 import me.orange.game.world.TileType
 import net.dv8tion.jda.api.interactions.components.ActionRow
