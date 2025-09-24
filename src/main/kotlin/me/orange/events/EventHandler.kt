@@ -1,18 +1,21 @@
 package me.orange.events
 
-import me.orange.events.base.GuildJoin
 import me.orange.events.commands.PlayCommand
+import me.orange.events.commands.PreferencesCommand
 import me.orange.events.commands.TestCommand
+import me.orange.events.interactions.ChangeSettingInteraction
 import me.orange.events.interactions.InputInteraction
 import me.orange.events.interactions.PlayInteraction
+import me.orange.events.interactions.SelectSettingInteraction
+import me.orange.game.preferences.Preference
 import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
 object EventHandler {
     private val commands = listOf(
         PlayCommand,
         TestCommand,
+        PreferencesCommand
     )
 
     private val interactions = mutableListOf(
@@ -33,27 +36,28 @@ object EventHandler {
         InputInteraction("inventory_right"),
         InputInteraction("inventory_close"),
         InputInteraction("craft_open"),
-        PlayInteraction
+        PlayInteraction,
+        SelectSettingInteraction,
     )
 
     fun registerEvents(jda: JDA) {
-        // Register listeners
-        commands.forEach(jda::addEventListener)
-        interactions.forEach(jda::addEventListener)
-        jda.addEventListener(GuildJoin())
+        val updateCommands = jda.updateCommands()
 
-        // Register commands signatures
-        jda.guilds.forEach(this::registerCommands)
-    }
-
-    fun registerCommands(guild: Guild) {
-        val updateCommands = guild.updateCommands()
-
+        // Slash commands
         commands.forEach { command ->
             // Register signature
             updateCommands.addCommands(
                 Commands.slash(command.name, command.description)
             )
+        }
+        commands.forEach(jda::addEventListener)
+
+        // interactions
+        interactions.forEach(jda::addEventListener)
+
+        // ChangeSetting Interactions
+        Preference.entries.forEach { pref ->
+            jda.addEventListener(ChangeSettingInteraction(pref))
         }
 
         updateCommands.queue()

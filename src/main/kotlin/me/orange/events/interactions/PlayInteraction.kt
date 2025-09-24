@@ -9,9 +9,7 @@ object PlayInteraction : ButtonInteraction("play") {
     override fun execute(event: ButtonInteractionEvent) {
         event.deferEdit()
             .queue {
-                if (!event.isFromGuild) return@queue
-                val game = GamesManager.getGame(event.guild!!.id)
-
+                val game = GamesManager.getGame(event.guild?.id ?: return@queue)
                 game.scope.launch {
                     game.updateHook(it, true)
                 }

@@ -1,9 +1,8 @@
 package me.orange.events.commands
 
+import kotlinx.coroutines.launch
 import me.orange.events.base.SlashCommand
-import me.orange.game.inventory.Inventory
-import me.orange.game.inventory.ItemStack
-import me.orange.game.inventory.ItemType
+import me.orange.game.GamesManager
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
 object TestCommand : SlashCommand(
@@ -12,21 +11,15 @@ object TestCommand : SlashCommand(
 ) {
 
     override fun execute(event: SlashCommandInteractionEvent) {
-        val inventory = Inventory(
-            contents = mutableListOf(
-                ItemStack(ItemType.DIRT, 13),
-                ItemStack(ItemType.DIRT, 6),
-                ItemStack(ItemType.GRASS, 15),
-                ItemStack(ItemType.GRASS, 15),
-                ItemStack(ItemType.GRASS, 15),
-                ItemStack(ItemType.GRASS, 15),
-                ItemStack(ItemType.GRASS, 15),
-                ItemStack(ItemType.GRASS, 15),
-                ItemStack(ItemType.GRASS, 15),
-            ),
-        )
+        event.deferReply()
+            .setEphemeral(true)
+            .queue {
+                if (!event.isFromGuild) return@queue
+                val game = GamesManager.getGame(event.guild!!.id)
 
-        event.replyEmbeds(inventory.getEmbed()!!)
-            .queue()
+                game.scope.launch {
+                    game.preferencesManager.showMenu(it)
+                }
+            }
     }
 }

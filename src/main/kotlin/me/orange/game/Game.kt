@@ -12,6 +12,7 @@ import me.orange.game.player.Player
 import me.orange.game.player.ViewState
 import me.orange.game.player.action.InputHandler
 import me.orange.game.player.offline.OfflinePlayer
+import me.orange.game.preferences.Preference
 import me.orange.game.utils.Vec
 import me.orange.game.world.TileType
 import me.orange.game.world.World
@@ -127,6 +128,8 @@ class Game(
         val userId = hook.interaction.user.idLong
         val player = getOrCreatePlayer(userId, hook)
 
+        val showCoords: Boolean = preferencesManager.getPreference<Boolean>(userId, Preference.SHOW_COORDINATES)
+
         if (player.viewState == ViewState.WORLD) {
             val env = gameRenderer.getView(player)
 
@@ -136,7 +139,7 @@ class Game(
                 val ui = player.getActions()
 
                 val embed = EmbedBuilder()
-                    .setDescription(env.plus("\n ${player.pos}"))
+                    .setDescription(env.let { if (showCoords) "$it\n\n${player.pos}" else it })
                     .build()
 
                 player.hook?.editOriginalEmbeds(embed)
