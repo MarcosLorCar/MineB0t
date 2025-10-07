@@ -83,10 +83,10 @@ class InputHandler(
             }
             else -> {
                 // right or left was inputted so the select cursor moves
-                val value = getVecFromDir(arg).x
-                val size = recipes.size
-                val selectedSlot = player.recipeManager.selectedSlot
-                player.recipeManager.selectedSlot = (selectedSlot + value + size) % size
+//                val value = getVecFromDir(arg).x
+//                val size = recipes.size
+//                val selectedSlot = player.recipeManager.selectedSlot
+//                player.recipeManager.selectedSlot = (selectedSlot + value + size) % size
             }
         }
 

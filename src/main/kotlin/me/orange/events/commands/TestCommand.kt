@@ -9,13 +9,11 @@ object TestCommand : SlashCommand(
     name = "test",
     description = "This is a test command"
 ) {
-
     override fun execute(event: SlashCommandInteractionEvent) {
         event.deferReply()
             .setEphemeral(true)
             .queue {
-                if (!event.isFromGuild) return@queue
-                val game = GamesManager.getGame(event.guild!!.id)
+                val game = GamesManager.getGame(event.guild?.id ?: return@queue)
 
                 game.scope.launch {
                     game.preferencesManager.showMenu(it)

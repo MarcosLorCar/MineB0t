@@ -10,15 +10,13 @@ object PlayCommand : SlashCommand(
     description = "Plays the game",
 ) {
     override fun execute(event: SlashCommandInteractionEvent) {
-        // Hangs the response in case it takes a lot to load
         event.deferReply()
             .setEphemeral(true)
             .queue {
-                if (!event.isFromGuild) return@queue
-                val game = GamesManager.getGame(event.guild!!.id)
+                val game = GamesManager.getGame(event.guild?.id ?: return@queue)
 
                 game.scope.launch {
-                    game.showWorldToHook(it)
+                    game.updateHook(it, showWorld = true)
                 }
             }
     }

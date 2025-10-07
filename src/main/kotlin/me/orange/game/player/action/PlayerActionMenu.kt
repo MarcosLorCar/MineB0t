@@ -44,7 +44,7 @@ class PlayerActionMenu(
         // Row 3
         actions.add(
             ActionRow.of(
-                getPlaceholderButton(),
+                getCraftingButton(),
                 actionButton("down_left", "down_left", style),
                 actionButton("down", "down", style),
                 actionButton("down_right", "down_right", style),

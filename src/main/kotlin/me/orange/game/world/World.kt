@@ -33,5 +33,13 @@ class World(
 
          return Vec(spawnX, spawnY)
     }
+
+    fun hasCraftingStation(pos: Vec): Boolean = (-1..1).any { x ->
+        (-1..1).any { y ->
+            getTile(pos + Vec(x, y))?.let { tile ->
+                tile.crafting == true
+            } ?: false
+        }
+    }
 }
 

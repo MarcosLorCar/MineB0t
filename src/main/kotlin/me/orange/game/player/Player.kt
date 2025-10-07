@@ -67,10 +67,12 @@ class Player(
     fun breakTile(player: Player, vec: Vec) = game.breakTile(player, vec)
     fun handle(input: String) = inputHandler.handle(input)
     fun saveData() = playerDataManager.saveData()
+    fun hasCraftingStation() = game.world.hasCraftingStation(pos)
 
     fun update() {
         fall()
         applyQueuedActions()
     }
+
 
 }

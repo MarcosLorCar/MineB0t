@@ -117,37 +117,36 @@ class Game(
         return player
     }
 
-    suspend fun showWorldToHook(hook: InteractionHook) {
-        val userId = hook.interaction.user.idLong
-        val player = getOrCreatePlayer(userId, hook)
-        player.viewState = ViewState.WORLD
-        updateHook(hook, true)
+    private suspend fun updatePlayerView(hook: InteractionHook, player: Player, force: Boolean = false) {
+        val showCoords: Boolean = preferencesManager.getPreference(player.id, Preference.SHOW_COORDINATES)
+        val env = gameRenderer.getView(player)
+        val cache = playerEnvUiCache[player.id]
+
+        if (cache == null || cache != env || force) {
+            val ui = player.getActions()
+
+            val embed = EmbedBuilder()
+                .setDescription(env.let { if (showCoords) "$it\n\n${player.pos}" else it })
+                .build()
+
+            player.hook?.editOriginalEmbeds(embed)
+                ?.setComponents(ui)
+                ?.queue()
+
+            playerEnvUiCache[player.id] = env
+        }
     }
 
-    suspend fun updateHook(hook: InteractionHook, force: Boolean = false) {
+    suspend fun updateHook(hook: InteractionHook, force: Boolean = false, showWorld: Boolean = false) {
         val userId = hook.interaction.user.idLong
         val player = getOrCreatePlayer(userId, hook)
 
-        val showCoords: Boolean = preferencesManager.getPreference<Boolean>(userId, Preference.SHOW_COORDINATES)
+        if (showWorld) {
+            player.viewState = ViewState.WORLD
+        }
 
         if (player.viewState == ViewState.WORLD) {
-            val env = gameRenderer.getView(player)
-
-            val cache = playerEnvUiCache[userId]
-
-            if (cache == null || cache != env || force) {
-                val ui = player.getActions()
-
-                val embed = EmbedBuilder()
-                    .setDescription(env.let { if (showCoords) "$it\n\n${player.pos}" else it })
-                    .build()
-
-                player.hook?.editOriginalEmbeds(embed)
-                    ?.setComponents(ui)
-                    ?.queue()
-
-                playerEnvUiCache[userId] = env
-            }
+            updatePlayerView(hook, player, force || showWorld)
         }
     }
 
