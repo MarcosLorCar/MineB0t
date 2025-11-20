@@ -15,5 +15,4 @@ enum class ItemType(
     DIRT(Emojis.getCustom("dirt"), getTileType = { TileType.DIRT }),
     STONE(Emojis.getCustom("stone"), getTileType = { TileType.STONE }),
     IRON_CHUNK(Emojis.getCustom("iron_chunk")),
-    FURNACE(Emojis.getEmoji("❌"), getTileType = { TileType.FURNACE }),
 }
