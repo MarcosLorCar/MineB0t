@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 class ChunkManager(
     val world: World,
-    val scope: CoroutineScope,
     private var chunkGenerator: ChunkGenerator? = null,
 ) {
     private val chunkDataManager = ChunkDataManager(world)
@@ -45,7 +44,7 @@ class ChunkManager(
         !chunks.containsKey(chunkVec) && loadingChunks.putIfAbsent(chunkVec, CompletableDeferred()) == null
 
     fun loadChunkAsync(chunkPos: Vec) {
-        scope.launch {
+        MineB0t.launch {
             loadChunkSync(chunkPos)
         }
     }

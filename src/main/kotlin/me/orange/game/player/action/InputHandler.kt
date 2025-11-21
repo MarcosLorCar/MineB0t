@@ -1,10 +1,10 @@
 package me.orange.game.player.action
 
-import kotlinx.coroutines.launch
 import me.orange.bot.Emojis
+import me.orange.bot.MineB0t
+import me.orange.game.player.GameMode
 import me.orange.game.player.Player
 import me.orange.game.player.ViewState
-import me.orange.game.player.GameMode
 import me.orange.game.utils.Vec
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
@@ -29,7 +29,7 @@ class InputHandler(
         }
     }
 
-    private fun handleInventory(arg: String) = player.game.scope.launch {
+    private fun handleInventory(arg: String) = MineB0t.launch {
         if (player.inventory.isEmpty()) return@launch
 
         when (arg) {
@@ -63,7 +63,7 @@ class InputHandler(
         }
     }
 
-    private fun handleCraft(arg: String) = player.game.scope.launch {
+    private fun handleCraft(arg: String) = MineB0t.launch {
         val recipes = player.recipeManager.getSemiRecipes()
         if (recipes.isEmpty()) return@launch
 

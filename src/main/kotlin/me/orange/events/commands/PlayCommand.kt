@@ -1,8 +1,8 @@
 package me.orange.events.commands
 
-import kotlinx.coroutines.launch
-import me.orange.game.GamesManager
+import me.orange.bot.MineB0t
 import me.orange.events.base.SlashCommand
+import me.orange.game.GamesManager
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
 object PlayCommand : SlashCommand(
@@ -15,7 +15,7 @@ object PlayCommand : SlashCommand(
             .queue {
                 val game = GamesManager.getGame(event.guild?.id ?: return@queue)
 
-                game.scope.launch {
+                MineB0t.launch {
                     game.updateHook(it, showWorld = true)
                 }
             }

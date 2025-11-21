@@ -1,6 +1,6 @@
 package me.orange.events.commands
 
-import kotlinx.coroutines.launch
+import me.orange.bot.MineB0t
 import me.orange.events.base.SlashCommand
 import me.orange.game.GamesManager
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
@@ -15,7 +15,7 @@ object PreferencesCommand : SlashCommand(
             .queue {
                 val game = GamesManager.getGame(event.guild?.id ?: return@queue)
 
-                game.scope.launch {
+                MineB0t.launch {
                     game.preferencesManager.showMenu(it)
                 }
             }

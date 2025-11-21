@@ -1,22 +1,17 @@
 package me.orange.game
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import me.orange.bot.MineB0t
 import me.orange.game.gameData.GameDataManager
 
 object GamesManager {
-    val scope = CoroutineScope(Dispatchers.Default)
     val games: MutableMap<String, Game> = mutableMapOf()
-    val gameJobs: MutableMap<String, Job> = mutableMapOf()
 
     fun startGame(guildId: String) : Game {
         if (games.containsKey(guildId)) return games[guildId]!!
 
         val game = GameDataManager.loadGame(guildId) ?: newGame(guildId)
 
-        gameJobs[guildId] = scope.launch {
+        MineB0t.launch {
             game.run()
         }
 

@@ -1,11 +1,8 @@
 package me.orange.game
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import me.orange.bot.Config
-import me.orange.game.preferences.PreferencesManager
+import me.orange.bot.MineB0t
 import me.orange.game.gameData.GameDataManager
 import me.orange.game.inventory.ItemStack
 import me.orange.game.player.Player
@@ -13,6 +10,7 @@ import me.orange.game.player.ViewState
 import me.orange.game.player.action.InputHandler
 import me.orange.game.player.offline.OfflinePlayer
 import me.orange.game.preferences.Preference
+import me.orange.game.preferences.PreferencesManager
 import me.orange.game.utils.Vec
 import me.orange.game.world.TileType
 import me.orange.game.world.World
@@ -24,12 +22,11 @@ import kotlin.random.Random
 class Game(
     guildId : String,
     seed: Long? = null,
-    val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
     val gameDataDir: String = "${Config.GAME_DATA_DIR}/$guildId",
     var time: Long = 0
 ) {
     val preferencesManager: PreferencesManager = PreferencesManager(this)
-    var world: World = World(this, seed ?: Random.nextLong(), scope)
+    var world: World = World(this, seed ?: Random.nextLong())
     val gameDataManager = GameDataManager(this)
     val players: ConcurrentHashMap<Long, OfflinePlayer> = ConcurrentHashMap()
     val playerEnvUiCache: MutableMap<Long, String> = HashMap()
@@ -90,7 +87,7 @@ class Game(
         player.hook?.deleteOriginal()?.queue()
         players.put(id, OfflinePlayer(player.id, player.pos, player.gameMode))
 
-        scope.launch {
+         MineB0t.launch {
             player.saveData()
         }
     }
