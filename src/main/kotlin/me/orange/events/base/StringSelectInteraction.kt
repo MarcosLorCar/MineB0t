@@ -1,14 +1,10 @@
 package me.orange.events.base
 
+import net.dv8tion.jda.api.events.Event
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
-import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.InteractionHook
 
 abstract class StringSelectInteraction(
-    val id: String,
-) : ListenerAdapter() {
-    override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
-        if (id == event.selectMenu.id) execute(event)
-    }
-
-    abstract fun execute(event: StringSelectInteractionEvent)
-}
+    id: String,
+    execute: suspend (InteractionHook, Event) -> Unit
+) : BaseInteraction(id, { (it as? StringSelectInteractionEvent)?.selectMenu?.id }, edit = true, execute)

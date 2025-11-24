@@ -47,7 +47,7 @@ object EventHandler {
         commands.forEach { command ->
             // Register signature
             updateCommands.addCommands(
-                Commands.slash(command.name, command.description)
+                Commands.slash(command.id, command.description)
             )
         }
         commands.forEach(jda::addEventListener)

@@ -1,15 +1,11 @@
 package me.orange.events.base
 
+import net.dv8tion.jda.api.events.Event
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.InteractionHook
 
 abstract class SlashCommand(
-    val name: String,
-    val description: String
-) : ListenerAdapter() {
-    abstract fun execute(event: SlashCommandInteractionEvent)
-
-    override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-        if (event.name == name) execute(event)
-    }
-}
+    id: String,
+    val description: String,
+    execute: suspend (InteractionHook, Event) -> Unit
+) : BaseInteraction(id, { (it as? SlashCommandInteractionEvent)?.name }, edit = false, execute)
