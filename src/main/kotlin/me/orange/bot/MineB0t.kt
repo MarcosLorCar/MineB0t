@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import me.orange.events.EventHandler
+import me.orange.game.GamesManager
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import org.slf4j.Logger
@@ -31,7 +32,11 @@ object MineB0t {
         Emojis.loadEmojis()
     }
 
-    fun launch(block: suspend CoroutineScope.() -> Unit) = scope.launch(block = block)
+    fun stop() {
+        GamesManager.saveAll()
+        jda.shutdown()
+    }
 
+    fun launch(block: suspend CoroutineScope.() -> Unit) = scope.launch(block = block)
     fun log(msg: String) = logger.info(msg)
 }
