@@ -6,6 +6,7 @@ import me.orange.game.utils.Vec
 import me.orange.game.world.World
 import me.orange.game.world.chunk.Chunk.Companion.SIZE
 import me.orange.game.world.generation.ChunkGenerator
+import me.orange.game.world.tile.Tiles
 import java.util.concurrent.ConcurrentHashMap
 
 class ChunkManager(
@@ -59,7 +60,7 @@ class ChunkManager(
     }
 
     private fun generateChunk(vec: Vec): Chunk {
-        return chunkGenerator?.generateChunk(vec) ?: Chunk.nullChunk(vec)
+        return chunkGenerator?.generateChunk(vec) ?: Chunk.uniformChunk(vec, Tiles.NULL)
     }
 
      fun unloadUnusedChunks() {
@@ -67,7 +68,6 @@ class ChunkManager(
         val toRemove = chunkLastUsed.filterValues { currentTime - it > UNLOAD_DELAY }.keys
 
         toRemove.forEach { chunkPos ->
-            MineB0t.log("Unloading chunk $chunkPos")
             chunkDataManager.saveData(chunks[chunkPos])
             chunks.remove(chunkPos)
             chunkLastUsed.remove(chunkPos)
@@ -93,6 +93,7 @@ class ChunkManager(
 
     fun saveChunks() {
         chunks.forEach { (pos, chunk) ->
+            MineB0t.log("Saving chunk $pos")
             chunkDataManager.saveData(chunk)
         }
     }

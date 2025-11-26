@@ -4,7 +4,6 @@ import me.orange.bot.Emojis
 import me.orange.game.player.Player
 import me.orange.game.utils.Vec
 import me.orange.game.utils.isPlayerTile
-import me.orange.game.utils.safeGet
 import me.orange.game.world.chunk.Chunk
 
 class GameRenderer(
@@ -37,7 +36,7 @@ class GameRenderer(
                 val localX = worldVec.x.mod(Chunk.SIZE)
                 val localY = worldVec.y.mod(Chunk.SIZE)
 
-                row.add(chunk?.tiles?.safeGet(localY, localX)?.emoji ?: ":x:")
+                row.add(chunk?.getTile(localX, localY)?.emoji ?: ":x:")
             }
             list.add(row)
         }

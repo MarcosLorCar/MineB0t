@@ -6,6 +6,7 @@ import me.orange.game.utils.Vec
 import me.orange.game.world.chunk.Chunk
 import me.orange.game.world.chunk.ChunkManager
 import me.orange.game.world.generation.OverworldGenerator
+import me.orange.game.world.tile.Tile
 import kotlin.random.Random
 
 class World(
@@ -20,8 +21,8 @@ class World(
         chunkManager.ensureChunksLoadedAround(vec, async)
 
     fun getChunk(vec: Vec): Chunk? = chunkManager.getChunk(vec)
-    fun getTile(vec: Vec): TileType? = chunkManager.getChunk(vec.toChunkPos())?.getTile(vec.toLocalPos())
-    fun setTile(vec: Vec, tile: TileType) =  chunkManager.getChunk(vec.toChunkPos())?.setTile(vec.toLocalPos(), tile)
+    fun getTile(vec: Vec): Tile? = chunkManager.getChunk(vec.toChunkPos())?.getTile(vec.toLocalPos())
+    fun setTile(vec: Vec, tile: Tile) =  chunkManager.getChunk(vec.toChunkPos())?.setTile(vec.toLocalPos(), tile)
 
      suspend fun generateSpawnPoint(): Vec {
          val dispersion = Config.SPAWNPOINT_DISPERSION
@@ -32,12 +33,6 @@ class World(
          return Vec(spawnX, spawnY)
     }
 
-    fun hasCraftingStation(pos: Vec): Boolean = (-1..1).any { x ->
-        (-1..1).any { y ->
-            getTile(pos + Vec(x, y))?.let { tile ->
-                tile.crafting == true
-            } ?: false
-        }
-    }
+    fun hasCraftingStation(pos: Vec): Boolean = TODO()
 }
 

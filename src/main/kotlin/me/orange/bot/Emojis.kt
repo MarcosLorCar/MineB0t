@@ -17,6 +17,8 @@ object Emojis {
     )
 
     fun loadEmojis() {
+        MineB0t.log("Loading emojis")
+
         // Ui emojis
         loadEmoji("move_right", "play_button", 1352675305218637844)
         loadEmoji("move_left", "reverse_button", 1352675269202415626)

@@ -4,7 +4,6 @@ import kotlinx.coroutines.delay
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.gameData.GameDataManager
-import me.orange.game.inventory.ItemStack
 import me.orange.game.player.Player
 import me.orange.game.player.ViewState
 import me.orange.game.player.action.InputHandler
@@ -12,15 +11,15 @@ import me.orange.game.player.offline.OfflinePlayer
 import me.orange.game.preferences.Preference
 import me.orange.game.preferences.PreferencesManager
 import me.orange.game.utils.Vec
-import me.orange.game.world.TileType
 import me.orange.game.world.World
+import me.orange.game.world.tile.Tiles
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.InteractionHook
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 
 class Game(
-    guildId : String,
+    val guildId : String,
     seed: Long? = null,
     val gameDataDir: String = "${Config.GAME_DATA_DIR}/$guildId",
     var time: Long = 0
@@ -36,7 +35,7 @@ class Game(
 
     companion object {
         private const val FPS = 2
-        private const val PLAYER_TIMEOUT = 30 // Seconds
+        private const val PLAYER_TIMEOUT_SECONDS = 30
     }
 
     suspend fun run() {
@@ -81,7 +80,7 @@ class Game(
     }
 
      fun timeoutPlayer(player: Player, id: Long, force: Boolean = false) {
-        if (!force && time - player.age < (PLAYER_TIMEOUT * FPS)) return
+        if (!force && time - player.age < (PLAYER_TIMEOUT_SECONDS * FPS)) return
 
         println("Player timed out")
         player.hook?.deleteOriginal()?.queue()
@@ -160,17 +159,19 @@ class Game(
     }
 
     fun breakTile(player: Player, pos: Vec) {
-        world.getTile(pos)?.item?.let { item ->
-            player.inventory.addItem(ItemStack(item, 1))
-        }
-        world.setTile(pos, TileType.AIR)
+//        world.getTile(pos)?.item?.let { item ->
+//            player.inventory.addItem(ItemStack(item, 1))
+//        }
+//        TODO replace this with new break logic
+
+        world.setTile(pos, Tiles.AIR)
     }
 
     fun placeTile(player: Player, pos: Vec) {
         if (world.getTile(pos)?.airy != true) return
         val stack = player.inventory.getSelectedItemStack() ?: return
 
-        world.setTile(pos, stack.itemType.getTileType())
+//        world.setTile(pos, stack.itemType.getTileType()) TODO replace this with new place logic
         stack.count--
         if (stack.count == 0) {
             player.inventory.contents.remove(stack)
@@ -180,6 +181,8 @@ class Game(
     }
 
     fun saveAll() {
+        MineB0t.log("Saving game data for guild $guildId")
+
         players.filter { it.value is Player }.forEach { (id, player) ->
             (player as Player).saveData()
         }

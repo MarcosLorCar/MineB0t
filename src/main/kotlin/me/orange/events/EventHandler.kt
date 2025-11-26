@@ -1,5 +1,6 @@
 package me.orange.events
 
+import me.orange.bot.MineB0t
 import me.orange.events.commands.PlayCommand
 import me.orange.events.commands.PreferencesCommand
 import me.orange.events.commands.TestCommand
@@ -41,14 +42,15 @@ object EventHandler {
     )
 
     fun registerEvents(jda: JDA) {
-        val updateCommands = jda.updateCommands()
+        MineB0t.log("Registering events")
+        val updateCommands = jda.guilds.map { it.updateCommands() }
 
         // Slash commands
         commands.forEach { command ->
             // Register signature
-            updateCommands.addCommands(
-                Commands.slash(command.id, command.description)
-            )
+            updateCommands.forEach {
+                it.addCommands(Commands.slash(command.id, command.description))
+            }
         }
         commands.forEach(jda::addEventListener)
 
@@ -60,6 +62,6 @@ object EventHandler {
             jda.addEventListener(ChangeSettingInteraction(pref))
         }
 
-        updateCommands.queue()
+        updateCommands.forEach{ it.queue() }
     }
 }
