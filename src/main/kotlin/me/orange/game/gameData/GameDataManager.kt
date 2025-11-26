@@ -3,6 +3,7 @@ package me.orange.game.gameData
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import me.orange.bot.Config
+import me.orange.bot.MineB0t
 import me.orange.game.Game
 import me.orange.game.GamesManager
 import java.io.File
@@ -27,7 +28,7 @@ class GameDataManager(
     companion object {
         @OptIn(ExperimentalSerializationApi::class)
         fun loadGame(guildId: String) : Game? {
-            println("Loading game $guildId")
+            MineB0t.log("Loading game data for guild $guildId")
             val file = File("${Config.GAME_DATA_DIR}/$guildId/game.dat")
 
             if (!file.exists()) return null
