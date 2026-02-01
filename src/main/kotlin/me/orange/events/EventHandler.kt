@@ -11,6 +11,10 @@ import me.orange.events.interactions.PlayInteraction
 import me.orange.events.interactions.SelectSettingInteraction
 import me.orange.game.preferences.Preference
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
 object EventHandler {
@@ -48,16 +52,10 @@ object EventHandler {
 
     fun registerEvents(jda: JDA) {
         MineB0t.log("Registering events")
-        val updateCommands = jda.guilds.map { it.updateCommands() }
 
         // Slash commands
-        commands.forEach { command ->
-            // Register signature
-            updateCommands.forEach {
-                it.addCommands(Commands.slash(command.id, command.description))
-            }
-        }
         commands.forEach(jda::addEventListener)
+        jda.addEventListener(RegisterCommandsListener)
 
         // interactions
         interactions.forEach(jda::addEventListener)
@@ -67,6 +65,29 @@ object EventHandler {
             jda.addEventListener(ChangeSettingInteraction(pref))
         }
 
-        updateCommands.forEach{ it.queue() }
+    }
+
+    object RegisterCommandsListener : ListenerAdapter() {
+        override fun onGuildReady(event: GuildReadyEvent) {
+            registerCommands(event.guild)
+        }
+
+        override fun onGuildJoin(event: GuildJoinEvent) {
+            registerCommands(event.guild)
+        }
+
+        private fun registerCommands(guild: Guild) {
+            val updateCommands = guild.updateCommands()
+
+            commands.forEach { command ->
+                // Register signature
+                updateCommands.addCommands(Commands.slash(
+                    command.id,
+                    command.description
+                ))
+            }
+
+            updateCommands.queue()
+        }
     }
 }
