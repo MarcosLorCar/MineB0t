@@ -22,7 +22,7 @@ data class Vec(var x: Int, var y: Int) {
     }
     fun move(vec: Vec) = move(vec.x, vec.y)
 
-    fun toEnvPos(player: Player): Vec? =
+    fun toEnvPos(player: Player): Vec =
         Vec(
             (x - player.pos.x) + (player.pos.x - (player.pos.x - Player.zoom.first)),
             (y - player.pos.y) + (player.pos.y - (player.pos.y - Player.zoom.second))

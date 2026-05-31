@@ -1,5 +1,6 @@
 package me.orange.bot
 
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji
 import net.dv8tion.jda.api.entities.emoji.Emoji
 
@@ -37,7 +38,7 @@ object Emojis {
         loadEmoji("air", "_", 1356533932765741216)
         loadEmoji("dirt", "_", 1356538992111128657)
         loadEmoji("grass", "_", 1356538859487236231)
-        loadEmoji("stone", "_", 1356534787745255524)
+        loadEmoji("stone", "_", 1443753913739378862)
         loadEmoji("iron_ore", "_", 1365275718006866011)
 
         // Item emojis
@@ -46,6 +47,32 @@ object Emojis {
 
     fun loadEmoji(name: String, nameId: String, id: Long, animated: Boolean = false) =
         customEmoji.put(name, Triple(nameId, id, animated))
+
+    /**
+     * Checks every loaded custom-emoji ID against the bot's application emojis and cached guild
+     * emojis. Any ID that resolves to neither will render as raw `<:name:id>` text in Discord
+     * (e.g. a typo'd / outdated ID), so we log it loudly at startup to make it obvious.
+     */
+    fun validate(jda: JDA) {
+        val appEmojiIds = runCatching {
+            jda.retrieveApplicationEmojis().complete().map { it.idLong }.toSet()
+        }.getOrElse {
+            MineB0t.log("Could not retrieve application emojis for validation: ${it.message}")
+            emptySet()
+        }
+
+        val broken = customEmoji.filterValues { (_, id, _) ->
+            id !in appEmojiIds && jda.getEmojiById(id) == null
+        }
+
+        if (broken.isEmpty()) {
+            MineB0t.log("All ${customEmoji.size} custom emojis resolved successfully")
+        } else {
+            broken.forEach { (key, data) ->
+                MineB0t.log("⚠ Emoji '$key' (id=${data.second}) resolves to no application or cached guild emoji — it will render as raw text. Check the ID in Emojis.loadEmojis().")
+            }
+        }
+    }
 
     fun getCustom(name: String): CustomEmoji {
         val emojiData = customEmoji[name]!!

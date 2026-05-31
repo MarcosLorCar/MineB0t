@@ -36,7 +36,7 @@ class GameRenderer(
                 val localX = worldVec.x.mod(Chunk.SIZE)
                 val localY = worldVec.y.mod(Chunk.SIZE)
 
-                row.add(chunk?.getTile(localX, localY)?.emoji ?: ":x:")
+                row.add(chunk?.getTile(localX, localY)?.emoji ?: Emojis.getEmojiCode("null"))
             }
             list.add(row)
         }

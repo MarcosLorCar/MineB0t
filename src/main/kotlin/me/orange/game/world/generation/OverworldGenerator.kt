@@ -9,7 +9,6 @@ import me.orange.game.world.chunk.Chunk
 import me.orange.game.world.tile.Tile
 import me.orange.game.world.tile.Tiles
 import kotlin.math.floor
-import kotlin.random.Random
 
 class OverworldGenerator(
     seed: Long,
@@ -27,9 +26,16 @@ class OverworldGenerator(
         .scale(0.1)
         .build()
 
+    // Seed-offset so ore veins don't correlate with terrain height / caves.
+    val oreNoise = JNoise.newBuilder()
+        .perlin(seed + 31, Interpolation.COSINE, FadeFunction.QUINTIC_POLY)
+        .scale(0.3)
+        .build()
+
     companion object {
         const val STONE_LAYER_DEPTH = 4
         const val CAVE_THRESHOLD = 0.25
+        const val ORE_THRESHOLD = 0.45
     }
 
     override fun generateChunk(chunkVec: Vec): Chunk {
@@ -80,8 +86,8 @@ class OverworldGenerator(
         if (type == Tiles.STONE && isCave(worldVec.x, worldVec.y))
             type = Tiles.AIR
 
-        // Ores
-        if (type == Tiles.STONE && Random.nextFloat() < 0.05f)
+        // Ores (seeded noise so generation is reproducible for a given seed)
+        if (type == Tiles.STONE && isOre(worldVec.x, worldVec.y))
             type = Tiles.IRON_ORE
         return type
     }
@@ -93,5 +99,10 @@ class OverworldGenerator(
     fun isCave(x: Int, y: Int): Boolean {
         val noiseValue = caveNoise.evaluateNoise(x.toDouble(), y.toDouble())
         return noiseValue > CAVE_THRESHOLD
+    }
+
+    fun isOre(x: Int, y: Int): Boolean {
+        val noiseValue = oreNoise.evaluateNoise(x.toDouble(), y.toDouble())
+        return noiseValue > ORE_THRESHOLD
     }
 }

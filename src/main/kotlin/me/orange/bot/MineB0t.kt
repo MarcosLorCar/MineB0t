@@ -30,6 +30,7 @@ object MineB0t {
         EventHandler.registerEvents(jda)
 
         Emojis.loadEmojis()
+        Emojis.validate(jda)
 
         // Register tiles
         log("Registering tiles")
@@ -48,8 +49,7 @@ object MineB0t {
     fun startCommandListener() = scope.launch {
         log("Listening for commands. Type 'stop' to stop the bot.")
         while (true) {
-            val command = readln()
-            when (command) {
+            when (val command = readln()) {
                 "stop" -> {
                     println("Stopping bot...")
                     stop()

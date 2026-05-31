@@ -91,6 +91,12 @@ class ChunkManager(
         return 0
     }
 
+    /** Removes a player id from every chunk's occupant list, dropping now-empty entries. */
+    fun removePlayer(id: Long) {
+        players.values.forEach { it.remove(id) }
+        players.entries.removeIf { it.value.isEmpty() }
+    }
+
     fun saveChunks() {
         chunks.forEach { (pos, chunk) ->
             MineB0t.log("Saving chunk $pos")

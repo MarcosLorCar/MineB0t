@@ -4,7 +4,6 @@ import me.orange.bot.Emojis
 import me.orange.game.player.Player
 import me.orange.game.player.GameMode
 import me.orange.game.utils.Vec
-import me.orange.game.world.TileType
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.LayoutComponent
 import net.dv8tion.jda.api.interactions.components.buttons.Button
@@ -107,13 +106,7 @@ class PlayerActionMenu(
 
                 return@run when (player.gameMode) {
                     GameMode.BREAK -> true
-                    GameMode.PLACE -> {
-                        val stack = player.inventory.getSelectedItemStack()
-                        if (stack == null)
-                            false
-                        else
-                            stack.itemType.getTileType() != TileType.NULL
-                    }
+                    GameMode.PLACE -> player.inventory.getSelectedItemStack()?.itemType?.getTile() != null
                 }
             })
     }

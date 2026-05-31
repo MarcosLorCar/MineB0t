@@ -1,6 +1,7 @@
 package me.orange.game.world
 
 import me.orange.bot.Config
+import me.orange.bot.MineB0t
 import me.orange.game.Game
 import me.orange.game.utils.Vec
 import me.orange.game.world.chunk.Chunk
@@ -22,7 +23,15 @@ class World(
 
     fun getChunk(vec: Vec): Chunk? = chunkManager.getChunk(vec)
     fun getTile(vec: Vec): Tile? = chunkManager.getChunk(vec.toChunkPos())?.getTile(vec.toLocalPos())
-    fun setTile(vec: Vec, tile: Tile) =  chunkManager.getChunk(vec.toChunkPos())?.setTile(vec.toLocalPos(), tile)
+    /** Sets a tile, returning false (and logging) if the target chunk isn't loaded so the edit is dropped. */
+    fun setTile(vec: Vec, tile: Tile): Boolean {
+        val chunk = chunkManager.getChunk(vec.toChunkPos()) ?: run {
+            MineB0t.log("Dropped setTile at $vec: chunk ${vec.toChunkPos()} is not loaded")
+            return false
+        }
+        chunk.setTile(vec.toLocalPos(), tile)
+        return true
+    }
 
      suspend fun generateSpawnPoint(): Vec {
          val dispersion = Config.SPAWNPOINT_DISPERSION

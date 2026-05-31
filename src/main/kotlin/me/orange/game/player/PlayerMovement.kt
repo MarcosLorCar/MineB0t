@@ -8,18 +8,25 @@ class PlayerMovement(
     val world = player.game.world
 
     fun move(vec: Vec) = with(player) {
-        world.chunkManager.players[pos.toChunkPos()]?.remove(player.id)
         if (falling) vec.x = 0
+
+        val oldChunk = pos.toChunkPos()
 
         val newPos = pos + vec
         if (!canWalkThrough(newPos)) {
             if (canStepUp(pos, vec))
                 pos.move(vec.plus(0, 1))
-            return@with
+        } else {
+            pos.move(vec)
         }
 
-        pos.move(vec)
-        world.chunkManager.players.getOrPut(pos.toChunkPos()){mutableListOf()}.add(player.id)
+        // Only touch the occupant lists when the player actually crossed a chunk
+        // boundary, so a blocked move never drops the player from the map.
+        val newChunk = pos.toChunkPos()
+        if (newChunk != oldChunk) {
+            world.chunkManager.players[oldChunk]?.remove(player.id)
+            world.chunkManager.players.getOrPut(newChunk) { mutableListOf() }.add(player.id)
+        }
     }
 
     fun fall() = with(player) {
