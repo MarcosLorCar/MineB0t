@@ -9,6 +9,5 @@ class InputInteraction(input: String) : ButtonInteraction(
     execute = { hook, event ->
         val game = GamesManager.getGame((event as ButtonInteractionEvent).guild!!.id)
         game.handleInput(hook, input)
-        game.updateHook(hook, true)
     }
 )
