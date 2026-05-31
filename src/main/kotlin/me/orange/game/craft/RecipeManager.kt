@@ -4,31 +4,50 @@ import me.orange.game.inventory.ItemStack
 import me.orange.game.player.Player
 
 class RecipeManager(
-    val player: Player
+    val player: Player,
+    knownRecipes: Set<String> = emptySet(),
 ) {
-    /** Current page in the crafting view; clamped at render time by `CraftingRenderer`. */
     var craftPage: Int = 0
+    val knownRecipes: MutableSet<String> = knownRecipes.toMutableSet()
 
-    /** Recipes for which the player holds at least one ingredient item (drives the craft button + view). */
-    fun getSemiRecipes(): Set<Recipe> {
-        val recipes = mutableSetOf<Recipe>()
-        val items = player.inventory.getUniqueSet()
-
-        for (item in items) {
-            val matchingRecipes = RecipeRegistry.getRecipesByIngredient(item)
-            recipes.addAll(matchingRecipes)
-        }
-
-        return recipes
+    data class RecipeCategories(
+        val craftable: List<Recipe>,
+        val semi: List<Recipe>,
+        val known: List<Recipe>,
+    ) {
+        val all: List<Recipe> get() = craftable + semi + known
+        fun isEmpty(): Boolean = all.isEmpty()
     }
 
-    /** Stable, ordered list backing pagination + the select menu. */
-    fun getViewableRecipes(): List<Recipe> = getSemiRecipes().sortedBy { it.id }
+    private fun isCraftable(recipe: Recipe): Boolean =
+        recipe.ingredients.all { player.inventory.countOf(it.itemKey) >= it.count }
 
-    /**
-     * Attempts to craft [recipeId]: validates station, ingredient counts and output space,
-     * then consumes ingredients, adds the output and persists. Returns whether it succeeded.
-     */
+    private fun getSemiRecipes(): Set<Recipe> {
+        val result = mutableSetOf<Recipe>()
+        for (item in player.inventory.getUniqueSet()) {
+            result.addAll(RecipeRegistry.getRecipesByIngredient(item))
+        }
+        result.forEach { knownRecipes.add(it.id) }
+        return result
+    }
+
+    fun getViewableRecipes(): RecipeCategories {
+        val semi = getSemiRecipes()
+        val craftable = semi.filter { isCraftable(it) }.sortedBy { it.id }
+        val semiOnly = semi.filter { !isCraftable(it) }.sortedBy { it.id }
+        val known = knownRecipes
+            .mapNotNull { RecipeRegistry.getRecipe(it) }
+            .filter { it !in semi }
+            .sortedBy { it.id }
+        return RecipeCategories(craftable, semiOnly, known)
+    }
+
+    /** Returns true if there is anything to display in the crafting view. Also discovers new recipes. */
+    fun hasViewableRecipes(): Boolean {
+        getSemiRecipes()
+        return knownRecipes.isNotEmpty()
+    }
+
     fun craft(recipeId: String): Boolean {
         val recipe = RecipeRegistry.getRecipe(recipeId) ?: return false
 

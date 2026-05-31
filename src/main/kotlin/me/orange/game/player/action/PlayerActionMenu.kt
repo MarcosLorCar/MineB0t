@@ -74,7 +74,7 @@ class PlayerActionMenu(
         // Theme the icon to whatever station the player is standing on (NONE → generic craft icon).
         val station = player.game.world.getCraftingStationAt(player.pos)
         return Button.of(ButtonStyle.SECONDARY, "craft_open", Emojis.get(station.emojiKey))
-            .withDisabled(player.recipeManager.getSemiRecipes().isEmpty())
+            .withDisabled(!player.recipeManager.hasViewableRecipes())
     }
 
     fun getInventoryPreviewButton(): Button {

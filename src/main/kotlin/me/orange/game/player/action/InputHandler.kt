@@ -76,7 +76,7 @@ class InputHandler(
             return@launch
         }
 
-        if (player.recipeManager.getSemiRecipes().isEmpty()) return@launch
+        if (!player.recipeManager.hasViewableRecipes()) return@launch
 
         when (arg) {
             "open" -> player.queueAction {

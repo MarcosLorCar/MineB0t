@@ -20,8 +20,9 @@ class Player(
     var age: Long,
     var hook: InteractionHook? = null,
     val inventory: Inventory = Inventory(),
+    knownRecipes: Set<String> = emptySet(),
 ) : OfflinePlayer(id, pos, gameMode) {
-    val recipeManager = RecipeManager(this)
+    val recipeManager = RecipeManager(this, knownRecipes)
     var falling = false
     var viewState: ViewState = ViewState.WORLD
 
@@ -36,7 +37,8 @@ class Player(
                     age = game.time,
                     pos = data.position,
                     gameMode = data.gameMode,
-                    inventory = Inventory.fromData(data.inventoryData)
+                    inventory = Inventory.fromData(data.inventoryData),
+                knownRecipes = data.knownRecipes,
                 )
             } else null
         }
@@ -67,8 +69,6 @@ class Player(
     fun breakTile(player: Player, vec: Vec) = game.breakTile(player, vec)
     fun handle(input: String) = inputHandler.handle(input)
     fun saveData() = playerDataManager.saveData()
-    fun hasCraftingStation() = game.world.hasCraftingStation(pos)
-
     fun update() {
         fall()
         applyQueuedActions()

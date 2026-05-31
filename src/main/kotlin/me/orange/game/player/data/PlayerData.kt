@@ -6,4 +6,9 @@ import me.orange.game.player.GameMode
 import me.orange.game.utils.Vec
 
 @Serializable
-data class PlayerData(val position: Vec, val gameMode: GameMode, val inventoryData: InventoryData)
+data class PlayerData(
+    val position: Vec,
+    val gameMode: GameMode,
+    val inventoryData: InventoryData,
+    val knownRecipes: Set<String> = emptySet(),
+)

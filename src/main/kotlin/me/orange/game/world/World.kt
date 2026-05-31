@@ -56,6 +56,5 @@ class World(
         return CraftingStationType.NONE
     }
 
-    fun hasCraftingStation(pos: Vec): Boolean = getCraftingStationAt(pos) != CraftingStationType.NONE
 }
 
