@@ -8,55 +8,59 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.system.exitProcess
 
 object MineB0t {
 
     val supervisorJob = SupervisorJob()
-
     val scope = CoroutineScope(Dispatchers.Default + supervisorJob)
-
     private val logger: Logger = LoggerFactory.getLogger(MineB0t::class.java)
-
     private lateinit var jda: JDA
 
     fun start() = runBlocking {
         val token = System.getenv("DISCORD_BOT_TOKEN") ?: error("Missing token!")
-        jda = JDABuilder.createDefault(token)
-            .build()
-
+        jda = JDABuilder.createDefault(token).build()
         jda.awaitReady()
 
-        // Updates the command list and registers listeners
-        EventHandler.registerEvents(jda)
+        Runtime.getRuntime().addShutdownHook(Thread {
+            stop()
+        })
 
+        EventHandler.registerEvents(jda)
         Emojis.loadEmojis()
         Emojis.validate(jda)
 
-        // Register tiles
-        log("Registering tiles")
-        Tiles
+        log("Registering tiles: ${Tiles.registry.size} registered")
 
-        // Launch command listener
-        startCommandListener()
+        val listenerJob = startCommandListener()
+        listenerJob.join()
     }
 
     fun stop() {
-        GamesManager.saveAll()
-        jda.shutdown()
-        logger.info("Bot stopped")
+        synchronized(this) {
+            if (!::jda.isInitialized) return
+
+            GamesManager.saveAll()
+            jda.shutdown()
+            logger.info("Bot stopped")
+            supervisorJob.cancel()
+        }
     }
 
-    fun startCommandListener() = scope.launch {
+    fun startCommandListener(): Job = scope.launch(Dispatchers.IO) {
         log("Listening for commands. Type 'stop' to stop the bot.")
-        while (true) {
-            when (val command = readln()) {
-                "stop" -> {
-                    println("Stopping bot...")
-                    stop()
-                    break
+        try {
+            while (isActive) {
+                when (val command = readlnOrNull() ?: break) {
+                    "stop" -> {
+                        println("Stopping bot...")
+                        exitProcess(0)
+                    }
+                    else -> println("Unknown command: $command")
                 }
-                else -> println("Unknown command: $command")
             }
+        } catch (_: Exception) {
+            logger.debug("Console reader stream closed.")
         }
     }
 

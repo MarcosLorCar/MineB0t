@@ -39,13 +39,13 @@ class OverworldGenerator(
     }
 
     override fun generateChunk(chunkVec: Vec): Chunk {
-        val tiles = MutableList(Chunk.Companion.SIZE) { MutableList(Chunk.Companion.SIZE) { Tiles.NULL.id } }
+        val tiles = MutableList(Chunk.SIZE) { MutableList(Chunk.SIZE) { Tiles.NULL.id } }
 
-        for (x in 0 until Chunk.Companion.SIZE) {
-            val worldX = x + chunkVec.x * Chunk.Companion.SIZE
+        for (x in 0 until Chunk.SIZE) {
+            val worldX = x + chunkVec.x * Chunk.SIZE
             val height = heightMap(worldX)
 
-            for (y in 0 until Chunk.Companion.SIZE) {
+            for (y in 0 until Chunk.SIZE) {
                 val worldVec = Vec(x, y).toWorldPos(chunkVec)
 
                 val type = getTileType(worldVec, height)

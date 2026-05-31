@@ -32,11 +32,11 @@ class PlayerActionMenu(
         // Row 2
         actions.add(
             ActionRow.of(
-                moveButton(Vec(-1, 0), "left", "◀\uFE0F"),
+                moveButton(Vec(-1, 0), "left"),
                 actionButton("left", "left", style),
                 getModeButton(),
                 actionButton("right", "right", style),
-                moveButton(Vec(1, 0), "right", "▶\uFE0F"),
+                moveButton(Vec(1, 0), "right"),
             )
         )
 
@@ -82,7 +82,7 @@ class PlayerActionMenu(
             Button.of(ButtonStyle.SECONDARY, "inventoryPreview", " ${selectedItemStack.count}", selectedItemStack.item.emoji).asDisabled()
     }
 
-    private fun moveButton(move: Vec, inputStr: String, emojiCode: String): Button = with(player) {
+    private fun moveButton(move: Vec, inputStr: String): Button = with(player) {
         Button.of(
             ButtonStyle.PRIMARY,
             "move_$inputStr",
