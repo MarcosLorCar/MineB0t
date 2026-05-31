@@ -6,6 +6,7 @@ import me.orange.game.utils.Vec
 import me.orange.game.world.World
 import me.orange.game.world.chunk.Chunk.Companion.SIZE
 import me.orange.game.world.generation.ChunkGenerator
+import me.orange.game.world.tile.Tile
 import me.orange.game.world.tile.Tiles
 import java.util.concurrent.ConcurrentHashMap
 
@@ -57,6 +58,37 @@ class ChunkManager(
         chunks[chunkPos] = withContext(Dispatchers.IO) { chunkDataManager.loadData(chunkPos) } ?: generateChunk(chunkPos)
         deferred.complete(Unit)
         loadingChunks.remove(chunkPos)
+
+        for (dcx in 0 downTo -1)
+            for (dcy in 0 downTo -1)
+                tryDecorate(chunkPos + Vec(dcx, dcy))
+    }
+
+    private fun tryDecorate(cornerOwner: Vec) {
+        val ownerChunk = chunks[cornerOwner] ?: return
+        if (ownerChunk.decorated) return
+
+        val group = listOf(
+            cornerOwner,
+            cornerOwner + Vec(1, 0),
+            cornerOwner + Vec(0, 1),
+            cornerOwner + Vec(1, 1)
+        )
+        if (!group.all { chunks.containsKey(it) }) return
+
+        synchronized(ownerChunk) {
+            if (ownerChunk.decorated) return
+
+            val getTile = { worldVec: Vec -> chunks[worldVec.toChunkPos()]?.getTile(worldVec.toLocalPos()) }
+            val setTile = { worldVec: Vec, tile: Tile ->
+                chunks[worldVec.toChunkPos()]?.setTile(worldVec.toLocalPos(), tile)
+                Unit
+            }
+
+            chunkGenerator?.decorateCorner(cornerOwner, getTile, setTile)
+            ownerChunk.decorated = true
+        }
+        chunkDataManager.saveData(ownerChunk)
     }
 
     private fun generateChunk(vec: Vec): Chunk {

@@ -2,7 +2,7 @@ package me.orange.game.inventory
 
 import me.orange.bot.Emojis
 import me.orange.game.world.tile.Tile
-import me.orange.game.world.tile.Tiles
+import me.orange.game.world.tile.TileRegistry
 import net.dv8tion.jda.api.entities.emoji.Emoji
 
 class Item(
@@ -12,7 +12,7 @@ class Item(
     val tileKey: String? = null,
     val onUse: () -> Unit = {},
 ) {
-    fun getTile(): Tile? = tileKey?.let { Tiles.getTile(Tiles.getID(it)) }
+    fun getTile(): Tile? = tileKey?.let { TileRegistry.getTile(TileRegistry.getID(it)) }
 
     class Builder(val key: String) {
         var emoji: Emoji = if (Emojis.customEmoji.containsKey(key)) Emojis.getCustom(key) else Emojis.getEmoji(key)
