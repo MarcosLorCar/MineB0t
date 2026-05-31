@@ -1,16 +1,16 @@
 package me.orange.game.craft
 
-import me.orange.game.inventory.ItemType
+import me.orange.game.inventory.Item
 
 object RecipeRegistry {
     val recipes = mutableListOf<Recipe>()
-    var recipeMap = mutableMapOf<ItemType, MutableSet<Recipe>>()
+    var recipeMap = mutableMapOf<String, MutableSet<Recipe>>()
 
     fun registerRecipe(recipe: Recipe) {
         recipes.add(recipe)
-        
+
         for (ingredient in recipe.ingredients) {
-            recipeMap.getOrPut(ingredient.itemType) { mutableSetOf() }.add(recipe)
+            recipeMap.getOrPut(ingredient.itemKey) { mutableSetOf() }.add(recipe)
         }
     }
 
@@ -18,7 +18,7 @@ object RecipeRegistry {
         return recipes.find { it.id == id }
     }
 
-    fun getRecipesByIngredient(itemType: ItemType): Set<Recipe> {
-        return recipeMap[itemType] ?: emptySet()
+    fun getRecipesByIngredient(item: Item): Set<Recipe> {
+        return recipeMap[item.key] ?: emptySet()
     }
 }

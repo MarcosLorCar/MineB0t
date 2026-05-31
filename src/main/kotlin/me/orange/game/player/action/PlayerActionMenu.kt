@@ -79,7 +79,7 @@ class PlayerActionMenu(
         return if (selectedItemStack == null)
             Button.of(ButtonStyle.SECONDARY, "inventoryPreview", Emojis.getEmoji("null")).asDisabled()
         else
-            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", " ${selectedItemStack.count}", selectedItemStack.itemType.emoji).asDisabled()
+            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", " ${selectedItemStack.count}", selectedItemStack.item.emoji).asDisabled()
     }
 
     private fun moveButton(move: Vec, inputStr: String, emojiCode: String): Button = with(player) {
@@ -106,7 +106,7 @@ class PlayerActionMenu(
 
                 return@run when (player.gameMode) {
                     GameMode.BREAK -> true
-                    GameMode.PLACE -> player.inventory.getSelectedItemStack()?.itemType?.getTile() != null
+                    GameMode.PLACE -> player.inventory.getSelectedItemStack()?.item?.getTile() != null
                 }
             })
     }

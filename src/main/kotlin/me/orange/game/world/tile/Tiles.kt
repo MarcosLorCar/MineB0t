@@ -1,6 +1,6 @@
 package me.orange.game.world.tile
 
-import me.orange.game.inventory.ItemType
+import me.orange.game.inventory.Items
 
 object Tiles {
     val registry = mutableListOf<Tile>()
@@ -11,19 +11,19 @@ object Tiles {
     val AIR = register("air") { airy() }
     val DIRT = register("dirt") {
         breakable()
-        drops(ItemType.DIRT, 1)
+        drops(Items.DIRT, 1)
     }
     val GRASS = register("grass") {
         breakable()
-        drops(ItemType.GRASS, 1)
+        drops(Items.GRASS, 1)
     }
     val STONE = register("stone") {
         breakable()
-        drops(ItemType.STONE, 1)
+        drops(Items.STONE, 1)
     }
     val IRON_ORE = register("iron_ore") {
         breakable()
-        drops(ItemType.IRON_CHUNK, 1)
+        drops(Items.IRON_CHUNK, 1)
     }
 
     fun register(key: String, block: Tile.Builder.() -> Unit): Tile {

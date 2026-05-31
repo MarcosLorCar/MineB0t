@@ -15,8 +15,8 @@ class Inventory(
 
         // Try to merge with existing stacks
         for (stack in contents) {
-            if (stack.itemType == itemStack.itemType && stack.count < stack.itemType.maxCount) {
-                val spaceAvailable = stack.itemType.maxCount - stack.count
+            if (stack.itemKey == itemStack.itemKey && stack.count < stack.item.maxCount) {
+                val spaceAvailable = stack.item.maxCount - stack.count
                 val toAdd = minOf(spaceAvailable, remaining)
                 stack.count += toAdd
                 remaining -= toAdd
@@ -25,7 +25,7 @@ class Inventory(
         }
 
         if (remaining > 0 && contents.size < size.x * size.y) {
-            addNewItem(ItemStack(itemStack.itemType, remaining))
+            addNewItem(ItemStack(itemStack.itemKey, remaining))
         }
     }
 
@@ -38,8 +38,8 @@ class Inventory(
     fun isEmpty(): Boolean = contents.isEmpty()
     fun getData(): InventoryData = InventoryData(size, contents)
 
-    fun getUniqueSet(): Set<ItemType> {
-        return contents.map { it.itemType }.toSet()
+    fun getUniqueSet(): Set<Item> {
+        return contents.map { it.item }.toSet()
     }
 
     @Serializable

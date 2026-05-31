@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ItemStack(
-    val itemType: ItemType,
+    val itemKey: String,
     var count: Int,
-)
+) {
+    val item: Item get() = Items.get(itemKey)
+    constructor(item: Item, count: Int) : this(item.key, count)
+}

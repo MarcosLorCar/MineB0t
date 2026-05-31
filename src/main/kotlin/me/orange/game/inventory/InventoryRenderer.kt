@@ -21,7 +21,7 @@ class InventoryRenderer(
             if (selectedSlot == index)
                 content.add("\n${Emojis.getCustom("up").formatted}")
             builder.addField(
-                stack.itemType.emoji.formatted,
+                stack.item.emoji.formatted,
                 content.joinToString(""),
                 true
             )

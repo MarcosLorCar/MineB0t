@@ -1,8 +1,8 @@
 package me.orange.game.world.tile
 
 import me.orange.bot.Emojis
+import me.orange.game.inventory.Item
 import me.orange.game.inventory.ItemStack
-import me.orange.game.inventory.ItemType
 
 class Tile(
     val key: String,
@@ -23,7 +23,7 @@ class Tile(
         fun airy() = apply { airy = true }
         fun breakable() = apply { breakable = true }
         fun onBreak(onBreak: () -> Unit) = apply { this.onBreak = onBreak }
-        fun drops(type: ItemType, count: Int = 1) = apply { this.drop = ItemStack(type, count) }
+        fun drops(item: Item, count: Int = 1) = apply { this.drop = ItemStack(item, count) }
 
         fun build(id: Int) : Tile = Tile(
             key = key,
