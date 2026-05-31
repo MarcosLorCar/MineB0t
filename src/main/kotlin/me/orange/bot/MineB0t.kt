@@ -3,6 +3,7 @@ package me.orange.bot
 import kotlinx.coroutines.*
 import me.orange.events.EventHandler
 import me.orange.game.GamesManager
+import me.orange.game.craft.Recipes
 import me.orange.game.world.tile.Tiles
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -31,6 +32,7 @@ object MineB0t {
         Emojis.validate(jda)
 
         log("Registering tiles: ${Tiles.registry.size} registered")
+        log("Registering recipes: ${Recipes.count} registered")
 
         val listenerJob = startCommandListener()
         listenerJob.join()

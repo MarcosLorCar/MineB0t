@@ -25,7 +25,7 @@ class InputHandler(
 
             "inventory" -> handleInventory(inputArgs[0])
 
-            "craft" -> handleInventory(inputArgs[0])
+            "craft" -> handleCraft(inputArgs[0])
         }
     }
 
@@ -64,38 +64,31 @@ class InputHandler(
     }
 
     private fun handleCraft(arg: String) = MineB0t.launch {
-        val recipes = player.recipeManager.getSemiRecipes()
-        if (recipes.isEmpty()) return@launch
+        // close must always work — even if crafting drained the last ingredient (no semi-recipes left),
+        // otherwise the player is trapped in the crafting view.
+        if (arg == "close") {
+            player.queueAction {
+                it.viewState = ViewState.WORLD
+                // Reset both caches so the world is rendered at least once after leaving crafting
+                it.game.playerEnvUiCache.remove(it.id)
+                it.game.playerCraftUiCache.remove(it.id)
+            }
+            return@launch
+        }
+
+        if (player.recipeManager.getSemiRecipes().isEmpty()) return@launch
 
         when (arg) {
-            "open" -> {
-                player.queueAction { player ->
-                    player.viewState = ViewState.CRAFTING
-                }
+            "open" -> player.queueAction {
+                it.recipeManager.craftPage = 0
+                it.viewState = ViewState.CRAFTING
+                it.game.playerCraftUiCache.remove(it.id)
             }
-            "close" -> {
-                player.viewState = ViewState.WORLD
-                player.queueAction {
-                    // Reset this player's view cache so that he gets the world rendered at least once
-                    it.game.playerEnvUiCache.remove(player.id)
-                }
-                return@launch
-            }
-            else -> {
-                // right or left was inputted so the select cursor moves
-//                val value = getVecFromDir(arg).x
-//                val size = recipes.size
-//                val selectedSlot = player.recipeManager.selectedSlot
-//                player.recipeManager.selectedSlot = (selectedSlot + value + size) % size
-            }
+            "prev" -> player.queueAction { it.recipeManager.craftPage-- }
+            "next" -> player.queueAction { it.recipeManager.craftPage++ }
         }
 
-        player.queueAction { player ->
-            player.hook
-                ?.editOriginalEmbeds(player.inventory.getEmbed()!!)
-                ?.setActionRow(selectButton("left") ,returnButton(), selectButton("right"))
-                ?.queue()
-        }
+        player.queueAction { it.game.renderCrafting(it) }
     }
 
     private fun returnButton(): Button =

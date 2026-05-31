@@ -1,5 +1,6 @@
 package me.orange.game.world.tile
 
+import me.orange.game.craft.CraftingStationType
 import me.orange.game.inventory.Items
 
 object Tiles {
@@ -24,6 +25,20 @@ object Tiles {
     val IRON_ORE = register("iron_ore") {
         breakable()
         drops(Items.IRON_CHUNK, 1)
+    }
+    // APPEND-ONLY below: tile IDs are positional, never reorder.
+    // Placed via tileKey lookup, never referenced by name — registration is the only purpose.
+    @Suppress("unused")
+    val CRAFTING_TABLE = register("crafting_table") {
+        breakable()
+        drops(Items.CRAFTING_TABLE, 1)
+        craftingStation(CraftingStationType.CRAFTING_TABLE)
+    }
+    @Suppress("unused")
+    val FURNACE = register("furnace") {
+        breakable()
+        drops(Items.FURNACE, 1)
+        craftingStation(CraftingStationType.FURNACE)
     }
 
     fun register(key: String, block: Tile.Builder.() -> Unit): Tile {

@@ -15,6 +15,10 @@ object Emojis {
         "other_body" to Emoji.fromUnicode("\uD83E\uDDBA"),
         "return" to Emoji.fromUnicode("↩\uFE0F"),
         "selected" to Emoji.fromUnicode("\uD83D\uDD3C"),
+        // Crafting station / item fallbacks (no custom Discord emoji yet)
+        "crafting_table" to Emoji.fromUnicode("\uD83D\uDEE0\uFE0F"),
+        "furnace" to Emoji.fromUnicode("\uD83C\uDFED"),
+        "iron_ingot" to Emoji.fromUnicode("\uD83D\uDD29"),
     )
 
     fun loadEmojis() {
@@ -78,6 +82,9 @@ object Emojis {
         val emojiData = customEmoji[name]!!
         return Emoji.fromCustom(emojiData.first, emojiData.second, emojiData.third)
     }
+
+    /** Custom emoji if one is loaded under [name], otherwise the unicode fallback. */
+    fun get(name: String): Emoji = if (customEmoji.containsKey(name)) getCustom(name) else getEmoji(name)
 
     fun getEmoji(name: String) = emojis[name]!!
     fun getEmojiCode(name: String): String = emojis[name]!!.formatted

@@ -3,6 +3,7 @@ package me.orange.game.world
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.Game
+import me.orange.game.craft.CraftingStationType
 import me.orange.game.utils.Vec
 import me.orange.game.world.chunk.Chunk
 import me.orange.game.world.chunk.ChunkManager
@@ -42,6 +43,19 @@ class World(
          return Vec(spawnX, spawnY)
     }
 
-    fun hasCraftingStation(pos: Vec): Boolean = TODO()
+    /**
+     * The crafting station the player at [pos] can use. The player occupies [pos] and [pos]+(0,1),
+     * so a solid station block sits directly under their feet at [pos]+(0,-1); an airy "pad" station
+     * would overlap [pos]. First non-NONE in that candidate set wins; NONE if none (or chunk unloaded).
+     */
+    fun getCraftingStationAt(pos: Vec): CraftingStationType {
+        for (candidate in listOf(pos.plus(0, -1), pos, pos.plus(0, 1))) {
+            val station = getTile(candidate)?.craftingStationType ?: continue
+            if (station != CraftingStationType.NONE) return station
+        }
+        return CraftingStationType.NONE
+    }
+
+    fun hasCraftingStation(pos: Vec): Boolean = getCraftingStationAt(pos) != CraftingStationType.NONE
 }
 

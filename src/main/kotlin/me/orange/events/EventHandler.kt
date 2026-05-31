@@ -5,6 +5,7 @@ import me.orange.events.commands.PlayCommand
 import me.orange.events.commands.PreferencesCommand
 import me.orange.events.commands.TestCommand
 import me.orange.events.interactions.ChangeSettingInteraction
+import me.orange.events.interactions.CraftSelectInteraction
 import me.orange.events.interactions.InputInteraction
 import me.orange.events.interactions.PlayInteraction
 import me.orange.events.interactions.SelectSettingInteraction
@@ -37,8 +38,12 @@ object EventHandler {
         InputInteraction("inventory_right"),
         InputInteraction("inventory_close"),
         InputInteraction("craft_open"),
+        InputInteraction("craft_close"),
+        InputInteraction("craft_prev"),
+        InputInteraction("craft_next"),
         PlayInteraction,
         SelectSettingInteraction,
+        CraftSelectInteraction,
     )
 
     fun registerEvents(jda: JDA) {

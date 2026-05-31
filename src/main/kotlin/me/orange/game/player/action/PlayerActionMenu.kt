@@ -70,9 +70,12 @@ class PlayerActionMenu(
         Button.of(ButtonStyle.SECONDARY, "inventory_open", Emojis.getCustom("backpack"))
         .withDisabled(player.inventory.isEmpty())
 
-    fun getCraftingButton(): Button =
-        Button.of(ButtonStyle.SECONDARY, "craft_open", Emojis.getCustom("craft_icon"))
+    fun getCraftingButton(): Button {
+        // Theme the icon to whatever station the player is standing on (NONE → generic craft icon).
+        val station = player.game.world.getCraftingStationAt(player.pos)
+        return Button.of(ButtonStyle.SECONDARY, "craft_open", Emojis.get(station.emojiKey))
             .withDisabled(player.recipeManager.getSemiRecipes().isEmpty())
+    }
 
     fun getInventoryPreviewButton(): Button {
         val selectedItemStack = player.inventory.getSelectedItemStack()
