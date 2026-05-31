@@ -3,6 +3,7 @@ package me.orange.events
 import me.orange.bot.MineB0t
 import me.orange.events.commands.PlayCommand
 import me.orange.events.commands.PreferencesCommand
+import me.orange.events.commands.SetHeadCommand
 import me.orange.events.commands.TestCommand
 import me.orange.events.interactions.ChangeSettingInteraction
 import me.orange.events.interactions.CraftSelectInteraction
@@ -21,7 +22,8 @@ object EventHandler {
     private val commands = listOf(
         PlayCommand,
         TestCommand,
-        PreferencesCommand
+        PreferencesCommand,
+        SetHeadCommand
     )
 
     private val interactions = mutableListOf(
@@ -84,7 +86,7 @@ object EventHandler {
                 updateCommands.addCommands(Commands.slash(
                     command.id,
                     command.description
-                ))
+                ).addOptions(command.options))
             }
 
             updateCommands.queue()

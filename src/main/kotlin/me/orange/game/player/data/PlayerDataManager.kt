@@ -9,7 +9,11 @@ class PlayerDataManager(
     private val player: Player
 ) {
     fun saveData() = with(player) {
-        val data = PlayerData(pos, gameMode, inventory.getData(), recipeManager.knownRecipes.toSet())
+        val prefsData = game.preferencesManager.playerPreferences[id]
+            ?.entries
+            ?.associate { (pref, value) -> pref.name to value.toString() }
+            ?: emptyMap()
+        val data = PlayerData(pos, gameMode, inventory.getData(), recipeManager.knownRecipes.toSet(), prefsData)
 
         val file = fileOf(id, player.game.gameDataDir)
 

@@ -12,6 +12,7 @@ object Emojis {
         "null" to Emoji.fromUnicode("❌"),
         "other_head" to Emoji.fromUnicode("\uD83D\uDC7D"),
         "sleepy_head" to Emoji.fromUnicode("\uD83D\uDE34"),
+        "group_head" to Emoji.fromUnicode("\uD83D\uDC65"),
         "other_body" to Emoji.fromUnicode("\uD83E\uDDBA"),
         "return" to Emoji.fromUnicode("↩\uFE0F"),
         "selected" to Emoji.fromUnicode("\uD83D\uDD3C"),

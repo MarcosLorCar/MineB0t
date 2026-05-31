@@ -12,14 +12,28 @@ class GameRenderer(
     suspend fun getView(
         player: Player,
     ): String {
-        val view = getEnvironment(game, player)
+        // Count all players (self + others) at each world position
+        val crowd = mutableMapOf<Vec, Int>()
+        crowd[player.pos] = (crowd[player.pos] ?: 0) + 1
+        player.pos.toChunkPos().surroundingChunks().forEach { chunkPos ->
+            game.world.chunkManager.players[chunkPos]?.forEach { otherId ->
+                if (otherId == player.id) return@forEach
+                val otherPos = game.players[otherId]?.pos ?: return@forEach
+                crowd[otherPos] = (crowd[otherPos] ?: 0) + 1
+            }
+        }
 
-        addPlayersToView(game, player, view)
+        val view = getEnvironment(game, player, crowd)
+        addPlayersToView(game, player, view, crowd)
 
         return view.joinToString("\n") { it.joinToString("") }
     }
 
-    suspend fun getEnvironment(game: Game, player: Player): MutableList<MutableList<String>> {
+    suspend fun getEnvironment(
+        game: Game,
+        player: Player,
+        crowd: Map<Vec, Int>,
+    ): MutableList<MutableList<String>> {
         val list = mutableListOf<MutableList<String>>()
         game.world.ensureChunksLoadedAround(player.pos, false)
 
@@ -27,7 +41,18 @@ class GameRenderer(
             val row = mutableListOf<String>()
             for (dx in -Player.zoom.first..Player.zoom.first) {
                 if (isPlayerTile(dx, dy)) {
-                    row.add(Player.emojis[if (dy == 0) 1 else 0])
+                    if (dy == 0) {
+                        // body tile — unchanged
+                        row.add(Player.emojis[1])
+                    } else {
+                        // head tile — use chosen emoji, or group emoji when others share the tile
+                        val headEmoji = if ((crowd[player.pos] ?: 1) > 1) {
+                            Emojis.getEmojiCode("group_head")
+                        } else {
+                            game.preferencesManager.getHeadEmoji(player.id)
+                        }
+                        row.add(headEmoji)
+                    }
                     continue
                 }
                 val worldVec = player.pos + Vec(dx, dy)
@@ -47,7 +72,8 @@ class GameRenderer(
     private fun addPlayersToView(
         game: Game,
         player: Player,
-        view: MutableList<MutableList<String>>
+        view: MutableList<MutableList<String>>,
+        crowd: Map<Vec, Int>,
     ) {
         player.pos.toChunkPos().surroundingChunks().forEach { chunk ->
             game.world.chunkManager.players[chunk]?.forEach { otherId ->
@@ -55,14 +81,20 @@ class GameRenderer(
 
                 val otherPlayer = game.players[otherId]
                 otherPlayer?.pos?.toEnvPos(player)?.let { envPos ->
-                    envPos.y = (Player.zoom.second*2+1) - (envPos.y + 1)
+                    envPos.y = (Player.zoom.second * 2 + 1) - (envPos.y + 1)
 
                     if (envPos.y in view.indices && envPos.x in view[0].indices)
                         view[envPos.y][envPos.x] = Emojis.getEmojiCode("other_body")
 
                     val headPos = envPos.plus(0, -1)
-                    if (headPos.y in view.indices && headPos.x in view[0].indices)
-                        view[headPos.y][headPos.x] = Emojis.getEmojiCode(if (otherPlayer is Player) "other_head" else "sleepy_head")
+                    if (headPos.y in view.indices && headPos.x in view[0].indices) {
+                        val headEmoji = when {
+                            (crowd[otherPlayer.pos] ?: 1) > 1 -> Emojis.getEmojiCode("group_head")
+                            otherPlayer is Player -> game.preferencesManager.getHeadEmoji(otherId)
+                            else -> Emojis.getEmojiCode("sleepy_head")
+                        }
+                        view[headPos.y][headPos.x] = headEmoji
+                    }
                 }
             }
         }

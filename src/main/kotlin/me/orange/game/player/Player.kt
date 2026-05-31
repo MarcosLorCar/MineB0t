@@ -31,6 +31,7 @@ class Player(
             val data = PlayerDataManager.loadData(id, game)
 
             return if (data != null) {
+                game.preferencesManager.loadPlayerPreferences(id, data.preferences)
                 Player(
                     id = id,
                     game = game,
@@ -38,7 +39,7 @@ class Player(
                     pos = data.position,
                     gameMode = data.gameMode,
                     inventory = Inventory.fromData(data.inventoryData),
-                knownRecipes = data.knownRecipes,
+                    knownRecipes = data.knownRecipes,
                 )
             } else null
         }

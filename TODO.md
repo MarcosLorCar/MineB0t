@@ -1,40 +1,37 @@
 # MineB0t TODO
 
-## 🔴 Broken core mechanics
+## Crafting UX gaps
 
-- [x] **Place a block** — `world.setTile(...)` is commented out in `Game.placeTile()`. `Game.kt:174`
-- [x] **Break drops items** — drop logic commented out; never uses `Tile.drop` / `Tile.onBreak`. `Game.kt:161-167`
-- [x] **Bridge `ItemType` → `Tile`** — `ItemType.getTile()` now resolves a placeable `Tile` via `tileKey`.
-- [x] **PLACE button enable-check** — now uses `getSelectedItemStack()?.itemType?.getTile() != null`. `PlayerActionMenu.kt`
+- **Silent craft failure** — selecting a recipe you can't craft (wrong station, not enough items) re-renders unchanged with no feedback. Consider a short ephemeral error message or disabled select option.
+- **`canFit` false-negative on full inventory** — rejects a craft that would free a slot via ingredient consumption. Rare, but solvable by simulating removal before the capacity check.
 
-## 🔴 Crafting (non-functional)
+## World generation
 
-- [x] **Register recipes** — `RecipeRegistry.registerRecipe()` had zero callers; now populated via DSL in `Recipes.kt`, force-initialized at startup.
-- [x] **Route craft button correctly** — `InputHandler.handle` sent `"craft"` → `handleInventory`; fixed to `handleCraft`.
-- [x] **Implement `handleCraft`** — pagination, open/close/prev/next, cache invalidation all wired.
-- [x] **Execute craft action** — `RecipeManager.craft()` validates station + ingredients + output space, consumes across stacks, calls `saveData()`. `CraftSelectInteraction` triggers it.
-- [x] **`World.hasCraftingStation()`** — was `TODO()`; now backed by `getCraftingStationAt(pos)` checking ±1 Y.
+- **Decoration unimplemented** — `decorate()` is `TODO()`; both decoration passes are comments. `OverworldGenerator.kt:51-62`
 
-## 🟠 Crafting UX gaps
+---
 
-- [ ] **Silent craft failure** — selecting a recipe you can't craft (wrong station, not enough items) re-renders unchanged with no feedback. Consider a short ephemeral error message or disabled select option.
-- [ ] **`canFit` false-negative on full inventory** — rejects a craft that would free a slot via ingredient consumption. Rare, but solvable by simulating removal before the capacity check.
+## Suggestions
 
-## 🟠 Rendering other players
+### Tool tiers + mining speed
+Right now all tools are equal and crafting has no real purpose. Giving pickaxes/axes tiers would create the core progression loop:
+- Bare hands: very slow, can only break dirt/grass
+- Stone pickaxe: normal speed, breaks stone
+- Iron pickaxe: fast, breaks everything
 
-- [x] **Blocked move removes player from chunk map but never re-adds** — occupant lists now only change on a real chunk crossing. `PlayerMovement.kt`
-- [x] **Timeout/leave doesn't clean `chunkManager.players`** — `addPlayer` now calls `chunkManager.removePlayer(id)` before re-registering. `Game.kt`, `ChunkManager.kt`
+Players would have a clear path: punch dirt → craft stone pickaxe → mine stone+iron → craft iron pickaxe → go deeper. This is likely the single highest-leverage change for making the game feel like it has a point.
 
-## 🟡 World generation
+### Depth/leaderboard visibility
+Show "Deepest player in this server: PlayerX at Y=-142" somewhere in the world view. Pure social competition with near-zero implementation cost; drives exploration without needing any new systems.
 
-- [ ] **Decoration unimplemented** — `decorate()` is `TODO()`; both decoration passes are comments. `OverworldGenerator.kt:51-62` — _SKIPPED: incomplete feature system; never called._
-- [x] **Ore placement not seed-reproducible** — now uses seeded `oreNoise` Perlin with `ORE_THRESHOLD`. `OverworldGenerator.kt`
-- [x] **`setTile` silently no-ops on unloaded chunks** — `setTile` now returns `Boolean` and logs; callers bail instead of mutating inventory on a dropped edit. `World.kt`
+### Hunger / food system
+Instead of a mobile-style energy bar that limits actions, a hunger mechanic fits the game thematically: players need to eat to mine at full speed, food is cooked at the furnace, crops can be farmed. Achieves the "come back later" hook without feeling punitive. Works well on top of the furnace crafting station already in the game.
 
-## ⚪ Cleanup
+### Turn-based combat
+The top-left button in the world view (currently a disabled placeholder) could become an Attack button, enabled only when an enemy is on an adjacent tile. Pressing it opens a `ViewState.COMBAT` screen.
 
-- [x] **Delete `TileType`** — removed; `ItemType` maps to `Tile` directly via `getTile()`.
-- [x] **`Vec.toEnvPos` return type** — tightened to `Vec`. `Vec.kt`
-- [x] **Missing-chunk renders `":x:"` literal** — now uses `Emojis.getEmojiCode("null")`. `GameRenderer.kt`
-- [x] **`playerEnvUiCache` only keys on world string** — cache key now folds in game mode, selected slot, item type/count and inventory size. `Game.kt`
-- [x] **CLAUDE.md doc drift** — doc updated to reflect crafting system, constraints, and new types.
+Combat view replaces the entire button grid with combat actions (Attack, Heavy, Block, Flee, Use Item). An embed shows enemy name/HP bar, player HP bar, and a log of the last exchange. Turn resolution: player presses a button → their action and the enemy AI both resolve → embed updates. No tick dependency, fully reactive.
+
+Mobs exist as entities in the world (separate from tiles), managed by a `MobManager` per `World`. They spawn based on depth/biome (e.g. slimes near surface, cave bats underground). Encounter triggers when the player walks into the same tile as a mob (auto-trigger, Terraria-style). Player death: respawn at spawn, drop items or lose half inventory.
+
+Suggested first slice: `Mob` data class + `MobManager`, `ViewState.COMBAT` + `CombatSession` per player, one basic enemy (slime), combat button layout + embed renderer. Leave HP persistence, death penalties, and mob wandering AI for after the core loop is playable.

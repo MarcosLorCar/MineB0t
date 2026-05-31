@@ -7,7 +7,8 @@ enum class Preference(
     val default: Any,
     val options: List<Any>
 ) {
-    MENUS_SIZE(Int::class, 10, listOf(10, 15, 20)),                // Controls menu size
-    SHOW_COORDINATES(Boolean::class, false, listOf(true, false)),  // Toggles coordinate display
-    MORE_ACTIONS(Boolean::class, false, listOf(true, false));      // Enables more actions
+    MENUS_SIZE(Int::class, 10, listOf(10, 15, 20)),
+    SHOW_COORDINATES(Boolean::class, false, listOf(true, false)),
+    MORE_ACTIONS(Boolean::class, false, listOf(true, false)),
+    HEAD_EMOJI(String::class, "😀", listOf("😀", "😎", "🤠"));
 }

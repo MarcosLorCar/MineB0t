@@ -4,14 +4,13 @@ import me.orange.game.Game
 import net.dv8tion.jda.api.interactions.InteractionHook
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-class PreferencesManager(game: Game) {
-    val playerPreferences = mutableMapOf<Long, MutableMap<Preference, Any>>()
+class PreferencesManager(private val game: Game) {
+    val playerPreferences: ConcurrentHashMap<Long, ConcurrentHashMap<Preference, Any>> = ConcurrentHashMap()
 
     fun showMenu(it: InteractionHook) {
-        //Show a menu with all preferences identified with a number
-        // then implement /settings <id> <value>
         val selectionMenu = StringSelectMenu.create("settings")
             .let {
                 for (preference in Preference.entries) {
@@ -24,17 +23,37 @@ class PreferencesManager(game: Game) {
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> getPreference(id: Long, preference: Preference): T {
-        val entry = playerPreferences[id]
-        val value = entry?.get(preference)
+        val value = playerPreferences[id]?.get(preference)
         return if (value != null) value as T else preference.default as T
     }
 
-    fun setPreference(setting: Preference, it: InteractionHook, value: String) {
-        val id = it.interaction.user.idLong
-        val entry = playerPreferences.getOrPut(id) { mutableMapOf() }
-        entry[setting] = parseValue(value, setting.valueType)!!
-        it.editOriginal("Successfully set ${setting.name} to $value").queue()
-        it.editOriginalComponents().queue()
+    fun getHeadEmoji(id: Long): String {
+        val stored = playerPreferences[id]?.get(Preference.HEAD_EMOJI) as? String
+        if (stored != null) return stored
+        val pool = Preference.HEAD_EMOJI.options
+        return pool[Math.floorMod(id, pool.size)] as String
+    }
+
+    fun setPreference(id: Long, pref: Preference, value: String) {
+        val parsed = parseValue(value, pref.valueType) ?: return
+        playerPreferences.getOrPut(id) { ConcurrentHashMap() }[pref] = parsed
+    }
+
+    fun setPreference(setting: Preference, hook: InteractionHook, value: String) {
+        setPreference(hook.interaction.user.idLong, setting, value)
+        hook.editOriginal("Successfully set ${setting.name} to $value").queue()
+        hook.editOriginalComponents().queue()
+    }
+
+    fun loadPlayerPreferences(id: Long, prefs: Map<String, String>) {
+        if (prefs.isEmpty()) return
+        val prefMap = ConcurrentHashMap<Preference, Any>()
+        prefs.forEach { (prefName, value) ->
+            val pref = runCatching { Preference.valueOf(prefName) }.getOrNull() ?: return@forEach
+            val parsed = parseValue(value, pref.valueType) ?: return@forEach
+            prefMap[pref] = parsed
+        }
+        playerPreferences[id] = prefMap
     }
 
     val parsers: Map<KClass<*>, (String) -> Any?> = mapOf(
