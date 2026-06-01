@@ -10,5 +10,5 @@ enum class Preference(
     MENUS_SIZE(Int::class, 10, listOf(10, 15, 20)),
     SHOW_COORDINATES(Boolean::class, false, listOf(true, false)),
     MORE_ACTIONS(Boolean::class, false, listOf(true, false)),
-    HEAD_EMOJI(String::class, "😀", listOf("😀", "😎", "🤠"));
+    HEAD_EMOJI(String::class, "😀", listOf("😀", "🥸", "🧐", "🤓", "😎", "😡", "🥶", "🤢", "😈", "🤡", "👽", "😬", "😼", "😺"));
 }

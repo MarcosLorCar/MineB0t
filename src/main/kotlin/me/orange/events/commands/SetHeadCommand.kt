@@ -32,7 +32,7 @@ private fun isValidHeadEmoji(input: String): Boolean {
     if (input.isEmpty()) return false
     // Custom Discord emoji: <:name:id> or <a:name:id>
     if (input.matches(Regex("<a?:[a-zA-Z0-9_]+:\\d+>"))) return true
-    // Single unicode grapheme cluster with first codepoint in emoji range (above basic Latin)
+    // Single Unicode grapheme cluster with the first codepoint in the emoji range (above basic Latin)
     val bi = java.text.BreakIterator.getCharacterInstance()
     bi.setText(input)
     bi.first()
