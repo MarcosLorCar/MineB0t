@@ -20,6 +20,9 @@ object Emojis {
         "crafting_table" to Emoji.fromUnicode("\uD83D\uDEE0\uFE0F"),
         "furnace" to Emoji.fromUnicode("\uD83C\uDFED"),
         "iron_ingot" to Emoji.fromUnicode("\uD83D\uDD29"),
+        // TODO: replace with custom Discord emojis once uploaded
+        "coal_ore" to Emoji.fromUnicode("\uD83E\uDEA8"),
+        "coal" to Emoji.fromUnicode("\u26AB"),
     )
 
     fun loadEmojis() {
