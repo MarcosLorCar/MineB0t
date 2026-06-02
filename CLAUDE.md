@@ -4,17 +4,25 @@ BUILD: `./gradlew build` | `DISCORD_BOT_TOKEN=<token> ./gradlew run` | JDK 21 re
 
 PACKAGES AND KEY TYPES:
 
-me.orange.bot:
+me.orange:
 - Main.kt → MineB0t.start()
+
+me.orange.bot:
 - MineB0t: singleton, owns JDA instance + shared CoroutineScope. Use MineB0t.launch{} for coroutine work surviving game ticks. MineB0t.log() for logging.
-  - startCommandListener(): console loop with > prompt; commands: stop/save/status/help
+  - startCommandListener(): console loop printing the `> ` prompt; each line delegates to ConsoleCommandHandler.dispatch (me.orange.console)
   - installPromptAwareOutput(): wraps System.out so log lines don't clobber the prompt
   - stop(): synchronized, guarded by `stopped` flag; saves + shuts down JDA
   - shutdown hook + auto-save every AUTOSAVE_TICKS (FPS*60*5) also call saveAll()
 - Emojis: string key → Discord Emoji. Emojis.getCustom(key) loads by Discord ID. All tiles/UI use this.
 - Config: filesystem paths + gameplay constants. GAME_DATA_DIR is base path.
 
-me.orange.events:
+me.orange.console:
+- ConsoleCommand: base for console commands (name, description, execute(args))
+- ConsoleCommandHandler: parses the input line, handles `help`, dispatches to a matching command
+- commands/: StopCommand, SaveCommand, StatusCommand
+- Adding a console command: implement ConsoleCommand, add it to ConsoleCommandHandler.commands
+
+me.orange.bot.events:
 - EventHandler: registers all JDA listeners at startup
 - BaseInteraction → SlashCommand / ButtonInteraction / StringSelectInteraction
 - InputInteraction: main button handler, routes button IDs (e.g. "move_left", "action_up_right", "inventory_open") → Game.handleInput()
