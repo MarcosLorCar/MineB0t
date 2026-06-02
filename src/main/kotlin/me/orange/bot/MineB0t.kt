@@ -1,6 +1,7 @@
-package me.orange.bot
+﻿package me.orange.bot
 
 import kotlinx.coroutines.*
+import me.orange.bot.console.ConsoleCommandHandler
 import me.orange.events.EventHandler
 import me.orange.game.GamesManager
 import me.orange.game.craft.Recipes
@@ -10,7 +11,8 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.system.exitProcess
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 object MineB0t {
 
@@ -18,8 +20,11 @@ object MineB0t {
     val scope = CoroutineScope(Dispatchers.Default + supervisorJob)
     private val logger: Logger = LoggerFactory.getLogger(MineB0t::class.java)
     private lateinit var jda: JDA
+    private var stopped = false
+    @Volatile private var promptActive = false
 
     fun start() = runBlocking {
+        installPromptAwareOutput()
         val token = System.getenv("DISCORD_BOT_TOKEN") ?: error("Missing token!")
         jda = JDABuilder.createDefault(token).build()
         jda.awaitReady()
@@ -36,13 +41,20 @@ object MineB0t {
         log("Registering items: ${Items.count} registered")
         log("Registering recipes: ${Recipes.count} registered")
 
+        val timeStr = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        logger.info("--------------------------------------------------")
+        logger.info("Bot ready at $timeStr. Type 'help' for a list of commands.")
+        logger.info("--------------------------------------------------")
+
         val listenerJob = startCommandListener()
         listenerJob.join()
+        stop()
     }
 
     fun stop() {
         synchronized(this) {
-            if (!::jda.isInitialized) return
+            if (!::jda.isInitialized || stopped) return
+            stopped = true
 
             GamesManager.saveAll()
             jda.shutdown()
@@ -51,17 +63,31 @@ object MineB0t {
         }
     }
 
+    private fun installPromptAwareOutput() {
+        val original = System.out
+        System.setOut(object : java.io.PrintStream(original, true) {
+            override fun write(buf: ByteArray, off: Int, len: Int) {
+                // Before the first byte of a log line, erase the stale "> " from the terminal
+                if (promptActive) original.print("\r[K")
+                super.write(buf, off, len)
+                // After a complete line, reprint the prompt
+                if (promptActive && len > 0 && buf[off + len - 1] == '\n'.code.toByte()) {
+                    original.print("> ")
+                    original.flush()
+                }
+            }
+        })
+    }
+
     fun startCommandListener(): Job = scope.launch(Dispatchers.IO) {
-        log("Listening for commands. Type 'stop' to stop the bot.")
         try {
             while (isActive) {
-                when (val command = readlnOrNull() ?: break) {
-                    "stop" -> {
-                        println("Stopping bot...")
-                        exitProcess(0)
-                    }
-                    else -> println("Unknown command: $command")
-                }
+                promptActive = true
+                print("> ")
+                System.out.flush()
+                val command = readlnOrNull() ?: break
+                promptActive = false
+                ConsoleCommandHandler.dispatch(command)
             }
         } catch (_: Exception) {
             logger.debug("Console reader stream closed.")
@@ -71,3 +97,4 @@ object MineB0t {
     fun launch(block: suspend CoroutineScope.() -> Unit) = scope.launch(block = block)
     fun log(msg: String) = logger.info(msg)
 }
+
