@@ -92,6 +92,22 @@ class OverworldGenerator(
             val radius = 1.5f + rng.nextFloat() * 1.5f
             placePatch(Vec(cx, cy), radius, rng, getTile, setTile)
         }
+
+        val coalRng = java.util.Random(
+            seed xor (cornerChunkPos.x.toLong() * 0x27D4EB2F165667C5L)
+                 xor (cornerChunkPos.y.toLong() * 0x2545F4914F6CDD1DL)
+        )
+        val coalPatchCount = when {
+            stoneCount >= 80 -> coalRng.nextInt(3)
+            stoneCount >= 30 -> coalRng.nextInt(2)
+            else -> 0
+        }
+        repeat(coalPatchCount) {
+            val cx = originX + coalRng.nextInt(Chunk.SIZE)
+            val cy = originY + coalRng.nextInt(Chunk.SIZE)
+            val radius = 1.5f + coalRng.nextFloat() * 1.5f
+            placePatch(Vec(cx, cy), radius, coalRng, getTile, setTile, Tiles.COAL_ORE)
+        }
     }
 
     private fun placePatch(
@@ -99,7 +115,8 @@ class OverworldGenerator(
         radius: Float,
         rng: java.util.Random,
         getTile: (Vec) -> Tile?,
-        setTile: (Vec, Tile) -> Unit
+        setTile: (Vec, Tile) -> Unit,
+        targetTile: Tile = Tiles.IRON_ORE,
     ) {
         val r = radius.toInt() + 1
         for (dy in -r..r) {
@@ -109,7 +126,7 @@ class OverworldGenerator(
                 val pos = center.plus(dx, dy)
                 if (getTile(pos) != Tiles.STONE) continue
                 if (rng.nextFloat() < 1f - (dist / radius) * 0.5f)
-                    setTile(pos, Tiles.IRON_ORE)
+                    setTile(pos, targetTile)
             }
         }
     }

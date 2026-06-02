@@ -1,6 +1,5 @@
 package me.orange.game.craft
 
-import me.orange.game.craft.CraftingStationType.CRAFTING_TABLE
 import me.orange.game.craft.CraftingStationType.FURNACE
 
 /**
@@ -9,20 +8,15 @@ import me.orange.game.craft.CraftingStationType.FURNACE
  */
 @Suppress("unused") // recipe vals exist only to run register() at object init; read via RecipeRegistry
 object Recipes {
-    val CRAFTING_TABLE_RECIPE = RecipeRegistry.register("crafting_table") {
-        ingredient("dirt", 4)
-        output("crafting_table", 1)
-    }
-
     val FURNACE_RECIPE = RecipeRegistry.register("furnace") {
-        station(CRAFTING_TABLE)
         ingredient("stone", 8)
         output("furnace", 1)
     }
 
     val IRON_INGOT_RECIPE = RecipeRegistry.register("iron_ingot") {
         station(FURNACE)
-        ingredient("iron_chunk", 3)
+        ingredient("coal", 1)
+        ingredient("iron_chunk", 2)
         output("iron_ingot", 1)
     }
 
