@@ -8,6 +8,8 @@ import me.orange.bot.events.commands.TestCommand
 import me.orange.bot.events.interactions.ChangeSettingInteraction
 import me.orange.bot.events.interactions.CraftSelectInteraction
 import me.orange.bot.events.interactions.InputInteraction
+import me.orange.bot.events.interactions.ItemInfoInteraction
+import me.orange.bot.events.interactions.ItemRecipesInteraction
 import me.orange.bot.events.interactions.PlayInteraction
 import me.orange.bot.events.interactions.SelectSettingInteraction
 import me.orange.game.preferences.Preference
@@ -52,6 +54,8 @@ object EventHandler {
         PlayInteraction,
         SelectSettingInteraction,
         CraftSelectInteraction,
+        ItemInfoInteraction,
+        ItemRecipesInteraction,
     )
 
     fun registerEvents(jda: JDA) {

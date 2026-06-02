@@ -5,7 +5,7 @@ package me.orange.game.craft
  * (custom-or-unicode) and themes both the world Craft button and the crafting view.
  */
 enum class CraftingStationType(val emojiKey: String) {
-    NONE("craft_icon"),
+    NONE("crafting_table"),
     CRAFTING_TABLE("crafting_table"),
     FURNACE("furnace"),
 }

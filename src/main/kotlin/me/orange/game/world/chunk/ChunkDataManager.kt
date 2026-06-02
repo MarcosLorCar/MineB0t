@@ -2,6 +2,7 @@ package me.orange.game.world.chunk
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
+import me.orange.bot.MineB0t
 import me.orange.game.utils.Vec
 import me.orange.game.world.World
 import java.io.File
@@ -15,7 +16,13 @@ class ChunkDataManager(
 
         if (!file.exists()) return null
 
-        return Cbor.decodeFromByteArray(Chunk.serializer(), file.readBytes())
+        return try {
+            Cbor.decodeFromByteArray(Chunk.serializer(), file.readBytes())
+        } catch (e: Exception) {
+            MineB0t.log("Discarding unreadable chunk $chunkPos (${e.message}), will regenerate")
+            file.delete()
+            null
+        }
     }
 
     @OptIn(ExperimentalSerializationApi::class)

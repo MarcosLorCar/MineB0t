@@ -1,6 +1,7 @@
 package me.orange.game.player.action
 
 import me.orange.bot.Emojis
+import me.orange.game.craft.RecipeRegistry
 import me.orange.game.player.Player
 import me.orange.game.player.GameMode
 import me.orange.game.utils.Vec
@@ -57,9 +58,9 @@ class PlayerActionMenu(
     fun getInventoryActions(): MutableList<LayoutComponent> {
         val actions = mutableListOf<LayoutComponent>()
 
-        // Row 1: [ ] [↑] [close]
+        // Row 1: [info] [↑] [close]
         actions.add(ActionRow.of(
-            getPlaceholderButton(),
+            getItemInfoButton(),
             inventoryNavButton("up"),
             Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.getEmoji("return")),
         ))
@@ -71,11 +72,11 @@ class PlayerActionMenu(
             inventoryNavButton("right"),
         ))
 
-        // Row 3: [ ] [↓] [ ]
+        // Row 3: [recipes] [↓] [capacity]
         actions.add(ActionRow.of(
-            getPlaceholderButton(),
+            getItemRecipesButton(),
             inventoryNavButton("down"),
-            getPlaceholderButton(),
+            getCapacityButton(),
         ))
 
         return actions
@@ -113,6 +114,23 @@ class PlayerActionMenu(
             Button.of(ButtonStyle.SECONDARY, "inventoryPreview", Emojis.getEmoji("null")).asDisabled()
         else
             Button.of(ButtonStyle.SECONDARY, "inventoryPreview", " ${selectedItemStack.count}", selectedItemStack.item.emoji).asDisabled()
+    }
+
+    private fun getItemInfoButton(): Button {
+        val hasItem = player.inventory.getSelectedItemStack() != null
+        return Button.of(ButtonStyle.SECONDARY, "itemInfo", Emojis.getEmoji("info")).withDisabled(!hasItem)
+    }
+
+    private fun getCapacityButton(): Button {
+        val used = player.inventory.contents.size
+        val max = player.inventory.size.x * player.inventory.size.y
+        return Button.of(ButtonStyle.SECONDARY, "inventoryCapacity", "$used/$max", Emojis.getCustom("backpack")).asDisabled()
+    }
+
+    private fun getItemRecipesButton(): Button {
+        val item = player.inventory.getSelectedItemStack()?.item
+        val hasRecipes = item != null && RecipeRegistry.getRecipesByIngredient(item).isNotEmpty()
+        return Button.of(ButtonStyle.SECONDARY, "itemRecipes", Emojis.get("crafting_table")).withDisabled(!hasRecipes)
     }
 
     private fun moveButton(move: Vec, inputStr: String): Button = with(player) {

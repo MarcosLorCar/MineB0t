@@ -16,6 +16,7 @@ object Emojis {
         "other_body" to Emoji.fromUnicode("\uD83E\uDDBA"),
         "return" to Emoji.fromUnicode("↩\uFE0F"),
         "selected" to Emoji.fromUnicode("\uD83D\uDD3C"),
+        "info" to Emoji.fromUnicode("\u2139\uFE0F"),
         // Crafting station / item fallbacks (no custom Discord emoji yet)
         "crafting_table" to Emoji.fromUnicode("\uD83D\uDEE0\uFE0F"),
         "furnace" to Emoji.fromUnicode("\uD83C\uDFED"),
