@@ -20,7 +20,7 @@ class InventoryRenderer(
         contents.forEachIndexed { index, stack ->
             val content = stack.count.toString().toCharArray().map { c -> Emojis.getNumber(c.digitToInt()) }.toMutableList()
             if (selectedSlot == index)
-                content.add("\n${Emojis.getCustom("up").formatted}")
+                content.add("\n${Emojis.getFormatted("up")}")
             builder.addField(
                 stack.item.emoji.formatted,
                 content.joinToString(""),

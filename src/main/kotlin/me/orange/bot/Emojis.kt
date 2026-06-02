@@ -1,7 +1,6 @@
 package me.orange.bot
 
 import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.entities.emoji.CustomEmoji
 import net.dv8tion.jda.api.entities.emoji.Emoji
 
 object Emojis {
@@ -22,7 +21,6 @@ object Emojis {
         "furnace" to Emoji.fromUnicode("\uD83C\uDFED"),
         "iron_ingot" to Emoji.fromUnicode("\uD83D\uDD29"),
         // TODO: replace with custom Discord emojis once uploaded
-        "coal_ore" to Emoji.fromUnicode("\uD83E\uDEA8"),
         "coal" to Emoji.fromUnicode("\u26AB"),
     )
 
@@ -44,11 +42,20 @@ object Emojis {
         loadEmoji("craft_icon", "_", 1369251709557149716)
 
         // Block emojis
-        loadEmoji("air", "_", 1356533932765741216)
-        loadEmoji("dirt", "_", 1356538992111128657)
-        loadEmoji("grass", "_", 1356538859487236231)
-        loadEmoji("stone", "_", 1443753913739378862)
-        loadEmoji("iron_ore", "_", 1365275718006866011)
+        loadEmoji("air", "_", 1511480218806911057)
+        loadEmoji("dirt", "_", 1511485086409691238)
+        loadEmoji("dirt_2", "_", 1511485099512827977)
+        loadEmoji("grass", "_", 1511481157680894143)
+        loadEmoji("stone", "_", 1511481647504167043)
+        loadEmoji("stone_2", "_", 1511482399719034971)
+        loadEmoji("iron_ore", "_", 1511494463191515156)
+        loadEmoji("iron_ore_1", "_", 1511495090286235780)
+        loadEmoji("iron_ore_2", "_", 1511495130794692890)
+        loadEmoji("iron_ore_3", "_", 1511497061210656868)
+        loadEmoji("iron_ore_4", "_", 1511497113618485292)
+        loadEmoji("iron_ore_5", "_", 1511497167993569430)
+        loadEmoji("coal_ore", "_", 1511478214466211971)
+
 
         // Item emojis
         loadEmoji("iron_chunk", "iron_chunk", 1365268724118065224)
@@ -83,16 +90,15 @@ object Emojis {
         }
     }
 
-    fun getCustom(name: String): CustomEmoji {
-        val emojiData = customEmoji[name]!!
-        return Emoji.fromCustom(emojiData.first, emojiData.second, emojiData.third)
-    }
+    fun get(name: String): Emoji =
+        if (customEmoji.containsKey(name)) {
+            val d = customEmoji[name]!!
+            Emoji.fromCustom(d.first, d.second, d.third)
+        } else {
+            emojis[name]!!
+        }
 
-    /** Custom emoji if one is loaded under [name], otherwise the unicode fallback. */
-    fun get(name: String): Emoji = if (customEmoji.containsKey(name)) getCustom(name) else getEmoji(name)
-
-    fun getEmoji(name: String) = emojis[name]!!
-    fun getEmojiCode(name: String): String = emojis[name]!!.formatted
+    fun getFormatted(name: String): String = get(name).formatted
 
     fun getNumber(i: Int) = when (i) {
         0 -> "0\uFE0F⃣"
@@ -105,6 +111,6 @@ object Emojis {
         7 -> "7\uFE0F⃣"
         8 -> "8\uFE0F⃣"
         9 -> "9\uFE0F⃣"
-        else -> getEmoji("null").formatted
+        else -> getFormatted("null")
     }
 }

@@ -63,9 +63,9 @@ class CraftingRenderer(
             .build()
 
         val nav = ActionRow.of(
-            Button.of(ButtonStyle.SECONDARY, "craft_prev", Emojis.getCustom("left")).withDisabled(page == 0),
-            Button.of(ButtonStyle.SECONDARY, "craft_close", Emojis.getEmoji("return")),
-            Button.of(ButtonStyle.SECONDARY, "craft_next", Emojis.getCustom("right")).withDisabled(page >= pageCount - 1),
+            Button.of(ButtonStyle.SECONDARY, "craft_prev", Emojis.get("left")).withDisabled(page == 0),
+            Button.of(ButtonStyle.SECONDARY, "craft_close", Emojis.get("return")),
+            Button.of(ButtonStyle.SECONDARY, "craft_next", Emojis.get("right")).withDisabled(page >= pageCount - 1),
         )
 
         val craftableOnPage = pageRecipes.filter { it.id in craftableIds }

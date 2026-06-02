@@ -16,7 +16,7 @@ class Item(
     fun getTile(): Tile? = tileKey?.let { TileRegistry.getTile(TileRegistry.getID(it)) }
 
     class Builder(val key: String) {
-        var emoji: Emoji = if (Emojis.customEmoji.containsKey(key)) Emojis.getCustom(key) else Emojis.getEmoji(key)
+        var emoji: Emoji = Emojis.get(key)
         var maxCount: Int = 16
         var tileKey: String? = null
         var description: String? = null

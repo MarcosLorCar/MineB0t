@@ -62,7 +62,7 @@ class PlayerActionMenu(
         actions.add(ActionRow.of(
             getItemInfoButton(),
             inventoryNavButton("up"),
-            Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.getEmoji("return")),
+            Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.get("return")),
         ))
 
         // Row 2: [←] [preview] [→]
@@ -83,22 +83,22 @@ class PlayerActionMenu(
     }
 
     private fun inventoryNavButton(direction: String): Button =
-        Button.of(ButtonStyle.SECONDARY, "inventory_$direction", Emojis.getCustom(direction))
+        Button.of(ButtonStyle.SECONDARY, "inventory_$direction", Emojis.get(direction))
 
     @OptIn(ExperimentalUuidApi::class)
     fun getPlaceholderButton(): Button =
-        Button.of(ButtonStyle.SECONDARY, Uuid.random().toString(), Emojis.getEmoji("null")).asDisabled()
+        Button.of(ButtonStyle.SECONDARY, Uuid.random().toString(), Emojis.get("null")).asDisabled()
 
     fun getModeButton(): Button = with(player) {
         val style = if (gameMode == GameMode.PLACE) ButtonStyle.SUCCESS else ButtonStyle.DANGER
-        val emoji = if (gameMode == GameMode.PLACE) Emojis.getEmoji("place") else Emojis.getEmoji("break")
+        val emoji = if (gameMode == GameMode.PLACE) Emojis.get("place") else Emojis.get("break")
         val newMode = if (gameMode == GameMode.PLACE) "break" else "place"
 
         return Button.of(style, "changeMode_$newMode", emoji)
     }
 
     fun getInventoryButton(): Button =
-        Button.of(ButtonStyle.SECONDARY, "inventory_open", Emojis.getCustom("backpack"))
+        Button.of(ButtonStyle.SECONDARY, "inventory_open", Emojis.get("backpack"))
         .withDisabled(player.inventory.isEmpty())
 
     fun getCraftingButton(): Button {
@@ -111,20 +111,20 @@ class PlayerActionMenu(
     fun getInventoryPreviewButton(): Button {
         val selectedItemStack = player.inventory.getSelectedItemStack()
         return if (selectedItemStack == null)
-            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", Emojis.getEmoji("null")).asDisabled()
+            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", Emojis.get("null")).asDisabled()
         else
             Button.of(ButtonStyle.SECONDARY, "inventoryPreview", " ${selectedItemStack.count}", selectedItemStack.item.emoji).asDisabled()
     }
 
     private fun getItemInfoButton(): Button {
         val hasItem = player.inventory.getSelectedItemStack() != null
-        return Button.of(ButtonStyle.SECONDARY, "itemInfo", Emojis.getEmoji("info")).withDisabled(!hasItem)
+        return Button.of(ButtonStyle.SECONDARY, "itemInfo", Emojis.get("info")).withDisabled(!hasItem)
     }
 
     private fun getCapacityButton(): Button {
         val used = player.inventory.contents.size
         val max = player.inventory.size.x * player.inventory.size.y
-        return Button.of(ButtonStyle.SECONDARY, "inventoryCapacity", "$used/$max", Emojis.getCustom("backpack")).asDisabled()
+        return Button.of(ButtonStyle.SECONDARY, "inventoryCapacity", "$used/$max", Emojis.get("backpack")).asDisabled()
     }
 
     private fun getItemRecipesButton(): Button {
@@ -137,7 +137,7 @@ class PlayerActionMenu(
         Button.of(
             ButtonStyle.PRIMARY,
             "move_$inputStr",
-            Emojis.getCustom("move_$inputStr"),
+            Emojis.get("move_$inputStr"),
         ).withDisabled(!run {
             // Determine if the button should be enabled
 
@@ -151,7 +151,7 @@ class PlayerActionMenu(
     }
 
     private fun actionButton(inputStr: String, emojiCode: String, style: ButtonStyle): Button {
-        return Button.of(style, "action_$inputStr", Emojis.getCustom(emojiCode))
+        return Button.of(style, "action_$inputStr", Emojis.get(emojiCode))
             .withDisabled(!run {
                 // return ENABLED state
 
