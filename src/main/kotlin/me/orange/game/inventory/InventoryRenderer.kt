@@ -9,6 +9,7 @@ class InventoryRenderer(
 ) {
     companion object {
         const val INVENTORY_COLOR = 11954716
+        const val INVENTORY_COLS = 3
     }
 
     fun getEmbed(): MessageEmbed? = with(inventory) {

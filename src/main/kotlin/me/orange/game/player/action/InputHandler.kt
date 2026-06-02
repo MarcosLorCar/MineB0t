@@ -1,13 +1,11 @@
 package me.orange.game.player.action
 
-import me.orange.bot.Emojis
 import me.orange.bot.MineB0t
+import me.orange.game.inventory.InventoryRenderer
 import me.orange.game.player.GameMode
 import me.orange.game.player.Player
 import me.orange.game.player.ViewState
 import me.orange.game.utils.Vec
-import net.dv8tion.jda.api.interactions.components.buttons.Button
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 
 class InputHandler(
     val player: Player
@@ -46,21 +44,39 @@ class InputHandler(
                 }
                 return@launch
             }
-            else -> {
-                // right or left was inputted so the select cursor moves
-                val value = getVecFromDir(arg).x
+            "left", "right" -> {
+                val delta = if (arg == "right") 1 else -1
                 val size = player.inventory.contents.size
-                val selectedSlot = player.inventory.selectedSlot
-                player.inventory.selectedSlot = (selectedSlot + value + size) % size
+                player.inventory.selectedSlot = if (player.gameMode == GameMode.PLACE) {
+                    nextPlaceableSlot(player.inventory.selectedSlot, delta, size)
+                } else {
+                    (player.inventory.selectedSlot + delta + size) % size
+                }
+            }
+            "up", "down" -> {
+                val delta = if (arg == "down") InventoryRenderer.INVENTORY_COLS else -InventoryRenderer.INVENTORY_COLS
+                val size = player.inventory.contents.size
+                player.inventory.selectedSlot = (player.inventory.selectedSlot + delta + size) % size
             }
         }
 
         player.queueAction { player ->
             player.hook
                 ?.editOriginalEmbeds(player.inventory.getEmbed()!!)
-                ?.setActionRow(selectButton("left") ,returnButton(), selectButton("right"))
+                ?.setComponents(player.getInventoryActions())
                 ?.queue()
         }
+    }
+
+    private fun nextPlaceableSlot(fromSlot: Int, delta: Int, size: Int): Int {
+        var candidate = (fromSlot + delta + size) % size
+        var steps = 0
+        while (steps < size) {
+            if (player.inventory.contents[candidate].item.getTile() != null) return candidate
+            candidate = (candidate + delta + size) % size
+            steps++
+        }
+        return fromSlot
     }
 
     private fun handleCraft(arg: String) = MineB0t.launch {
@@ -84,18 +100,10 @@ class InputHandler(
                 it.viewState = ViewState.CRAFTING
                 it.game.playerCraftUiCache.remove(it.id)
             }
-            "prev" -> player.queueAction { it.recipeManager.craftPage-- }
-            "next" -> player.queueAction { it.recipeManager.craftPage++ }
+            "prev" -> player.queueAction { it.recipeManager.craftPage--; it.game.renderCrafting(it) }
+            "next" -> player.queueAction { it.recipeManager.craftPage++; it.game.renderCrafting(it) }
         }
-
-        player.queueAction { it.game.renderCrafting(it) }
     }
-
-    private fun returnButton(): Button =
-        Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.getEmoji("return"))
-
-    private fun selectButton(direction: String): Button =
-        Button.of(ButtonStyle.SECONDARY, "inventory_$direction", Emojis.getCustom(direction))
 
     private fun handleAction(args: List<String>) {
         val actionType = player.gameMode

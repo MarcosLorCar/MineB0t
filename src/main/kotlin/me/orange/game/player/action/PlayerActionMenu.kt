@@ -54,6 +54,36 @@ class PlayerActionMenu(
         return actions
     }
 
+    fun getInventoryActions(): MutableList<LayoutComponent> {
+        val actions = mutableListOf<LayoutComponent>()
+
+        // Row 1: [ ] [↑] [close]
+        actions.add(ActionRow.of(
+            getPlaceholderButton(),
+            inventoryNavButton("up"),
+            Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.getEmoji("return")),
+        ))
+
+        // Row 2: [←] [preview] [→]
+        actions.add(ActionRow.of(
+            inventoryNavButton("left"),
+            getInventoryPreviewButton(),
+            inventoryNavButton("right"),
+        ))
+
+        // Row 3: [ ] [↓] [ ]
+        actions.add(ActionRow.of(
+            getPlaceholderButton(),
+            inventoryNavButton("down"),
+            getPlaceholderButton(),
+        ))
+
+        return actions
+    }
+
+    private fun inventoryNavButton(direction: String): Button =
+        Button.of(ButtonStyle.SECONDARY, "inventory_$direction", Emojis.getCustom(direction))
+
     @OptIn(ExperimentalUuidApi::class)
     fun getPlaceholderButton(): Button =
         Button.of(ButtonStyle.SECONDARY, Uuid.random().toString(), Emojis.getEmoji("null")).asDisabled()

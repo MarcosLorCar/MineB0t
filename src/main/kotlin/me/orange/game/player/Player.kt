@@ -64,6 +64,7 @@ class Player(
     fun canStepUp(pos: Vec, move: Vec): Boolean = actionMenu.canStepUp(pos, move)
     fun fall() = movement.fall()
     fun getActions(): MutableList<LayoutComponent> = actionMenu.getActions()
+    fun getInventoryActions(): MutableList<LayoutComponent> = actionMenu.getInventoryActions()
     fun queueAction(action: (Player) -> Unit) = actionQueue.queueAction(action)
     fun applyQueuedActions() = actionQueue.applyQueuedActions()
     fun placeTile(player: Player, pos: Vec) = game.placeTile(player, pos)
