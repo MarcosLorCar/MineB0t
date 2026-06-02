@@ -1,6 +1,6 @@
-package me.orange.bot.console.commands
+package me.orange.console.commands
 
-import me.orange.bot.console.ConsoleCommand
+import me.orange.console.ConsoleCommand
 import me.orange.game.GamesManager
 
 object SaveCommand : ConsoleCommand(name = "save", description = "Save all active games to disk") {

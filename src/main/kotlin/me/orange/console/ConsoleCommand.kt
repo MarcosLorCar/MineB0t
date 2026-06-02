@@ -1,4 +1,4 @@
-package me.orange.bot.console
+package me.orange.console
 
 abstract class ConsoleCommand(
     val name: String,

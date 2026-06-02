@@ -1,6 +1,6 @@
-package me.orange.events.commands
+package me.orange.bot.events.commands
 
-import me.orange.events.base.SlashCommand
+import me.orange.bot.events.base.SlashCommand
 
 object TestCommand : SlashCommand(
     id = "test2",

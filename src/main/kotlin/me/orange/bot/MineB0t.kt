@@ -1,8 +1,8 @@
 ﻿package me.orange.bot
 
 import kotlinx.coroutines.*
-import me.orange.bot.console.ConsoleCommandHandler
-import me.orange.events.EventHandler
+import me.orange.console.ConsoleCommandHandler
+import me.orange.bot.events.EventHandler
 import me.orange.game.GamesManager
 import me.orange.game.craft.Recipes
 import me.orange.game.inventory.Items

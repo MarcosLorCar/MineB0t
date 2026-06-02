@@ -1,15 +1,15 @@
-package me.orange.events
+package me.orange.bot.events
 
 import me.orange.bot.MineB0t
-import me.orange.events.commands.PlayCommand
-import me.orange.events.commands.PreferencesCommand
-import me.orange.events.commands.SetHeadCommand
-import me.orange.events.commands.TestCommand
-import me.orange.events.interactions.ChangeSettingInteraction
-import me.orange.events.interactions.CraftSelectInteraction
-import me.orange.events.interactions.InputInteraction
-import me.orange.events.interactions.PlayInteraction
-import me.orange.events.interactions.SelectSettingInteraction
+import me.orange.bot.events.commands.PlayCommand
+import me.orange.bot.events.commands.PreferencesCommand
+import me.orange.bot.events.commands.SetHeadCommand
+import me.orange.bot.events.commands.TestCommand
+import me.orange.bot.events.interactions.ChangeSettingInteraction
+import me.orange.bot.events.interactions.CraftSelectInteraction
+import me.orange.bot.events.interactions.InputInteraction
+import me.orange.bot.events.interactions.PlayInteraction
+import me.orange.bot.events.interactions.SelectSettingInteraction
 import me.orange.game.preferences.Preference
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild

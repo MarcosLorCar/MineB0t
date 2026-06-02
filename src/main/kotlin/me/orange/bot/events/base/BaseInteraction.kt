@@ -1,4 +1,4 @@
-package me.orange.events.base
+package me.orange.bot.events.base
 
 import me.orange.bot.MineB0t
 import net.dv8tion.jda.api.events.Event

@@ -1,11 +1,12 @@
-package me.orange.events.commands
+package me.orange.bot.events.commands
 
-import me.orange.events.base.SlashCommand
+import me.orange.bot.events.base.SlashCommand
 import me.orange.game.GamesManager
 import me.orange.game.preferences.Preference
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import java.text.BreakIterator
 
 object SetHeadCommand : SlashCommand(
     id = "settings-head",
@@ -33,10 +34,10 @@ private fun isValidHeadEmoji(input: String): Boolean {
     // Custom Discord emoji: <:name:id> or <a:name:id>
     if (input.matches(Regex("<a?:[a-zA-Z0-9_]+:\\d+>"))) return true
     // Single Unicode grapheme cluster with the first codepoint in the emoji range (above basic Latin)
-    val bi = java.text.BreakIterator.getCharacterInstance()
+    val bi = BreakIterator.getCharacterInstance()
     bi.setText(input)
     bi.first()
     val end = bi.next()
-    if (end == java.text.BreakIterator.DONE || end != input.length) return false
+    if (end == BreakIterator.DONE || end != input.length) return false
     return input.codePointAt(0) > 0x2000
 }

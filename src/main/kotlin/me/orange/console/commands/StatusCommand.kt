@@ -1,6 +1,6 @@
-package me.orange.bot.console.commands
+package me.orange.console.commands
 
-import me.orange.bot.console.ConsoleCommand
+import me.orange.console.ConsoleCommand
 import me.orange.game.GamesManager
 
 object StatusCommand : ConsoleCommand(name = "status", description = "Show the number of active games") {

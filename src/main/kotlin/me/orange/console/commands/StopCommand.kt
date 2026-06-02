@@ -1,6 +1,6 @@
-package me.orange.bot.console.commands
+package me.orange.console.commands
 
-import me.orange.bot.console.ConsoleCommand
+import me.orange.console.ConsoleCommand
 import kotlin.system.exitProcess
 
 object StopCommand : ConsoleCommand(name = "stop", description = "Stop the bot") {

@@ -1,6 +1,6 @@
-package me.orange.events.interactions
+package me.orange.bot.events.interactions
 
-import me.orange.events.base.StringSelectInteraction
+import me.orange.bot.events.base.StringSelectInteraction
 import me.orange.game.GamesManager
 import me.orange.game.player.Player
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent

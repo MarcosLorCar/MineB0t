@@ -1,8 +1,8 @@
-package me.orange.bot.console
+package me.orange.console
 
-import me.orange.bot.console.commands.SaveCommand
-import me.orange.bot.console.commands.StatusCommand
-import me.orange.bot.console.commands.StopCommand
+import me.orange.console.commands.SaveCommand
+import me.orange.console.commands.StatusCommand
+import me.orange.console.commands.StopCommand
 
 object ConsoleCommandHandler {
     private val commands: List<ConsoleCommand> = listOf(
