@@ -91,7 +91,10 @@ object EventHandler {
                 ).addOptions(command.options))
             }
 
-            updateCommands.queue()
+            updateCommands.queue(
+                { MineB0t.log("Registered ${it.size} commands in guild ${guild.id}") },
+                { MineB0t.log("Failed to register commands in guild ${guild.id}: ${it.message}") }
+            )
         }
     }
 }

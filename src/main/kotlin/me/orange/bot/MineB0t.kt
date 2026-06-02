@@ -27,13 +27,12 @@ object MineB0t {
         installPromptAwareOutput()
         val token = System.getenv("DISCORD_BOT_TOKEN") ?: error("Missing token!")
         jda = JDABuilder.createDefault(token).build()
+        EventHandler.registerEvents(jda)
         jda.awaitReady()
 
         Runtime.getRuntime().addShutdownHook(Thread {
             stop()
         })
-
-        EventHandler.registerEvents(jda)
         Emojis.loadEmojis()
         Emojis.validate(jda)
 

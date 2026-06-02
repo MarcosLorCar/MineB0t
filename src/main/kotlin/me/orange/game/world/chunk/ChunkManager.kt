@@ -1,6 +1,7 @@
 package me.orange.game.world.chunk
 
 import kotlinx.coroutines.*
+import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.utils.Vec
 import me.orange.game.world.World
@@ -20,9 +21,6 @@ class ChunkManager(
     private val loadingChunks = ConcurrentHashMap<Vec, CompletableDeferred<Unit>>()
     val players: MutableMap<Vec, MutableList<Long>> = mutableMapOf()
 
-    companion object {
-        private const val UNLOAD_DELAY = 30_000L
-    }
 
     suspend fun ensureChunksLoadedAround(vec: Vec, async: Boolean = true) {
         val centerChunk = vec.toChunkPos()
@@ -97,7 +95,7 @@ class ChunkManager(
 
      fun unloadUnusedChunks() {
         val currentTime = System.currentTimeMillis()
-        val toRemove = chunkLastUsed.filterValues { currentTime - it > UNLOAD_DELAY }.keys
+        val toRemove = chunkLastUsed.filterValues { currentTime - it > Config.CHUNK_UNLOAD_DELAY }.keys
 
         toRemove.forEach { chunkPos ->
             chunkDataManager.saveData(chunks[chunkPos])
@@ -130,8 +128,7 @@ class ChunkManager(
     }
 
     fun saveChunks() {
-        chunks.forEach { (pos, chunk) ->
-            MineB0t.log("Saving chunk $pos")
+        chunks.forEach { (_, chunk) ->
             chunkDataManager.saveData(chunk)
         }
     }

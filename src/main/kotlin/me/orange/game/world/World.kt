@@ -44,6 +44,29 @@ class World(
     }
 
     /**
+     * Resolves [pos] to the nearest safe standing position (both feet and head airy, resting on solid
+     * ground). First pushes upward to escape any solid block, then drops down to the ground. Stops
+     * early if a chunk boundary is not loaded. Call after ensureChunksLoadedAround for best results.
+     */
+    fun settle(pos: Vec): Vec {
+        var y = pos.y
+        // Push up until both feet and head are airy (or chunk unloaded — stop there)
+        for (i in 0 until 64) {
+            val feet = getTile(Vec(pos.x, y)) ?: break
+            val head = getTile(Vec(pos.x, y + 1)) ?: break
+            if (feet.airy && head.airy) break
+            y++
+        }
+        // Fall down to rest on the first solid tile
+        while (true) {
+            val below = getTile(Vec(pos.x, y - 1)) ?: break
+            if (!below.airy) break
+            y--
+        }
+        return Vec(pos.x, y)
+    }
+
+    /**
      * The crafting station the player at [pos] can use. The player occupies [pos] and [pos]+(0,1),
      * so a solid station block sits directly under their feet at [pos]+(0,-1); an airy "pad" station
      * would overlap [pos]. First non-NONE in that candidate set wins; NONE if none (or chunk unloaded).

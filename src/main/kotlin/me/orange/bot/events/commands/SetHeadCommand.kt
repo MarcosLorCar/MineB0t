@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import java.text.BreakIterator
 
 object SetHeadCommand : SlashCommand(
-    id = "settings-head",
+    id = "set-head",
     description = "Set your head emoji to any emoji you like",
     options = listOf(
         OptionData(OptionType.STRING, "emoji", "The emoji to use as your head", true)
