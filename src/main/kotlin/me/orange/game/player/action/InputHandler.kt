@@ -20,8 +20,18 @@ class InputHandler(
             "changeMode" -> handleChangeMode(inputArgs[0])
 
             "action" -> handleAction(inputArgs)
+            "forceBreak" -> handleBreak(inputArgs)
+            "forcePlace" -> handlePlace(inputArgs)
+            "dual" -> {
+                val sep = inputArgs.indexOf("and")
+                if (sep < 0) return
+                val vecH = inputArgs.take(sep).fold(Vec(0, 0)) { acc, s -> acc + getVecFromDir(s) }
+                val vecD = inputArgs.drop(sep + 1).fold(Vec(0, 0)) { acc, s -> acc + getVecFromDir(s) }
+                handleDualAction(vecH, vecD)
+            }
 
             "inventory" -> handleInventory(inputArgs[0])
+            "hotbar" -> handleHotbar(inputArgs[0])
 
             "craft" -> handleCraft(inputArgs[0])
         }
@@ -37,6 +47,7 @@ class InputHandler(
                 }
             }
             "close" -> {
+                recordSelectedAsRecent()
                 player.viewState = ViewState.WORLD
                 player.queueAction {
                     // Reset this player's view cache so that he gets the world rendered at least once
@@ -47,16 +58,18 @@ class InputHandler(
             "left", "right" -> {
                 val delta = if (arg == "right") 1 else -1
                 val size = player.inventory.contents.size
-                player.inventory.selectedSlot = if (player.gameMode == GameMode.PLACE) {
-                    nextPlaceableSlot(player.inventory.selectedSlot, delta, size)
-                } else {
-                    (player.inventory.selectedSlot + delta + size) % size
-                }
+                player.inventory.selectedSlot = (player.inventory.selectedSlot + delta + size) % size
             }
             "up", "down" -> {
-                val delta = if (arg == "down") InventoryRenderer.INVENTORY_COLS else -InventoryRenderer.INVENTORY_COLS
+                val delta = if (arg == "down") 1 else -1
+                val cols = InventoryRenderer.INVENTORY_COLS
                 val size = player.inventory.contents.size
-                player.inventory.selectedSlot = (player.inventory.selectedSlot + delta + size) % size
+                val col = player.inventory.selectedSlot % cols
+                val row = player.inventory.selectedSlot / cols
+                val totalRows = (size + cols - 1) / cols
+                val remainder = size % cols
+                val rowsInCol = if (remainder == 0 || col < remainder) totalRows else totalRows - 1
+                player.inventory.selectedSlot = ((row + delta + rowsInCol) % rowsInCol) * cols + col
             }
         }
 
@@ -68,15 +81,18 @@ class InputHandler(
         }
     }
 
-    private fun nextPlaceableSlot(fromSlot: Int, delta: Int, size: Int): Int {
-        var candidate = (fromSlot + delta + size) % size
-        var steps = 0
-        while (steps < size) {
-            if (player.inventory.contents[candidate].item.getTile() != null) return candidate
-            candidate = (candidate + delta + size) % size
-            steps++
-        }
-        return fromSlot
+    private fun handleHotbar(arg: String) {
+        val slotIndex = arg.toIntOrNull() ?: return
+        if (slotIndex < 0 || slotIndex >= player.inventory.contents.size) return
+        recordSelectedAsRecent()
+        player.queueAction { p -> p.inventory.selectedSlot = slotIndex }
+    }
+
+    private fun recordSelectedAsRecent() {
+        val key = player.inventory.getSelectedItemStack()?.itemKey ?: return
+        player.recentItems.remove(key)
+        player.recentItems.add(0, key)
+        if (player.recentItems.size > 5) player.recentItems.removeAt(5)
     }
 
     private fun handleCraft(arg: String) = MineB0t.launch {
@@ -113,6 +129,26 @@ class InputHandler(
             GameMode.PLACE -> handlePlace(actionArgs)
 
             GameMode.BREAK -> handleBreak(actionArgs)
+        }
+    }
+
+    private fun handleDualAction(vecH: Vec, vecD: Vec) = player.queueAction { player ->
+        when (player.gameMode) {
+            GameMode.BREAK -> {
+                player.breakTile(player, player.pos + vecH)
+                player.breakTile(player, player.pos + vecD)
+            }
+            GameMode.PLACE -> {
+                val item = player.inventory.getSelectedItemStack()?.item ?: return@queueAction
+                player.placeTile(player, player.pos + vecH)
+                // Only place diagonally if the same item still exists in inventory (prevents
+                // auto-selected next stack from being consumed as the second placement)
+                val idx = player.inventory.contents.indexOfFirst { it.item == item }
+                if (idx >= 0) {
+                    player.inventory.selectedSlot = idx
+                    player.placeTile(player, player.pos + vecD)
+                }
+            }
         }
     }
 

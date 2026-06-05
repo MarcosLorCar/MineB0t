@@ -9,6 +9,7 @@ import me.orange.bot.events.interactions.ChangeSettingInteraction
 import me.orange.bot.events.interactions.CraftSelectInteraction
 import me.orange.bot.events.interactions.InputInteraction
 import me.orange.bot.events.interactions.ItemInfoInteraction
+import me.orange.bot.events.interactions.HotbarInteraction
 import me.orange.bot.events.interactions.ItemRecipesInteraction
 import me.orange.bot.events.interactions.PlayInteraction
 import me.orange.bot.events.interactions.SelectSettingInteraction
@@ -33,6 +34,12 @@ object EventHandler {
         InputInteraction("move_right"),
         InputInteraction("changeMode_place"),
         InputInteraction("changeMode_break"),
+        InputInteraction("action_left_up_up"),
+        InputInteraction("action_right_up_up"),
+        InputInteraction("dual_left_and_up_left"),
+        InputInteraction("dual_right_and_up_right"),
+        InputInteraction("forceBreak_up_up"),
+        InputInteraction("forcePlace_down"),
         InputInteraction("action_up_left"),
         InputInteraction("action_up_up"),
         InputInteraction("action_up_right"),
@@ -51,6 +58,7 @@ object EventHandler {
         InputInteraction("craft_close"),
         InputInteraction("craft_prev"),
         InputInteraction("craft_next"),
+        HotbarInteraction,
         PlayInteraction,
         SelectSettingInteraction,
         CraftSelectInteraction,
@@ -96,8 +104,8 @@ object EventHandler {
             }
 
             updateCommands.queue(
-                { MineB0t.log("Registered ${it.size} commands in guild ${guild.id}") },
-                { MineB0t.log("Failed to register commands in guild ${guild.id}: ${it.message}") }
+                { MineB0t.log("Registered ${it.size} commands in guild ${guild.name} (${guild.id})") },
+                { MineB0t.log("Failed to register commands in guild ${guild.name} (${guild.id}): ${it.message}") }
             )
         }
     }

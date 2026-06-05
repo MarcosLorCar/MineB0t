@@ -3,17 +3,15 @@ package me.orange.game.player.data
 import kotlinx.serialization.json.Json
 import me.orange.game.Game
 import me.orange.game.player.Player
+import me.orange.game.preferences.PreferencesManager
 import java.io.File
 
 class PlayerDataManager(
     private val player: Player
 ) {
     fun saveData() = with(player) {
-        val prefsData = game.preferencesManager.playerPreferences[id]
-            ?.entries
-            ?.associate { (pref, value) -> pref.name to value.toString() }
-            ?: emptyMap()
-        val data = PlayerData(pos, gameMode, inventory.getData(), recipeManager.knownRecipes.toSet(), prefsData)
+        PreferencesManager.savePreferences(id)
+        val data = PlayerData(pos, gameMode, inventory.getData(), recipeManager.knownRecipes.toSet(), recentItems = recentItems)
 
         val file = fileOf(id, player.game.gameDataDir)
 

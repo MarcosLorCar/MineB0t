@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import me.orange.game.utils.Vec
 
 class Inventory(
-    val size: Vec = Vec(5, 5),
+    val size: Vec = Vec(3, 4),
     val contents: MutableList<ItemStack> = mutableListOf(),
 ) {
     private val renderer = InventoryRenderer(this)

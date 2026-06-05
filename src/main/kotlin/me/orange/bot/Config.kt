@@ -2,6 +2,7 @@ package me.orange.bot
 
 object Config {
     const val GAME_DATA_DIR = "data/games"
+    const val PLAYER_DATA_DIR = "data/players"
 
     // Player
     const val SPAWNPOINT_DISPERSION = 7

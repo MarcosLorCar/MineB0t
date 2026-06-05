@@ -12,13 +12,15 @@ object SelectSettingInteraction : StringSelectInteraction(
     execute = { hook, event ->
         val game = GamesManager.getGame((event as StringSelectInteractionEvent).guild!!.id)
         val setting = Preference.valueOf(event.selectedOptions.first().value)
+        val playerId = (event as StringSelectInteractionEvent).user.idLong
+        val current = game.preferencesManager.getPreference<Any>(playerId, setting).toString()
         val newStringSelectMenu =
             StringSelectMenu.create(setting.name)
                 .addOptions(setting.options.map {
                     SelectOption.of(it.toString(), it.toString())
                 })
                 .build()
-        hook.editOriginal("Choose a new value for ${setting.name}")
+        hook.editOriginal("Currently: $current\nChoose a new value for ${setting.name}")
             .setActionRow(newStringSelectMenu).queue()
     }
 )

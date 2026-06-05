@@ -25,6 +25,7 @@ object MineB0t {
 
     fun start() = runBlocking {
         installPromptAwareOutput()
+        log("Bot starting...")
         val token = System.getenv("DISCORD_BOT_TOKEN") ?: error("Missing token!")
         jda = JDABuilder.createDefault(token).build()
         EventHandler.registerEvents(jda)

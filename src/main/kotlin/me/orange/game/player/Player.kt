@@ -8,6 +8,7 @@ import me.orange.game.player.action.PlayerActionMenu
 import me.orange.game.player.action.PlayerActionQueue
 import me.orange.game.player.data.PlayerDataManager
 import me.orange.game.player.offline.OfflinePlayer
+import me.orange.game.preferences.PreferencesManager
 import me.orange.game.utils.Vec
 import net.dv8tion.jda.api.interactions.InteractionHook
 import net.dv8tion.jda.api.interactions.components.LayoutComponent
@@ -21,17 +22,22 @@ class Player(
     var hook: InteractionHook? = null,
     val inventory: Inventory = Inventory(),
     knownRecipes: Set<String> = emptySet(),
+    recentItems: List<String> = emptyList(),
 ) : OfflinePlayer(id, pos, gameMode) {
     val recipeManager = RecipeManager(this, knownRecipes)
     var falling = false
     var viewState: ViewState = ViewState.WORLD
+    val recentItems: MutableList<String> = recentItems.toMutableList()
+    var name: String = "unknown"
+    var feedback: String? = null
+    var feedbackExpiry: Long = 0
 
     companion object {
         fun loadPlayer(id: Long, game: Game): Player? {
             val data = PlayerDataManager.loadData(id, game)
 
             return if (data != null) {
-                game.preferencesManager.loadPlayerPreferences(id, data.preferences)
+                PreferencesManager.loadPreferences(id, data.preferences)
                 Player(
                     id = id,
                     game = game,
@@ -40,6 +46,7 @@ class Player(
                     gameMode = data.gameMode,
                     inventory = Inventory.fromData(data.inventoryData),
                     knownRecipes = data.knownRecipes,
+                    recentItems = data.recentItems,
                 )
             } else null
         }

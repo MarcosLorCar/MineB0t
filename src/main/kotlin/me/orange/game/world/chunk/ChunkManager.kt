@@ -53,7 +53,9 @@ class ChunkManager(
         val deferred = CompletableDeferred<Unit>()
 
         loadingChunks.putIfAbsent(chunkPos, deferred)
-        chunks[chunkPos] = withContext(Dispatchers.IO) { chunkDataManager.loadData(chunkPos) } ?: generateChunk(chunkPos)
+        val loaded = withContext(Dispatchers.IO) { chunkDataManager.loadData(chunkPos) }
+        if (loaded == null) MineB0t.log("Generating chunk $chunkPos in guild ${world.game.guildName} (${world.game.guildId})")
+        chunks[chunkPos] = loaded ?: generateChunk(chunkPos)
         deferred.complete(Unit)
         loadingChunks.remove(chunkPos)
 
@@ -134,4 +136,8 @@ class ChunkManager(
     }
 
     fun getChunk(vec: Vec): Chunk? = chunks[vec]
+
+    /** Returns the first airy Y above the generated surface at column [x], or null if unavailable. */
+    fun surfaceY(x: Int): Int? = (chunkGenerator as? me.orange.game.world.generation.OverworldGenerator)
+        ?.run { heightMap(x) + 1 }
 }

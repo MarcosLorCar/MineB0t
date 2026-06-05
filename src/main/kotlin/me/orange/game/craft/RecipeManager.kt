@@ -1,5 +1,7 @@
 package me.orange.game.craft
 
+import me.orange.bot.Config
+import me.orange.bot.MineB0t
 import me.orange.game.inventory.ItemStack
 import me.orange.game.player.Player
 
@@ -61,6 +63,9 @@ class RecipeManager(
         recipe.ingredients.forEach { player.inventory.removeItems(it.itemKey, it.count) }
         player.inventory.addItem(ItemStack(recipe.result.itemKey, recipe.result.count))
         player.saveData()
+        player.feedback = "Crafted x${recipe.result.count} ${recipe.result.item.emoji.formatted}"
+        player.feedbackExpiry = player.game.time + Config.FPS * 3
+        MineB0t.log("Player ${player.name} (${player.id}) crafted ${recipe.result.count}x ${recipe.result.itemKey} (recipe: $recipeId)")
         return true
     }
 }

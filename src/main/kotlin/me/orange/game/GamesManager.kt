@@ -9,7 +9,10 @@ object GamesManager {
     fun startGame(guildId: String) : Game {
         if (games.containsKey(guildId)) return games[guildId]!!
 
-        val game = GameDataManager.loadGame(guildId) ?: newGame(guildId)
+        val game = GameDataManager.loadGame(guildId) ?: run {
+            MineB0t.log("No save data for guild $guildId, creating new game")
+            newGame(guildId)
+        }
 
         MineB0t.launch {
             game.run()

@@ -28,12 +28,13 @@ class GameDataManager(
     companion object {
         @OptIn(ExperimentalSerializationApi::class)
         fun loadGame(guildId: String) : Game? {
-            MineB0t.log("Loading game data for guild $guildId")
             val file = File("${Config.GAME_DATA_DIR}/$guildId/game.dat")
 
             if (!file.exists()) return null
 
+            MineB0t.log("Loading save data for guild $guildId")
             val gameData = Cbor.Default.decodeFromByteArray(GameData.serializer(), file.readBytes())
+            MineB0t.log("Loaded guild $guildId: seed=${gameData.worldSeed}, time=${gameData.time}")
 
             val game = Game(
                 guildId,

@@ -29,10 +29,9 @@ object ItemRecipesInteraction : BaseInteraction(
                 val lines = recipes.joinToString("\n") { recipe ->
                     val inputs = recipe.ingredients.joinToString(" + ") { stackStr(it) }
                     val result = stackStr(recipe.result)
-                    val station = if (recipe.requiredStation != CraftingStationType.NONE)
-                        " (${Emojis.get(recipe.requiredStation.emojiKey).formatted})"
-                    else ""
-                    "$inputs ➔ $result$station"
+                    val stationPrefix = if (recipe.requiredStation != CraftingStationType.NONE)
+                        "[${Emojis.get(recipe.requiredStation.emojiKey).formatted}] " else ""
+                    "$stationPrefix$inputs ➔ $result"
                 }
                 "**Recipes using ${item.displayName()}:**\n$lines"
             }

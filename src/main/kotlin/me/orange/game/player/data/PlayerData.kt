@@ -12,4 +12,5 @@ data class PlayerData(
     val inventoryData: InventoryData,
     val knownRecipes: Set<String> = emptySet(),
     val preferences: Map<String, String> = emptyMap(),
+    val recentItems: List<String> = emptyList(),
 )

@@ -15,17 +15,23 @@ class InventoryRenderer(
     fun getEmbed(): MessageEmbed? = with(inventory) {
         if (isEmpty()) return null
 
+        val air = Emojis.getFormatted("air")
+        val selectedIndicator = Emojis.getFormatted("left")
         val builder = EmbedBuilder()
 
         contents.forEachIndexed { index, stack ->
-            val content = stack.count.toString().toCharArray().map { c -> Emojis.getNumber(c.digitToInt()) }.toMutableList()
-            if (selectedSlot == index)
-                content.add("\n${Emojis.getFormatted("up")}")
-            builder.addField(
-                stack.item.emoji.formatted,
-                content.joinToString(""),
-                true
-            )
+            val indicator = if (selectedSlot == index) selectedIndicator else air
+            val digits = stack.count.toString().map { c -> Emojis.getNumber(c.digitToInt()) }
+            val countRow = if (digits.size == 1) "${digits[0]}$air" else digits.joinToString("")
+
+            builder.addField("${stack.item.emoji.formatted}$indicator", countRow, true)
+        }
+
+        val remainder = contents.size % INVENTORY_COLS
+        if (remainder != 0) {
+            repeat(INVENTORY_COLS - remainder) {
+                builder.addField("$air$air", "$air$air", true)
+            }
         }
 
         builder.setColor(INVENTORY_COLOR)

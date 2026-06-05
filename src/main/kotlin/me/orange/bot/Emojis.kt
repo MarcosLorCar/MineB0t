@@ -14,14 +14,15 @@ object Emojis {
         "group_head" to Emoji.fromUnicode("\uD83D\uDC65"),
         "other_body" to Emoji.fromUnicode("\uD83E\uDDBA"),
         "return" to Emoji.fromUnicode("↩\uFE0F"),
-        "selected" to Emoji.fromUnicode("\uD83D\uDD3C"),
+        "selected" to Emoji.fromUnicode("\u25C0\uFE0F"),
         "info" to Emoji.fromUnicode("\u2139\uFE0F"),
         // Crafting station / item fallbacks (no custom Discord emoji yet)
         "crafting_table" to Emoji.fromUnicode("\uD83D\uDEE0\uFE0F"),
         "furnace" to Emoji.fromUnicode("\uD83C\uDFED"),
         "iron_ingot" to Emoji.fromUnicode("\uD83D\uDD29"),
         // TODO: replace with custom Discord emojis once uploaded
-        "coal" to Emoji.fromUnicode("\u26AB"),
+        "left_up_up" to Emoji.fromUnicode("\u2196\uFE0F"),
+        "right_up_up" to Emoji.fromUnicode("\u2197\uFE0F"),
     )
 
     fun loadEmojis() {
@@ -33,6 +34,8 @@ object Emojis {
         loadEmoji("up_left", "up_left_arrow", 1352674935981604894)
         loadEmoji("up", "up_arrow", 1352674885016485899)
         loadEmoji("up_right", "up_right_arrow", 1352674845002961008)
+        loadEmoji("right_and_up_right", "dual_right_arrow", 1512409356765761566)
+        loadEmoji("left_and_up_left", "dual_left_arrow", 1512409355138629733)
         loadEmoji("left", "left_arrow", 1352674802053283860)
         loadEmoji("right", "right_arrow", 1352674713029050420)
         loadEmoji("down_left", "down_left_arrow", 1352674684931543160)
@@ -43,22 +46,31 @@ object Emojis {
 
         // Block emojis
         loadEmoji("air", "_", 1511480218806911057)
-        loadEmoji("dirt", "_", 1511485086409691238)
-        loadEmoji("dirt_2", "_", 1511485099512827977)
-        loadEmoji("grass", "_", 1511481157680894143)
-        loadEmoji("stone", "_", 1511481647504167043)
-        loadEmoji("stone_2", "_", 1511482399719034971)
-        loadEmoji("iron_ore", "_", 1511494463191515156)
-        loadEmoji("iron_ore_1", "_", 1511495090286235780)
-        loadEmoji("iron_ore_2", "_", 1511495130794692890)
-        loadEmoji("iron_ore_3", "_", 1511497061210656868)
-        loadEmoji("iron_ore_4", "_", 1511497113618485292)
-        loadEmoji("iron_ore_5", "_", 1511497167993569430)
-        loadEmoji("coal_ore", "_", 1511478214466211971)
 
+        loadEmoji("dirt", "_", 1512116994156138667)
+        loadEmoji("dirt_1", "_", 1512116995888381992)
+        loadEmoji("dirt_2", "_", 1512116996958064824)
+
+        loadEmoji("grass", "_", 1512125506114552009)
+        loadEmoji("grass_1", "_", 1512125507477573783)
+        loadEmoji("grass_2", "_", 1512126503247151185)
+
+        loadEmoji("stone", "_", 1512111539551862944)
+        loadEmoji("stone_2", "_", 1512111541028388895)
+
+        loadEmoji("iron_ore", "_", 1512121554392322118)
+        loadEmoji("iron_ore_1", "_", 1512121555440762941)
+
+        loadEmoji("coal_ore", "_", 1512124423623409855)
+        loadEmoji("coal_ore_1", "_", 1512124424588103842)
+
+        loadEmoji("red_shroom_tile", "_", 1512378160115875880)
+        loadEmoji("red_shroom_tile_1", "_", 1512378161294475367)
 
         // Item emojis
-        loadEmoji("iron_chunk", "iron_chunk", 1365268724118065224)
+        loadEmoji("iron_chunk", "iron_chunk", 1512391416322719804)
+        loadEmoji("coal", "coal", 1512391415265628200)
+        loadEmoji("red_shroom", "red_shroom", 1512378159054717009)
     }
 
     fun loadEmoji(name: String, nameId: String, id: Long, animated: Boolean = false) =

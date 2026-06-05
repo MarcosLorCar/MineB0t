@@ -12,7 +12,7 @@ import me.orange.game.world.tile.Tile
 import kotlin.random.Random
 
 class World(
-    game: Game,
+    val game: Game,
     val seed: Long,
 ) {
     val chunkManager = ChunkManager(this, OverworldGenerator(seed, this))
@@ -34,13 +34,11 @@ class World(
         return true
     }
 
-     suspend fun generateSpawnPoint(): Vec {
-         val dispersion = Config.SPAWNPOINT_DISPERSION
-
-         val spawnX = Random.nextInt(-dispersion, dispersion)
-         val spawnY = chunkManager.getHighestAt(spawnX)
-
-         return Vec(spawnX, spawnY)
+    suspend fun generateSpawnPoint(): Vec {
+        val dispersion = Config.SPAWNPOINT_DISPERSION
+        val spawnX = Random.nextInt(-dispersion, dispersion)
+        val spawnY = chunkManager.surfaceY(spawnX) ?: chunkManager.getHighestAt(spawnX)
+        return Vec(spawnX, spawnY)
     }
 
     /**

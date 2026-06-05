@@ -4,6 +4,7 @@ import me.orange.bot.Emojis
 import me.orange.game.craft.RecipeRegistry
 import me.orange.game.player.Player
 import me.orange.game.player.GameMode
+import me.orange.game.preferences.Preference
 import me.orange.game.utils.Vec
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.LayoutComponent
@@ -19,29 +20,53 @@ class PlayerActionMenu(
         val actions = mutableListOf<LayoutComponent>()
         val style = if (gameMode == GameMode.BREAK) ButtonStyle.DANGER else ButtonStyle.SUCCESS
 
-        // Row 1
+        val uiMode = player.game.preferencesManager.getPreference<String>(player.id, Preference.UI_MODE)
+        val moreActions = uiMode == "extended" || uiMode == "extended_hotbar"
+        val showHotbar = uiMode == "hotbar" || uiMode == "extended_hotbar"
+
+        // Row 1 (extended modes only)
+        if (moreActions) {
+            actions.add(
+                ActionRow.of(
+                    getPlaceholderButton(),
+                    actionButton("left_up_up", "up_left", style),
+                    actionButton("up_up", "up", style),
+                    actionButton("right_up_up", "up_right", style),
+                    getInventoryButton(),
+                )
+            )
+        }
+
+        val row2Center = when {
+            !moreActions -> actionButton("up_up", "up", style)
+            gameMode == GameMode.PLACE -> forceBreakButton("up_up", "up")
+            else -> getModeButton()
+        }
+        val row3Center = if (moreActions && gameMode == GameMode.BREAK) forcePlaceButton("down", "down") else getModeButton()
+
+        // Row 1 (default) / Row 2 (more actions)
         actions.add(
             ActionRow.of(
-                getPlaceholderButton(),
-                actionButton("up_left", "up_left", style),
-                actionButton("up_up", "up", style),
-                actionButton("up_right", "up_right", style),
-                getInventoryButton(),
+                if (moreActions) dualActionButton("left_and_up_left", "left_and_up_left", style) else getPlaceholderButton(),
+                actionButton("up_left", "left", style),
+                row2Center,
+                actionButton("up_right", "right", style),
+                if (moreActions) dualActionButton("right_and_up_right", "right_and_up_right", style) else getInventoryButton(),
             )
         )
 
-        // Row 2
+        // Row 2 / Row 3
         actions.add(
             ActionRow.of(
                 moveButton(Vec(-1, 0), "left"),
                 actionButton("left", "left", style),
-                getModeButton(),
+                row3Center,
                 actionButton("right", "right", style),
                 moveButton(Vec(1, 0), "right"),
             )
         )
 
-        // Row 3
+        // Row 3 / Row 4
         actions.add(
             ActionRow.of(
                 getCraftingButton(),
@@ -52,7 +77,35 @@ class PlayerActionMenu(
             )
         )
 
+        // Bottom row: recent/ordered hotbar
+        if (showHotbar) {
+            actions.add(ActionRow.of(buildHotbarSlots().map { slotIndex ->
+                if (slotIndex == null) return@map getPlaceholderButton()
+                val stack = player.inventory.contents[slotIndex]
+                Button.of(ButtonStyle.SECONDARY, "hotbar_$slotIndex", " ${stack.count}", stack.item.emoji)
+            }))
+        }
+
         return actions
+    }
+
+    private fun buildHotbarSlots(): List<Int?> {
+        val result = mutableListOf<Int?>()
+        val used = mutableSetOf(player.inventory.selectedSlot)
+
+        for (key in player.recentItems) {
+            if (result.size >= 5) break
+            val idx = player.inventory.contents.indexOfFirst { it.itemKey == key }
+            if (idx >= 0 && used.add(idx)) result.add(idx)
+        }
+
+        for (idx in player.inventory.contents.indices) {
+            if (result.size >= 5) break
+            if (used.add(idx)) result.add(idx)
+        }
+
+        while (result.size < 5) result.add(null)
+        return result
     }
 
     fun getInventoryActions(): MutableList<LayoutComponent> {
@@ -83,7 +136,7 @@ class PlayerActionMenu(
     }
 
     private fun inventoryNavButton(direction: String): Button =
-        Button.of(ButtonStyle.SECONDARY, "inventory_$direction", Emojis.get(direction))
+        Button.of(ButtonStyle.PRIMARY, "inventory_$direction", Emojis.get(direction))
 
     @OptIn(ExperimentalUuidApi::class)
     fun getPlaceholderButton(): Button =
@@ -149,6 +202,17 @@ class PlayerActionMenu(
             return@run (canWalk || canStepUp)
         })
     }
+
+    private fun dualActionButton(inputStr: String, emojiCode: String, style: ButtonStyle): Button =
+        Button.of(style, "dual_$inputStr", Emojis.get(emojiCode))
+            .withDisabled(player.gameMode == GameMode.PLACE && player.inventory.getSelectedItemStack()?.item?.getTile() == null)
+
+    private fun forceBreakButton(inputStr: String, emojiCode: String): Button =
+        Button.of(ButtonStyle.DANGER, "forceBreak_$inputStr", Emojis.get(emojiCode))
+
+    private fun forcePlaceButton(inputStr: String, emojiCode: String): Button =
+        Button.of(ButtonStyle.SUCCESS, "forcePlace_$inputStr", Emojis.get(emojiCode))
+            .withDisabled(player.inventory.getSelectedItemStack()?.item?.getTile() == null)
 
     private fun actionButton(inputStr: String, emojiCode: String, style: ButtonStyle): Button {
         return Button.of(style, "action_$inputStr", Emojis.get(emojiCode))

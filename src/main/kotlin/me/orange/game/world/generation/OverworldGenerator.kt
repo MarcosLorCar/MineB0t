@@ -108,6 +108,23 @@ class OverworldGenerator(
             val radius = 1.5f + coalRng.nextFloat() * 1.5f
             placePatch(Vec(cx, cy), radius, coalRng, getTile, setTile, Tiles.COAL_ORE)
         }
+
+        val shroomRng = java.util.Random(
+            seed xor (cornerChunkPos.x.toLong() * 0x3141592653589793L)
+                 xor (cornerChunkPos.y.toLong() * 0x2718281828459045L)
+        )
+        for (dx in 0 until Chunk.SIZE) {
+            val wx = originX + dx
+            for (dy in 0 until Chunk.SIZE) {
+                val wy = originY + dy
+                if (getTile(Vec(wx, wy)) == Tiles.GRASS &&
+                    getTile(Vec(wx, wy + 1)) == Tiles.AIR &&
+                    shroomRng.nextFloat() < 0.15f
+                ) {
+                    setTile(Vec(wx, wy + 1), Tiles.RED_SHROOM)
+                }
+            }
+        }
     }
 
     private fun placePatch(
