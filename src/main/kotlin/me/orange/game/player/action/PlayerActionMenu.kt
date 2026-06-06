@@ -4,8 +4,10 @@ import me.orange.bot.Emojis
 import me.orange.game.craft.RecipeRegistry
 import me.orange.game.player.Player
 import me.orange.game.player.GameMode
+import me.orange.game.world.tile.TileInteraction
 import me.orange.game.preferences.Preference
 import me.orange.game.utils.Vec
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.LayoutComponent
 import net.dv8tion.jda.api.interactions.components.buttons.Button
@@ -29,40 +31,40 @@ class PlayerActionMenu(
             actions.add(
                 ActionRow.of(
                     getPlaceholderButton(),
-                    actionButton("left_up_up", "up_left", style),
-                    actionButton("up_up", "up", style),
-                    actionButton("right_up_up", "up_right", style),
+                    actionButton("left_up_up", Emojis.get("up_left"), style),
+                    actionButton("up_up", Emojis.get("up"), style),
+                    actionButton("right_up_up", Emojis.get("up_right"), style),
                     getInventoryButton(),
                 )
             )
         }
 
         val row2Center = when {
-            !moreActions -> actionButton("up_up", "up", style)
-            gameMode == GameMode.PLACE -> forceBreakButton("up_up", "up")
+            !moreActions -> actionButton("up_up", Emojis.get("up"), style)
+            gameMode == GameMode.PLACE -> forceBreakButton("up_up", Emojis.get("up"))
             else -> getModeButton()
         }
-        val row3Center = if (moreActions && gameMode == GameMode.BREAK) forcePlaceButton("down", "down") else getModeButton()
+        val row3Center = if (moreActions && gameMode == GameMode.BREAK) forcePlaceButton("down", Emojis.get("down")) else getModeButton()
 
         // Row 1 (default) / Row 2 (more actions)
         actions.add(
             ActionRow.of(
-                if (moreActions) dualActionButton("left_and_up_left", "left_and_up_left", style) else getPlaceholderButton(),
-                actionButton("up_left", "left", style),
+                if (moreActions) dualActionButton("left_and_up_left", Emojis.get("left_and_up_left"), style) else getPlaceholderButton(),
+                actionButton("up_left", Emojis.get("left"), style),
                 row2Center,
-                actionButton("up_right", "right", style),
-                if (moreActions) dualActionButton("right_and_up_right", "right_and_up_right", style) else getInventoryButton(),
+                actionButton("up_right", Emojis.get("right"), style),
+                if (moreActions) dualActionButton("right_and_up_right", Emojis.get("right_and_up_right"), style) else getInventoryButton(),
             )
         )
 
         // Row 2 / Row 3
         actions.add(
             ActionRow.of(
-                moveButton(Vec(-1, 0), "left"),
-                actionButton("left", "left", style),
+                moveButton(Vec(-1, 0), "left", Emojis.get("move_left")),
+                actionButton("left", Emojis.get("left"), style),
                 row3Center,
-                actionButton("right", "right", style),
-                moveButton(Vec(1, 0), "right"),
+                actionButton("right", Emojis.get("right"), style),
+                moveButton(Vec(1, 0), "right", Emojis.get("move_right")),
             )
         )
 
@@ -70,9 +72,9 @@ class PlayerActionMenu(
         actions.add(
             ActionRow.of(
                 getCraftingButton(),
-                actionButton("down_left", "down_left", style),
-                actionButton("down", "down", style),
-                actionButton("down_right", "down_right", style),
+                actionButton("down_left", Emojis.get("down_left"), style),
+                actionButton("down", Emojis.get("down"), style),
+                actionButton("down_right", Emojis.get("down_right"), style),
                 getInventoryPreviewButton(),
             )
         )
@@ -114,29 +116,29 @@ class PlayerActionMenu(
         // Row 1: [info] [↑] [close]
         actions.add(ActionRow.of(
             getItemInfoButton(),
-            inventoryNavButton("up"),
+            inventoryNavButton("up", Emojis.get("up")),
             Button.of(ButtonStyle.SECONDARY, "inventory_close", Emojis.get("return")),
         ))
 
         // Row 2: [←] [preview] [→]
         actions.add(ActionRow.of(
-            inventoryNavButton("left"),
+            inventoryNavButton("left", Emojis.get("left")),
             getInventoryPreviewButton(),
-            inventoryNavButton("right"),
+            inventoryNavButton("right", Emojis.get("right")),
         ))
 
         // Row 3: [recipes] [↓] [capacity]
         actions.add(ActionRow.of(
             getItemRecipesButton(),
-            inventoryNavButton("down"),
+            inventoryNavButton("down", Emojis.get("down")),
             getCapacityButton(),
         ))
 
         return actions
     }
 
-    private fun inventoryNavButton(direction: String): Button =
-        Button.of(ButtonStyle.PRIMARY, "inventory_$direction", Emojis.get(direction))
+    private fun inventoryNavButton(direction: String, emoji: Emoji): Button =
+        Button.of(ButtonStyle.PRIMARY, "inventory_$direction", emoji)
 
     @OptIn(ExperimentalUuidApi::class)
     fun getPlaceholderButton(): Button =
@@ -155,10 +157,12 @@ class PlayerActionMenu(
         .withDisabled(player.inventory.isEmpty())
 
     fun getCraftingButton(): Button {
-        // Theme the icon to whatever station the player is standing on (NONE → generic craft icon).
-        val station = player.game.world.getCraftingStationAt(player.pos)
-        return Button.of(ButtonStyle.SECONDARY, "craft_open", Emojis.get(station.emojiKey))
-            .withDisabled(!player.recipeManager.hasViewableRecipes())
+        val interaction = player.game.world.getInteractionAt(player.pos)
+        return when (interaction) {
+            is TileInteraction.Chest -> Button.of(ButtonStyle.SECONDARY, interaction.buttonId, interaction.emoji)
+            else -> Button.of(ButtonStyle.SECONDARY, interaction.buttonId, interaction.emoji)
+                .withDisabled(!player.recipeManager.hasViewableRecipes())
+        }
     }
 
     fun getInventoryPreviewButton(): Button {
@@ -186,39 +190,33 @@ class PlayerActionMenu(
         return Button.of(ButtonStyle.SECONDARY, "itemRecipes", Emojis.get("crafting_table")).withDisabled(!hasRecipes)
     }
 
-    private fun moveButton(move: Vec, inputStr: String): Button = with(player) {
+    private fun moveButton(move: Vec, inputStr: String, emoji: Emoji): Button = with(player) {
         Button.of(
             ButtonStyle.PRIMARY,
             "move_$inputStr",
-            Emojis.get("move_$inputStr"),
+            emoji,
         ).withDisabled(!run {
-            // Determine if the button should be enabled
-
             val nextPos = pos + move
-
             val canWalk = canWalkThrough(nextPos)
             val canStepUp = canStepUp(pos, move)
-
             return@run (canWalk || canStepUp)
         })
     }
 
-    private fun dualActionButton(inputStr: String, emojiCode: String, style: ButtonStyle): Button =
-        Button.of(style, "dual_$inputStr", Emojis.get(emojiCode))
+    private fun dualActionButton(inputStr: String, emoji: Emoji, style: ButtonStyle): Button =
+        Button.of(style, "dual_$inputStr", emoji)
             .withDisabled(player.gameMode == GameMode.PLACE && player.inventory.getSelectedItemStack()?.item?.getTile() == null)
 
-    private fun forceBreakButton(inputStr: String, emojiCode: String): Button =
-        Button.of(ButtonStyle.DANGER, "forceBreak_$inputStr", Emojis.get(emojiCode))
+    private fun forceBreakButton(inputStr: String, emoji: Emoji): Button =
+        Button.of(ButtonStyle.DANGER, "forceBreak_$inputStr", emoji)
 
-    private fun forcePlaceButton(inputStr: String, emojiCode: String): Button =
-        Button.of(ButtonStyle.SUCCESS, "forcePlace_$inputStr", Emojis.get(emojiCode))
+    private fun forcePlaceButton(inputStr: String, emoji: Emoji): Button =
+        Button.of(ButtonStyle.SUCCESS, "forcePlace_$inputStr", emoji)
             .withDisabled(player.inventory.getSelectedItemStack()?.item?.getTile() == null)
 
-    private fun actionButton(inputStr: String, emojiCode: String, style: ButtonStyle): Button {
-        return Button.of(style, "action_$inputStr", Emojis.get(emojiCode))
+    private fun actionButton(inputStr: String, emoji: Emoji, style: ButtonStyle): Button {
+        return Button.of(style, "action_$inputStr", emoji)
             .withDisabled(!run {
-                // return ENABLED state
-
                 return@run when (player.gameMode) {
                     GameMode.BREAK -> true
                     GameMode.PLACE -> player.inventory.getSelectedItemStack()?.item?.getTile() != null

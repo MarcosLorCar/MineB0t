@@ -1,16 +1,20 @@
 package me.orange.game.inventory
 
+import me.orange.bot.Emojis
+import me.orange.game.world.tile.Tiles
+
 object Items {
-    val GRASS          = ItemRegistry.register("grass")          { placeable("grass"); description("Surface block found on top of dirt") }
-    val DIRT           = ItemRegistry.register("dirt")           { placeable("dirt"); description("Common underground block") }
-    val STONE          = ItemRegistry.register("stone")          { placeable("stone"); description("Found deep underground") }
-    val IRON_CHUNK     = ItemRegistry.register("iron_chunk")     { description("Raw iron ore, needs smelting") }
-    val RED_SHROOM     = ItemRegistry.register("red_shroom")     { placeable("red_shroom_tile"); description("Wild red shroom, found in the surface") }
+    val GRASS          = ItemRegistry.register("grass",          Emojis.get("grass"))          { placeable { Tiles.GRASS };          description("Surface block found on top of dirt") }
+    val DIRT           = ItemRegistry.register("dirt",           Emojis.get("dirt"))           { placeable { Tiles.DIRT };           description("Common underground block") }
+    val STONE          = ItemRegistry.register("stone",          Emojis.get("stone"))          { placeable { Tiles.STONE };          description("Found deep underground") }
+    val IRON_CHUNK     = ItemRegistry.register("iron_chunk",     Emojis.get("iron_chunk"))     { description("Raw iron ore, needs smelting") }
+    val RED_SHROOM     = ItemRegistry.register("red_shroom",     Emojis.get("red_shroom"))     { placeable { Tiles.RED_SHROOM };     description("Wild red shroom, found in the surface") }
     @Suppress("unused")
-    val IRON_INGOT     = ItemRegistry.register("iron_ingot")     { description("Smelted iron used in crafting") }
-    val CRAFTING_TABLE = ItemRegistry.register("crafting_table") { placeable("crafting_table"); description("Unlocks crafting recipes") }
-    val FURNACE        = ItemRegistry.register("furnace")        { placeable("furnace"); description("Used to smelt ores") }
-    val COAL           = ItemRegistry.register("coal")           { description("Fuel for the furnace") }
+    val IRON_INGOT     = ItemRegistry.register("iron_ingot",     Emojis.get("iron_ingot"))     { description("Smelted iron used in crafting") }
+    val CRAFTING_TABLE = ItemRegistry.register("crafting_table", Emojis.get("crafting_table")) { placeable { Tiles.CRAFTING_TABLE }; description("Unlocks crafting recipes") }
+    val FURNACE        = ItemRegistry.register("furnace",        Emojis.get("furnace"))        { placeable { Tiles.FURNACE };        description("Used to smelt ores") }
+    val COAL           = ItemRegistry.register("coal",           Emojis.get("coal"))           { description("Fuel for the furnace") }
+    val CHEST          = ItemRegistry.register("chest",          Emojis.get("chest"))          { placeable { Tiles.CHEST };          description("Storage container") }
 
     val count: Int get() = ItemRegistry.count
 }

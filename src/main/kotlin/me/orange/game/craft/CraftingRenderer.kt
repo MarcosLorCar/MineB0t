@@ -41,7 +41,7 @@ class CraftingRenderer(
             val id = "[${recipe.id.replace("_", "\\_")}]"
             val result = stackString(recipe.result)
             val stationPrefix = if (recipe.requiredStation != CraftingStationType.NONE)
-                "[${Emojis.get(recipe.requiredStation.emojiKey).formatted}] " else ""
+                "[${recipe.requiredStation.emoji.formatted}] " else ""
             when (recipe.id) {
                 in craftableIds -> {
                     val inputs = recipe.ingredients.joinToString(" + ") { stackString(it) }
@@ -61,10 +61,11 @@ class CraftingRenderer(
         val feedback = player.feedback
         player.feedback = null
 
+        val fullDescription = if (feedback != null) "$feedback\n\n$description" else description
+
         val embed = EmbedBuilder()
-            .setTitle("${Emojis.get(station.emojiKey).formatted} Crafting — page ${page + 1}/$pageCount")
-            .setDescription(description)
-            .setFooter(feedback)
+            .setTitle("${station.emoji.formatted} Crafting — page ${page + 1}/$pageCount")
+            .setDescription(fullDescription)
             .setColor(CRAFTING_COLOR)
             .build()
 

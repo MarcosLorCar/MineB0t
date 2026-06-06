@@ -1,10 +1,10 @@
 package me.orange.game.world.tile
 
-import me.orange.bot.Emojis
 import me.orange.game.craft.CraftingStationType
 import me.orange.game.inventory.Item
 import me.orange.game.inventory.ItemStack
 import me.orange.game.utils.Vec
+import net.dv8tion.jda.api.entities.emoji.Emoji
 
 class Tile(
     val key: String,
@@ -13,7 +13,7 @@ class Tile(
     val airy: Boolean,
     val breakable: Boolean,
     val drop: ItemStack?,
-    val craftingStationType: CraftingStationType = CraftingStationType.NONE,
+    val interaction: TileInteraction = TileInteraction.None,
     val onBreak: () -> Unit = {},
 ) {
     val emoji: String get() = emojiVariants[0]
@@ -27,32 +27,34 @@ class Tile(
         return emojiVariants[(h ushr 1) % emojiVariants.size]
     }
 
-    class Builder(val key: String) {
-        private val weightedVariants: MutableList<Pair<String, Int>> = mutableListOf(key to 1)
+    class Builder(val key: String, primaryEmoji: Emoji) {
+        private val weightedVariants: MutableList<Pair<Emoji, Int>> = mutableListOf(primaryEmoji to 1)
         var airy: Boolean = false
         var breakable: Boolean = false
         var onBreak: () -> Unit = {}
         var drop: ItemStack? = null
-        var craftingStationType: CraftingStationType = CraftingStationType.NONE
-        fun variant(variantKey: String, weight: Int = 1) = apply {
-            val i = weightedVariants.indexOfFirst { it.first == variantKey }
-            if (i >= 0) weightedVariants[i] = variantKey to weight else weightedVariants.add(variantKey to weight)
+        var interaction: TileInteraction = TileInteraction.None
+
+        fun variant(emoji: Emoji, weight: Int = 1) = apply {
+            val i = weightedVariants.indexOfFirst { it.first == emoji }
+            if (i >= 0) weightedVariants[i] = emoji to weight else weightedVariants.add(emoji to weight)
         }
         fun airy() = apply { airy = true }
         fun breakable() = apply { breakable = true }
         fun onBreak(onBreak: () -> Unit) = apply { this.onBreak = onBreak }
         fun drops(item: Item, count: Int = 1) = apply { this.drop = ItemStack(item, count) }
-        fun craftingStation(type: CraftingStationType) = apply { this.craftingStationType = type }
+        fun interaction(interaction: TileInteraction) = apply { this.interaction = interaction }
+        fun craftingStation(type: CraftingStationType) = interaction(TileInteraction.CraftingStation(type))
 
         fun build(id: Int): Tile = Tile(
             key = key,
-            emojiVariants = weightedVariants.flatMap { (variantKey, weight) -> List(weight) { Emojis.getFormatted(variantKey) } },
+            emojiVariants = weightedVariants.flatMap { (emoji, weight) -> List(weight) { emoji.formatted } },
             id = id,
             airy = airy,
             breakable = breakable,
             drop = drop,
-            craftingStationType = craftingStationType,
-            onBreak = onBreak
+            interaction = interaction,
+            onBreak = onBreak,
         )
     }
 }

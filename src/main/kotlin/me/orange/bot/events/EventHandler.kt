@@ -58,6 +58,7 @@ object EventHandler {
         InputInteraction("craft_close"),
         InputInteraction("craft_prev"),
         InputInteraction("craft_next"),
+        InputInteraction("chest_open"),
         HotbarInteraction,
         PlayInteraction,
         SelectSettingInteraction,

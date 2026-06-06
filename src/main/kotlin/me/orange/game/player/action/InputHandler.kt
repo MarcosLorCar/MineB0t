@@ -34,6 +34,7 @@ class InputHandler(
             "hotbar" -> handleHotbar(inputArgs[0])
 
             "craft" -> handleCraft(inputArgs[0])
+            "chest" -> handleChest(inputArgs[0])
         }
     }
 
@@ -93,6 +94,11 @@ class InputHandler(
         player.recentItems.remove(key)
         player.recentItems.add(0, key)
         if (player.recentItems.size > 5) player.recentItems.removeAt(5)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun handleChest(arg: String) {
+        // TODO: open chest storage view
     }
 
     private fun handleCraft(arg: String) = MineB0t.launch {

@@ -4,6 +4,7 @@ import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.Game
 import me.orange.game.craft.CraftingStationType
+import me.orange.game.world.tile.TileInteraction
 import me.orange.game.utils.Vec
 import me.orange.game.world.chunk.Chunk
 import me.orange.game.world.chunk.ChunkManager
@@ -65,17 +66,22 @@ class World(
     }
 
     /**
-     * The crafting station the player at [pos] can use. The player occupies [pos] and [pos]+(0,1),
-     * so a solid station block sits directly under their feet at [pos]+(0,-1); an airy "pad" station
-     * would overlap [pos]. First non-NONE in that candidate set wins; NONE if none (or chunk unloaded).
+     * The interactable tile the player at [pos] can use. Checks under feet, at feet, and at head.
+     * First non-None interaction wins; None if none (or chunk unloaded).
      */
-    fun getCraftingStationAt(pos: Vec): CraftingStationType {
+    fun getInteractionAt(pos: Vec): TileInteraction {
         for (candidate in listOf(pos.plus(0, -1), pos, pos.plus(0, 1))) {
-            val station = getTile(candidate)?.craftingStationType ?: continue
-            if (station != CraftingStationType.NONE) return station
+            val interaction = getTile(candidate)?.interaction ?: continue
+            if (interaction != TileInteraction.None) return interaction
         }
-        return CraftingStationType.NONE
+        return TileInteraction.None
     }
+
+    fun getCraftingStationAt(pos: Vec): CraftingStationType =
+        candidates(pos).firstNotNullOfOrNull { (getTile(it)?.interaction as? TileInteraction.CraftingStation)?.type }
+            ?: CraftingStationType.NONE
+
+    private fun candidates(pos: Vec) = listOf(pos.plus(0, -1), pos, pos.plus(0, 1))
 
 }
 

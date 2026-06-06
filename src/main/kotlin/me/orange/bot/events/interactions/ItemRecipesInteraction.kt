@@ -1,6 +1,5 @@
 package me.orange.bot.events.interactions
 
-import me.orange.bot.Emojis
 import me.orange.bot.events.base.BaseInteraction
 import me.orange.game.GamesManager
 import me.orange.game.craft.CraftingStationType
@@ -30,7 +29,7 @@ object ItemRecipesInteraction : BaseInteraction(
                     val inputs = recipe.ingredients.joinToString(" + ") { stackStr(it) }
                     val result = stackStr(recipe.result)
                     val stationPrefix = if (recipe.requiredStation != CraftingStationType.NONE)
-                        "[${Emojis.get(recipe.requiredStation.emojiKey).formatted}] " else ""
+                        "[${recipe.requiredStation.emoji.formatted}] " else ""
                     "$stationPrefix$inputs ➔ $result"
                 }
                 "**Recipes using ${item.displayName()}:**\n$lines"

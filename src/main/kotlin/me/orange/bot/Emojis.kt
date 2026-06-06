@@ -6,23 +6,20 @@ import net.dv8tion.jda.api.entities.emoji.Emoji
 object Emojis {
     val customEmoji: MutableMap<String, Triple<String, Long, Boolean>> = mutableMapOf()
     val emojis: MutableMap<String, Emoji> = mutableMapOf(
-        "break" to Emoji.fromUnicode("⛏\uFE0F"),
-        "place" to Emoji.fromUnicode("\uD83E\uDEF3"),
+        "break" to Emoji.fromUnicode("⛏️"),
+        "place" to Emoji.fromUnicode("🫳"),
         "null" to Emoji.fromUnicode("❌"),
-        "other_head" to Emoji.fromUnicode("\uD83D\uDC7D"),
-        "sleepy_head" to Emoji.fromUnicode("\uD83D\uDE34"),
-        "group_head" to Emoji.fromUnicode("\uD83D\uDC65"),
-        "other_body" to Emoji.fromUnicode("\uD83E\uDDBA"),
-        "return" to Emoji.fromUnicode("↩\uFE0F"),
-        "selected" to Emoji.fromUnicode("\u25C0\uFE0F"),
-        "info" to Emoji.fromUnicode("\u2139\uFE0F"),
+        "other_head" to Emoji.fromUnicode("👽"),
+        "sleepy_head" to Emoji.fromUnicode("😴"),
+        "group_head" to Emoji.fromUnicode("👥"),
+        "other_body" to Emoji.fromUnicode("🦺"),
+        "return" to Emoji.fromUnicode("↩️"),
+        "selected" to Emoji.fromUnicode("◀️"),
+        "info" to Emoji.fromUnicode("ℹ️"),
         // Crafting station / item fallbacks (no custom Discord emoji yet)
-        "crafting_table" to Emoji.fromUnicode("\uD83D\uDEE0\uFE0F"),
-        "furnace" to Emoji.fromUnicode("\uD83C\uDFED"),
-        "iron_ingot" to Emoji.fromUnicode("\uD83D\uDD29"),
-        // TODO: replace with custom Discord emojis once uploaded
-        "left_up_up" to Emoji.fromUnicode("\u2196\uFE0F"),
-        "right_up_up" to Emoji.fromUnicode("\u2197\uFE0F"),
+        "crafting_table" to Emoji.fromUnicode("🛠️"),
+        "furnace" to Emoji.fromUnicode("🏭"),
+        "iron_ingot" to Emoji.fromUnicode("🔩"),
     )
 
     fun loadEmojis() {
@@ -66,6 +63,8 @@ object Emojis {
 
         loadEmoji("red_shroom_tile", "_", 1512378160115875880)
         loadEmoji("red_shroom_tile_1", "_", 1512378161294475367)
+
+        loadEmoji("chest", "_", 1512553817298702347)
 
         // Item emojis
         loadEmoji("iron_chunk", "iron_chunk", 1512391416322719804)
@@ -113,16 +112,16 @@ object Emojis {
     fun getFormatted(name: String): String = get(name).formatted
 
     fun getNumber(i: Int) = when (i) {
-        0 -> "0\uFE0F⃣"
-        1 -> "1\uFE0F⃣"
-        2 -> "2\uFE0F⃣"
-        3 -> "3\uFE0F⃣"
-        4 -> "4\uFE0F⃣"
-        5 -> "5\uFE0F⃣"
-        6 -> "6\uFE0F⃣"
-        7 -> "7\uFE0F⃣"
-        8 -> "8\uFE0F⃣"
-        9 -> "9\uFE0F⃣"
+        0 -> "0️⃣"
+        1 -> "1️⃣"
+        2 -> "2️⃣"
+        3 -> "3️⃣"
+        4 -> "4️⃣"
+        5 -> "5️⃣"
+        6 -> "6️⃣"
+        7 -> "7️⃣"
+        8 -> "8️⃣"
+        9 -> "9️⃣"
         else -> getFormatted("null")
     }
 }

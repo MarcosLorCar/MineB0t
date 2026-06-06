@@ -13,6 +13,11 @@ object Recipes {
         output("furnace", 1)
     }
 
+    val CHEST_RECIPE = RecipeRegistry.register("chest") {
+        ingredient("grass", 1)
+        output("chest", 1)
+    }
+
     val IRON_INGOT_RECIPE = RecipeRegistry.register("iron_ingot") {
         station(FURNACE)
         ingredient("coal", 1)

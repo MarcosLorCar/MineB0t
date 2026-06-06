@@ -1,11 +1,10 @@
 package me.orange.game.craft
 
-/**
- * A station required to craft certain recipes. [emojiKey] resolves through [me.orange.bot.Emojis.get]
- * (custom-or-unicode) and themes both the world Craft button and the crafting view.
- */
-enum class CraftingStationType(val emojiKey: String) {
-    NONE("crafting_table"),
-    CRAFTING_TABLE("crafting_table"),
-    FURNACE("furnace"),
+import me.orange.bot.Emojis
+import net.dv8tion.jda.api.entities.emoji.Emoji
+
+enum class CraftingStationType(val emoji: Emoji) {
+    NONE(Emojis.get("crafting_table")),
+    CRAFTING_TABLE(Emojis.get("crafting_table")),
+    FURNACE(Emojis.get("furnace")),
 }
