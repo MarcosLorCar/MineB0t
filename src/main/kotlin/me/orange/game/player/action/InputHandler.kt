@@ -1,6 +1,7 @@
 package me.orange.game.player.action
 
 import me.orange.bot.MineB0t
+import me.orange.game.inventory.Inventory
 import me.orange.game.inventory.InventoryRenderer
 import me.orange.game.player.GameMode
 import me.orange.game.player.Player
@@ -96,9 +97,112 @@ class InputHandler(
         if (player.recentItems.size > 5) player.recentItems.removeAt(5)
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun handleChest(arg: String) {
-        // TODO: open chest storage view
+    private fun handleChest(arg: String) = MineB0t.launch {
+        when (arg) {
+            "open" -> {
+                val chestPos = player.game.world.getChestPosAt(player.pos) ?: return@launch
+                player.game.world.ensureChestAt(chestPos)
+                player.queueAction { p ->
+                    p.openChestPos = chestPos
+                    p.chestSelectedSlot = 0
+                    p.chestCursorOnPlayer = true
+                    p.viewState = ViewState.CHEST
+                    p.game.playerChestUiCache.remove(p.id)
+                }
+            }
+
+            "close" -> player.queueAction { p ->
+                p.openChestPos = null
+                p.viewState = ViewState.WORLD
+                p.game.playerEnvUiCache.remove(p.id)
+                p.game.playerChestUiCache.remove(p.id)
+            }
+
+            "jumpInv" -> {
+                if (!player.chestCursorOnPlayer) player.queueAction { p ->
+                    p.chestCursorOnPlayer = true
+                    p.game.renderChest(p)
+                }
+            }
+
+            "jumpChest" -> {
+                if (player.chestCursorOnPlayer) player.queueAction { p ->
+                    p.chestCursorOnPlayer = false
+                    p.game.renderChest(p)
+                }
+            }
+
+            "navLeft", "navRight" -> {
+                val delta = if (arg == "navRight") 1 else -1
+                player.queueAction { p ->
+                    if (p.chestCursorOnPlayer) {
+                        val size = p.inventory.contents.size
+                        if (size > 0)
+                            p.inventory.selectedSlot = (p.inventory.selectedSlot + delta + size) % size
+                    } else {
+                        val chestData = p.game.world.getChestAt(p.openChestPos ?: return@queueAction) ?: return@queueAction
+                        val size = chestData.inventory.contents.size
+                        if (size > 0)
+                            p.chestSelectedSlot = (p.chestSelectedSlot + delta + size) % size
+                    }
+                    p.game.renderChest(p)
+                }
+            }
+
+            "navUp", "navDown" -> {
+                val delta = if (arg == "navDown") 1 else -1
+                val cols = InventoryRenderer.INVENTORY_COLS
+                player.queueAction { p ->
+                    if (p.chestCursorOnPlayer) {
+                        val size = p.inventory.contents.size
+                        if (size > 0) {
+                            val col = p.inventory.selectedSlot % cols
+                            val row = p.inventory.selectedSlot / cols
+                            val totalRows = (size + cols - 1) / cols
+                            val remainder = size % cols
+                            val rowsInCol = if (remainder == 0 || col < remainder) totalRows else totalRows - 1
+                            p.inventory.selectedSlot = ((row + delta + rowsInCol) % rowsInCol) * cols + col
+                        }
+                    } else {
+                        val chestData = p.game.world.getChestAt(p.openChestPos ?: return@queueAction) ?: return@queueAction
+                        val size = chestData.inventory.contents.size
+                        if (size > 0) {
+                            val col = p.chestSelectedSlot % cols
+                            val row = p.chestSelectedSlot / cols
+                            val totalRows = (size + cols - 1) / cols
+                            val remainder = size % cols
+                            val rowsInCol = if (remainder == 0 || col < remainder) totalRows else totalRows - 1
+                            p.chestSelectedSlot = ((row + delta + rowsInCol) % rowsInCol) * cols + col
+                        }
+                    }
+                    p.game.renderChest(p)
+                }
+            }
+
+            "store" -> player.queueAction { p ->
+                if (!p.chestCursorOnPlayer) return@queueAction
+                val chestData = p.game.world.getChestAt(p.openChestPos ?: return@queueAction) ?: return@queueAction
+                val selected = p.inventory.getSelectedItemStack() ?: return@queueAction
+                val chestInv = Inventory.fromData(chestData.inventory)
+                if (!chestInv.canFit(selected)) return@queueAction
+                chestInv.addItem(selected)
+                p.inventory.removeItems(selected.itemKey, selected.count)
+                p.game.renderChest(p)
+            }
+
+            "retrieve" -> player.queueAction { p ->
+                if (p.chestCursorOnPlayer) return@queueAction
+                val chestData = p.game.world.getChestAt(p.openChestPos ?: return@queueAction) ?: return@queueAction
+                val chestInv = Inventory.fromData(chestData.inventory)
+                val selected = chestInv.contents.getOrNull(p.chestSelectedSlot) ?: return@queueAction
+                if (!p.inventory.canFit(selected)) return@queueAction
+                p.inventory.addItem(selected)
+                chestInv.removeItems(selected.itemKey, selected.count)
+                if (p.chestSelectedSlot >= chestData.inventory.contents.size)
+                    p.chestSelectedSlot = maxOf(0, chestData.inventory.contents.size - 1)
+                p.game.renderChest(p)
+            }
+        }
     }
 
     private fun handleCraft(arg: String) = MineB0t.launch {

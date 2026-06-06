@@ -4,6 +4,8 @@ import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.Game
 import me.orange.game.craft.CraftingStationType
+import me.orange.game.inventory.Inventory
+import me.orange.game.world.tile.TileEntityData
 import me.orange.game.world.tile.TileInteraction
 import me.orange.game.utils.Vec
 import me.orange.game.world.chunk.Chunk
@@ -80,6 +82,29 @@ class World(
     fun getCraftingStationAt(pos: Vec): CraftingStationType =
         candidates(pos).firstNotNullOfOrNull { (getTile(it)?.interaction as? TileInteraction.CraftingStation)?.type }
             ?: CraftingStationType.NONE
+
+    fun getChestPosAt(pos: Vec): Vec? =
+        candidates(pos).firstOrNull { getTile(it)?.interaction is TileInteraction.Chest }
+
+    fun getChestAt(worldPos: Vec): TileEntityData.ChestData? {
+        val chunk = chunkManager.getChunk(worldPos.toChunkPos()) ?: return null
+        return chunk.tileEntities[worldPos.toLocalPos()] as? TileEntityData.ChestData
+    }
+
+    fun ensureChestAt(worldPos: Vec) {
+        val chunk = chunkManager.getChunk(worldPos.toChunkPos()) ?: return
+        val localPos = worldPos.toLocalPos()
+        if (chunk.tileEntities[localPos] == null) {
+            chunk.tileEntities[localPos] = TileEntityData.ChestData(
+                Inventory.InventoryData(Vec(3, 4), mutableListOf())
+            )
+        }
+    }
+
+    fun removeChestAt(worldPos: Vec) {
+        val chunk = chunkManager.getChunk(worldPos.toChunkPos()) ?: return
+        chunk.tileEntities.remove(worldPos.toLocalPos())
+    }
 
     private fun candidates(pos: Vec) = listOf(pos.plus(0, -1), pos, pos.plus(0, 1))
 

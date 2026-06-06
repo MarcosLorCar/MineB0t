@@ -19,7 +19,7 @@ object PreferencesManager {
         val selectionMenu = StringSelectMenu.create("settings")
             .let {
                 for (preference in Preference.entries) {
-                    val current = getPreference<Any>(playerId, preference).toString()
+                    val current = getEffectivePreference(playerId, preference).toString()
                     it.addOption(preference.name, preference.name, "Currently: $current")
                 }
                 it.setPlaceholder("Choose a setting")
@@ -33,11 +33,21 @@ object PreferencesManager {
         return if (value != null) value as T else preference.default as T
     }
 
+    fun getEffectivePreference(id: Long, preference: Preference): Any = when (preference) {
+        Preference.HEAD_EMOJI -> getHeadEmoji(id)
+        Preference.BODY_EMOJI -> getBodyEmoji(id)
+        else -> getPreference<Any>(id, preference)
+    }
+
     fun getHeadEmoji(id: Long): String {
         val stored = playerPreferences[id]?.get(Preference.HEAD_EMOJI) as? String
         if (stored != null) return stored
         val pool = Preference.HEAD_EMOJI.options
         return pool[Math.floorMod(id, pool.size)] as String
+    }
+
+    fun getBodyEmoji(id: Long): String {
+        return (playerPreferences[id]?.get(Preference.BODY_EMOJI) as? String) ?: Preference.BODY_EMOJI.default as String
     }
 
     fun setPreference(id: Long, pref: Preference, value: String) {

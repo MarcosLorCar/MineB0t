@@ -3,6 +3,7 @@ package me.orange.bot.events
 import me.orange.bot.MineB0t
 import me.orange.bot.events.commands.PlayCommand
 import me.orange.bot.events.commands.PreferencesCommand
+import me.orange.bot.events.commands.SetBodyCommand
 import me.orange.bot.events.commands.SetHeadCommand
 import me.orange.bot.events.commands.TestCommand
 import me.orange.bot.events.interactions.ChangeSettingInteraction
@@ -26,7 +27,8 @@ object EventHandler {
         PlayCommand,
         TestCommand,
         PreferencesCommand,
-        SetHeadCommand
+        SetHeadCommand,
+        SetBodyCommand
     )
 
     private val interactions = mutableListOf(
@@ -59,6 +61,15 @@ object EventHandler {
         InputInteraction("craft_prev"),
         InputInteraction("craft_next"),
         InputInteraction("chest_open"),
+        InputInteraction("chest_close"),
+        InputInteraction("chest_jumpInv"),
+        InputInteraction("chest_jumpChest"),
+        InputInteraction("chest_store"),
+        InputInteraction("chest_retrieve"),
+        InputInteraction("chest_navUp"),
+        InputInteraction("chest_navDown"),
+        InputInteraction("chest_navLeft"),
+        InputInteraction("chest_navRight"),
         HotbarInteraction,
         PlayInteraction,
         SelectSettingInteraction,

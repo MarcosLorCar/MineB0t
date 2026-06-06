@@ -42,8 +42,7 @@ class GameRenderer(
             for (dx in -Player.zoom.first..Player.zoom.first) {
                 if (isPlayerTile(dx, dy)) {
                     if (dy == 0) {
-                        // body tile — unchanged
-                        row.add(Player.emojis[1])
+                        row.add(game.preferencesManager.getBodyEmoji(player.id))
                     } else {
                         // head tile — use chosen emoji, or group emoji when others share the tile
                         val headEmoji = if ((crowd[player.pos] ?: 1) > 1) {
@@ -84,7 +83,7 @@ class GameRenderer(
                     envPos.y = (Player.zoom.second * 2 + 1) - (envPos.y + 1)
 
                     if (envPos.y in view.indices && envPos.x in view[0].indices)
-                        view[envPos.y][envPos.x] = Emojis.getFormatted("other_body")
+                        view[envPos.y][envPos.x] = game.preferencesManager.getBodyEmoji(otherId)
 
                     val headPos = envPos.plus(0, -1)
                     if (headPos.y in view.indices && headPos.x in view[0].indices) {

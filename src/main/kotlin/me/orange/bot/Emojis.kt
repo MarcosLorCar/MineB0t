@@ -16,6 +16,8 @@ object Emojis {
         "return" to Emoji.fromUnicode("↩️"),
         "selected" to Emoji.fromUnicode("◀️"),
         "info" to Emoji.fromUnicode("ℹ️"),
+        "store" to Emoji.fromUnicode("📥"),
+        "retrieve" to Emoji.fromUnicode("📤"),
         // Crafting station / item fallbacks (no custom Discord emoji yet)
         "crafting_table" to Emoji.fromUnicode("🛠️"),
         "furnace" to Emoji.fromUnicode("🏭"),
@@ -38,7 +40,7 @@ object Emojis {
         loadEmoji("down_left", "down_left_arrow", 1352674684931543160)
         loadEmoji("down", "down_arrow", 1352674630384484372)
         loadEmoji("down_right", "down_right_arrow", 1352674531529199737)
-        loadEmoji("backpack", "backpack", 1355610066702827741)
+        loadEmoji("backpack", "backpack", 1512929819653046582)
         loadEmoji("craft_icon", "_", 1369251709557149716)
 
         // Block emojis

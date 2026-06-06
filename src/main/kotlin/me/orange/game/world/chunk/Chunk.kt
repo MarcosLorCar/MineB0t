@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import me.orange.game.utils.Vec
 import me.orange.game.utils.safeGet
 import me.orange.game.world.tile.Tile
+import me.orange.game.world.tile.TileEntityData
 import me.orange.game.world.tile.TileRegistry
 import me.orange.game.world.tile.Tiles
 
@@ -11,7 +12,8 @@ import me.orange.game.world.tile.Tiles
 data class Chunk(
     val worldPos: Vec,
     val tiles: MutableList<MutableList<Int>> = MutableList(SIZE) { MutableList(SIZE) { Tiles.AIR.id } },
-    var decorated: Boolean = false
+    var decorated: Boolean = false,
+    val tileEntities: MutableMap<Vec, TileEntityData> = mutableMapOf(),
 ) {
     fun getTile(vec: Vec): Tile? = tiles.safeGet(vec.y, vec.x)?.let { TileRegistry.getTile(it) }
     fun getTile(x: Int, y: Int): Tile? = tiles.safeGet(y, x)?.let { TileRegistry.getTile(it) }

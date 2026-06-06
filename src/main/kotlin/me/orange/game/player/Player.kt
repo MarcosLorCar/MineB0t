@@ -27,10 +27,14 @@ class Player(
     val recipeManager = RecipeManager(this, knownRecipes)
     var falling = false
     var viewState: ViewState = ViewState.WORLD
+        set(value) { if (field != value) feedback = null; field = value }
     val recentItems: MutableList<String> = recentItems.toMutableList()
     var name: String = "unknown"
     var feedback: String? = null
     var feedbackExpiry: Long = 0
+    var openChestPos: Vec? = null
+    var chestSelectedSlot: Int = 0
+    var chestCursorOnPlayer: Boolean = true
 
     companion object {
         fun loadPlayer(id: Long, game: Game): Player? {

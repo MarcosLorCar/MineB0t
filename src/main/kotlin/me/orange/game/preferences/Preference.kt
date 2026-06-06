@@ -12,5 +12,6 @@ enum class Preference(
     UI_MODE(String::class, "minimal", listOf("minimal", "hotbar", "extended", "extended_hotbar")),
     PLAYER_TIMEOUT(Int::class, 30, listOf(30, 60, 90)),
     ITEM_PICKUP_FEEDBACK(Boolean::class, true, listOf(true, false)),
-    HEAD_EMOJI(String::class, "😀", listOf("😀", "🥸", "🧐", "🤓", "😎", "😡", "🥶", "🤢", "😈", "🤡", "👽", "😬", "😼", "😺"));
+    HEAD_EMOJI(String::class, "😀", listOf("😀", "🥸", "🧐", "🤓", "😎", "😡", "🥶", "🤢", "😈", "🤡", "👽", "😬", "😼", "😺")),
+    BODY_EMOJI(String::class, "👔", listOf("👔", "🦺", "🧥", "👕", "🎽", "🩱", "🥋", "🧤"));
 }

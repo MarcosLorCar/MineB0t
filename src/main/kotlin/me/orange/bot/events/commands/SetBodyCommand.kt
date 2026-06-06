@@ -8,35 +8,33 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import java.text.BreakIterator
 
-object SetHeadCommand : SlashCommand(
-    id = "set-head",
-    description = "Set your head emoji to any emoji you like",
+object SetBodyCommand : SlashCommand(
+    id = "set-body",
+    description = "Set your body emoji to any emoji you like",
     options = listOf(
-        OptionData(OptionType.STRING, "emoji", "The emoji to use as your head", true)
+        OptionData(OptionType.STRING, "emoji", "The emoji to use as your body", true)
     ),
     execute = execute@{ hook, event ->
         event as SlashCommandInteractionEvent
         val raw = event.getOption("emoji")?.asString?.trim() ?: return@execute
 
-        if (!isValidHeadEmoji(raw)) {
-            hook.editOriginal("Invalid input. Please provide a single emoji (e.g. 🦊 or a custom Discord emoji).").queue()
+        if (!isValidBodyEmoji(raw)) {
+            hook.editOriginal("Invalid input. Please provide a single emoji (e.g. 🦺 or a custom Discord emoji).").queue()
             return@execute
         }
 
         val game = GamesManager.getGame(event.guild!!.id)
         val userId = event.user.idLong
-        game.preferencesManager.setPreference(userId, Preference.HEAD_EMOJI, raw)
+        game.preferencesManager.setPreference(userId, Preference.BODY_EMOJI, raw)
         game.preferencesManager.savePreferences(userId)
         game.playerEnvUiCache.remove(userId)
-        hook.editOriginal("Head emoji set to $raw").queue()
+        hook.editOriginal("Body emoji set to $raw").queue()
     }
 )
 
-private fun isValidHeadEmoji(input: String): Boolean {
+private fun isValidBodyEmoji(input: String): Boolean {
     if (input.isEmpty()) return false
-    // Custom Discord emoji: <:name:id> or <a:name:id>
     if (input.matches(Regex("<a?:[a-zA-Z0-9_]+:\\d+>"))) return true
-    // Single Unicode grapheme cluster with the first codepoint in the emoji range (above basic Latin)
     val bi = BreakIterator.getCharacterInstance()
     bi.setText(input)
     bi.first()

@@ -4,6 +4,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
+import me.orange.game.chest.ChestRenderer
 import me.orange.game.craft.CraftingRenderer
 import me.orange.game.gameData.GameDataManager
 import me.orange.game.inventory.ItemStack
@@ -14,6 +15,7 @@ import me.orange.game.preferences.Preference
 import me.orange.game.preferences.PreferencesManager
 import me.orange.game.utils.Vec
 import me.orange.game.world.World
+import me.orange.game.world.tile.TileInteraction
 import me.orange.game.world.tile.Tiles
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.InteractionHook
@@ -33,6 +35,7 @@ class Game(
     val players: ConcurrentHashMap<Long, OfflinePlayer> = ConcurrentHashMap()
     val playerEnvUiCache: MutableMap<Long, String> = ConcurrentHashMap()
     val playerCraftUiCache: MutableMap<Long, String> = ConcurrentHashMap()
+    val playerChestUiCache: MutableMap<Long, String> = ConcurrentHashMap()
     private val gameRenderer: GameRenderer = GameRenderer(this)
     private var running = true
 
@@ -214,11 +217,37 @@ class Game(
         when (player.viewState) {
             ViewState.WORLD -> updatePlayerView(player, force || showWorld)
             ViewState.CRAFTING -> updateCraftingView(player, force)
+            ViewState.CHEST -> updateChestView(player, force)
             else -> {}
         }
     }
 
     fun renderCrafting(player: Player, force: Boolean = true) = updateCraftingView(player, force)
+    fun renderChest(player: Player, force: Boolean = true) = updateChestView(player, force)
+
+    private fun updateChestView(player: Player, force: Boolean = false) {
+        val chestPos = player.openChestPos
+        if (chestPos == null || world.getChestAt(chestPos) == null) {
+            player.openChestPos = null
+            player.viewState = ViewState.WORLD
+            playerEnvUiCache.remove(player.id)
+            playerChestUiCache.remove(player.id)
+            return
+        }
+
+        val rendered = ChestRenderer(player).render() ?: return
+        val (playerEmbed, chestEmbed, components) = rendered
+
+        val chestData = world.getChestAt(chestPos)!!
+        val invSig = "${player.inventory.selectedSlot}|${player.inventory.contents.joinToString(",") { "${it.itemKey}:${it.count}" }}"
+        val chestSig = "${player.chestSelectedSlot}|${chestData.inventory.contents.joinToString(",") { "${it.itemKey}:${it.count}" }}"
+        val cacheKey = "${player.chestCursorOnPlayer}|$invSig|$chestSig"
+
+        if (!force && playerChestUiCache[player.id] == cacheKey) return
+
+        player.hook?.editOriginalEmbeds(playerEmbed, chestEmbed)?.setComponents(components)?.queue()
+        playerChestUiCache[player.id] = cacheKey
+    }
 
     fun refreshPlayer(player: Player) {
         player.age = time
@@ -237,7 +266,20 @@ class Game(
         val tile = world.getTile(pos) ?: return
         if (!tile.breakable) return
 
+        val chestData = if (tile.interaction is TileInteraction.Chest) world.getChestAt(pos) else null
+
         if (!world.setTile(pos, Tiles.AIR)) return
+
+        if (chestData != null) {
+            chestData.inventory.contents.forEach { stack -> player.inventory.addItem(stack) }
+            world.removeChestAt(pos)
+            players.values.filterIsInstance<Player>().filter { it.openChestPos == pos }.forEach { p ->
+                p.openChestPos = null
+                p.viewState = ViewState.WORLD
+                playerEnvUiCache.remove(p.id)
+                playerChestUiCache.remove(p.id)
+            }
+        }
 
         tile.drop?.let { drop ->
             player.inventory.addItem(ItemStack(drop.item, drop.count))
