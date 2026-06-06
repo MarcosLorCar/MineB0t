@@ -158,10 +158,11 @@ class PlayerActionMenu(
 
     fun getCraftingButton(): Button {
         val interaction = player.game.world.getInteractionAt(player.pos)
+        val button = Button.of(ButtonStyle.SECONDARY, interaction.buttonId, interaction.emoji)
+
         return when (interaction) {
-            is TileInteraction.Chest -> Button.of(ButtonStyle.SECONDARY, interaction.buttonId, interaction.emoji)
-            else -> Button.of(ButtonStyle.SECONDARY, interaction.buttonId, interaction.emoji)
-                .withDisabled(!player.recipeManager.hasViewableRecipes())
+            is TileInteraction.Chest -> button
+            else -> button.withDisabled(!player.recipeManager.hasViewableRecipes())
         }
     }
 

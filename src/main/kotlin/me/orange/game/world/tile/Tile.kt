@@ -13,7 +13,7 @@ class Tile(
     val airy: Boolean,
     val breakable: Boolean,
     val drop: ItemStack?,
-    val interaction: TileInteraction = TileInteraction.None,
+    val interaction: TileInteraction = TileInteraction.BareHanded,
     val onBreak: () -> Unit = {},
 ) {
     val emoji: String get() = emojiVariants[0]
@@ -33,7 +33,7 @@ class Tile(
         var breakable: Boolean = false
         var onBreak: () -> Unit = {}
         var drop: ItemStack? = null
-        var interaction: TileInteraction = TileInteraction.None
+        var interaction: TileInteraction = TileInteraction.BareHanded
 
         fun variant(emoji: Emoji, weight: Int = 1) = apply {
             val i = weightedVariants.indexOfFirst { it.first == emoji }

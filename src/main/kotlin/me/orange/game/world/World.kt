@@ -72,9 +72,9 @@ class World(
     fun getInteractionAt(pos: Vec): TileInteraction {
         for (candidate in listOf(pos.plus(0, -1), pos, pos.plus(0, 1))) {
             val interaction = getTile(candidate)?.interaction ?: continue
-            if (interaction != TileInteraction.None) return interaction
+            if (interaction != TileInteraction.BareHanded) return interaction
         }
-        return TileInteraction.None
+        return TileInteraction.BareHanded
     }
 
     fun getCraftingStationAt(pos: Vec): CraftingStationType =
