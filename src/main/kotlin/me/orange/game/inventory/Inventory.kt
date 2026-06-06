@@ -58,6 +58,17 @@ class Inventory(
         if (selectedSlot >= contents.size) selectedSlot = maxOf(0, contents.size - 1)
     }
 
+    /** Removes [count] from the stack at [index] and clamps [selectedSlot]. */
+    fun removeFromSlot(index: Int, count: Int) {
+        val stack = contents.getOrNull(index) ?: return
+        val taken = minOf(stack.count, count)
+        stack.count -= taken
+        if (stack.count == 0) {
+            contents.removeAt(index)
+            if (selectedSlot >= contents.size) selectedSlot = maxOf(0, contents.size - 1)
+        }
+    }
+
     fun getEmbed() = renderer.getEmbed()
     fun isEmpty(): Boolean = contents.isEmpty()
     fun getData(): InventoryData = InventoryData(size, contents)

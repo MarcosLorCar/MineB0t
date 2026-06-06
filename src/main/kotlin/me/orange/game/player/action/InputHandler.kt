@@ -46,6 +46,7 @@ class InputHandler(
             "open" -> {
                 player.queueAction { player ->
                     player.viewState = ViewState.INVENTORY
+                    player.game.playerInventoryUiCache.remove(player.id)
                 }
             }
             "close" -> {
@@ -76,10 +77,7 @@ class InputHandler(
         }
 
         player.queueAction { player ->
-            player.hook
-                ?.editOriginalEmbeds(player.inventory.getEmbed()!!)
-                ?.setComponents(player.getInventoryActions())
-                ?.queue()
+            player.game.renderInventory(player)
         }
     }
 
@@ -186,7 +184,7 @@ class InputHandler(
                 val chestInv = Inventory.fromData(chestData.inventory)
                 if (!chestInv.canFit(selected)) return@queueAction
                 chestInv.addItem(selected)
-                p.inventory.removeItems(selected.itemKey, selected.count)
+                p.inventory.removeFromSlot(p.inventory.selectedSlot, selected.count)
                 p.game.renderChest(p)
             }
 
@@ -197,7 +195,7 @@ class InputHandler(
                 val selected = chestInv.contents.getOrNull(p.chestSelectedSlot) ?: return@queueAction
                 if (!p.inventory.canFit(selected)) return@queueAction
                 p.inventory.addItem(selected)
-                chestInv.removeItems(selected.itemKey, selected.count)
+                chestInv.removeFromSlot(p.chestSelectedSlot, selected.count)
                 if (p.chestSelectedSlot >= chestData.inventory.contents.size)
                     p.chestSelectedSlot = maxOf(0, chestData.inventory.contents.size - 1)
                 p.game.renderChest(p)

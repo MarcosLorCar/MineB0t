@@ -1,7 +1,7 @@
 .gradle
 .env
 build/
-data/
+/data/
 !src/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

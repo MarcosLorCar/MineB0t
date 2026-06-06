@@ -36,6 +36,7 @@ class Game(
     val playerEnvUiCache: MutableMap<Long, String> = ConcurrentHashMap()
     val playerCraftUiCache: MutableMap<Long, String> = ConcurrentHashMap()
     val playerChestUiCache: MutableMap<Long, String> = ConcurrentHashMap()
+    val playerInventoryUiCache: MutableMap<Long, String> = ConcurrentHashMap()
     private val gameRenderer: GameRenderer = GameRenderer(this)
     private var running = true
 
@@ -113,6 +114,11 @@ class Game(
          MineB0t.log("Player ${player.name} (${player.id}) timed out in guild $guildName ($guildId)")
          player.hook?.deleteOriginal()?.queue()
          players[id] = OfflinePlayer(player.id, player.pos, player.gameMode)
+
+         playerEnvUiCache.remove(id)
+         playerCraftUiCache.remove(id)
+         playerChestUiCache.remove(id)
+         playerInventoryUiCache.remove(id)
 
          MineB0t.launch {
             player.saveData()
@@ -218,12 +224,26 @@ class Game(
             ViewState.WORLD -> updatePlayerView(player, force || showWorld)
             ViewState.CRAFTING -> updateCraftingView(player, force)
             ViewState.CHEST -> updateChestView(player, force)
-            else -> {}
+            ViewState.INVENTORY -> updateInventoryView(player, force)
         }
     }
 
     fun renderCrafting(player: Player, force: Boolean = true) = updateCraftingView(player, force)
     fun renderChest(player: Player, force: Boolean = true) = updateChestView(player, force)
+    fun renderInventory(player: Player, force: Boolean = true) = updateInventoryView(player, force)
+
+    private fun updateInventoryView(player: Player, force: Boolean = false) {
+        val inv = player.inventory
+        val invSignature = "${inv.selectedSlot}|${inv.contents.joinToString(",") { "${it.itemKey}:${it.count}" }}"
+
+        if (!force && playerInventoryUiCache[player.id] == invSignature) return
+
+        val embed = inv.getEmbed() ?: return
+        val components = player.getInventoryActions()
+
+        player.hook?.editOriginalEmbeds(embed)?.setComponents(components)?.queue()
+        playerInventoryUiCache[player.id] = invSignature
+    }
 
     private fun updateChestView(player: Player, force: Boolean = false) {
         val chestPos = player.openChestPos
@@ -298,12 +318,7 @@ class Game(
 
         if (!world.setTile(pos, tile)) return
 
-        stack.count--
-        if (stack.count == 0) {
-            player.inventory.contents.remove(stack)
-            if (player.inventory.getSelectedItemStack() == null)
-                player.inventory.selectedSlot = 0
-        }
+        player.inventory.removeFromSlot(player.inventory.selectedSlot, 1)
     }
 
     fun saveAll() {
