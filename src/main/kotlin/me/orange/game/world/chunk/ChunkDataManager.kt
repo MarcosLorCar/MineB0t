@@ -2,6 +2,7 @@ package me.orange.game.world.chunk
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
+import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.utils.Vec
 import me.orange.game.world.World
@@ -12,6 +13,7 @@ class ChunkDataManager(
 ) {
     @OptIn(ExperimentalSerializationApi::class)
     fun loadData(chunkPos: Vec) : Chunk? {
+        if (!Config.PERSISTENCE_ENABLED) return null
         val file = fileOf(chunkPos)
 
         if (!file.exists()) return null
@@ -27,7 +29,7 @@ class ChunkDataManager(
 
     @OptIn(ExperimentalSerializationApi::class)
     fun saveData(chunk: Chunk?) {
-        if (chunk == null) return
+        if (!Config.PERSISTENCE_ENABLED || chunk == null) return
 
         val file = fileOf(chunk.worldPos)
 

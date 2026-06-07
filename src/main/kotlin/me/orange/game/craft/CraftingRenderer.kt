@@ -2,7 +2,7 @@ package me.orange.game.craft
 
 import me.orange.bot.Emojis
 import me.orange.game.preferences.Preference
-import me.orange.game.inventory.ItemStack
+import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed

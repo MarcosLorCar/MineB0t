@@ -1,13 +1,12 @@
 ﻿package me.orange.game
 
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.chest.ChestRenderer
 import me.orange.game.craft.CraftingRenderer
 import me.orange.game.gameData.GameDataManager
-import me.orange.game.inventory.ItemStack
+import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 import me.orange.game.player.ViewState
 import me.orange.game.player.offline.OfflinePlayer
@@ -16,11 +15,11 @@ import me.orange.game.preferences.PreferencesManager
 import me.orange.game.utils.Vec
 import me.orange.game.world.World
 import me.orange.game.world.tile.TileInteraction
-import me.orange.game.world.tile.Tiles
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.InteractionHook
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 
 class Game(
     val guildId : String,
@@ -288,8 +287,6 @@ class Game(
 
         val chestData = if (tile.interaction is TileInteraction.Chest) world.getChestAt(pos) else null
 
-        if (!world.setTile(pos, Tiles.AIR)) return
-
         if (chestData != null) {
             chestData.inventory.contents.forEach { stack -> player.inventory.addItem(stack) }
             world.removeChestAt(pos)
@@ -308,7 +305,7 @@ class Game(
                 player.feedbackExpiry = time + Config.FPS * 3
             }
         }
-        tile.onBreak()
+        tile.onBreak(world, pos)
     }
 
     fun placeTile(player: Player, pos: Vec) {
@@ -322,6 +319,7 @@ class Game(
     }
 
     fun saveAll() {
+        if (!Config.PERSISTENCE_ENABLED) return
         val onlineCount = players.count { it.value is Player }
         MineB0t.log("Saving $guildName ($guildId): $onlineCount online player(s)")
 

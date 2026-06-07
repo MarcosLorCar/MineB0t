@@ -1,6 +1,8 @@
 package me.orange.game.inventory
 
 import kotlinx.serialization.Serializable
+import me.orange.game.inventory.item.Item
+import me.orange.game.inventory.item.ItemStack
 import me.orange.game.utils.Vec
 
 class Inventory(

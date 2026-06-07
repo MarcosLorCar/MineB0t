@@ -1,6 +1,6 @@
 package me.orange.game.craft
 
-import me.orange.game.inventory.ItemStack
+import me.orange.game.inventory.item.ItemStack
 
 data class Recipe(
     val id: String,

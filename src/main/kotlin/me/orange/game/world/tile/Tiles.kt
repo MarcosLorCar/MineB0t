@@ -2,7 +2,7 @@ package me.orange.game.world.tile
 
 import me.orange.bot.Emojis
 import me.orange.game.craft.CraftingStationType
-import me.orange.game.inventory.Items
+import me.orange.game.inventory.item.Items
 
 object Tiles {
     val NULL: Tile = TileRegistry.register("null", Emojis.get("null")) {
@@ -49,11 +49,61 @@ object Tiles {
         drops(Items.COAL, 1)
         variant(Emojis.get("coal_ore_1"))
     }
-    val RED_SHROOM: Tile = TileRegistry.register("red_shroom_tile", Emojis.get("red_shroom_tile")) {
+    val RED_SHROOM: Tile = TileRegistry.register("red_shroom", Emojis.get("red_shroom_tile")) {
         airy()
         breakable()
         drops(Items.RED_SHROOM)
         variant(Emojis.get("red_shroom_tile_1"))
+    }
+    val LOG: Tile = TileRegistry.register("log", Emojis.get("log_tile")) {
+        airy()
+        breakable()
+        drops(Items.LOG)
+        onBreak { world, pos ->
+            if (world.getTile(pos.plus(0, 1)) == CANOPY) {
+                // The tree is 1 block, cut it down completely
+
+                world.setTile(pos, AIR)
+                world.setTile(pos.plus(0, 1), AIR)
+            } else {
+                // The tree is 2+ blocks, reduce its height
+
+                var canopyPos = pos.plus(0, 1)
+                while (world.getTile(canopyPos) != CANOPY) canopyPos = canopyPos.plus(0, 1)
+                world.setTile(canopyPos, AIR)
+                world.setTile(canopyPos.plus(0, -1), CANOPY)
+            }
+        }
+    }
+    val LEAVES: Tile = TileRegistry.register("leaves", Emojis.get("leaves")) {
+        airy()
+        breakable()
+        drops(Items.LOG)
+        onBreak { world, pos ->
+            var canopyPos = pos.plus(0, 1)
+            while (world.getTile(canopyPos) != CANOPY) canopyPos = canopyPos.plus(0, 1)
+            world.setTile(canopyPos, AIR)
+            world.setTile(canopyPos.plus(0, -1), CANOPY)
+        }
+    }
+    val CANOPY: Tile = TileRegistry.register("canopy", Emojis.get("canopy")) {
+        airy()
+        breakable()
+        drops(Items.LOG)
+        onBreak { world, pos ->
+            world.setTile(pos, AIR)
+            if (world.getTile(pos.plus(0, -1)) == LOG) {
+                // Chop down completely
+
+                world.setTile(pos, AIR)
+                world.setTile(pos.plus(0, -1), AIR)
+            } else {
+                // Reduce by 1
+
+                world.setTile(pos, AIR)
+                world.setTile(pos.plus(0, -1), CANOPY)
+            }
+        }
     }
     val CHEST: Tile = TileRegistry.register("chest", Emojis.get("chest")) {
         breakable()

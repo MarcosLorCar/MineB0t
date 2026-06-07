@@ -9,7 +9,6 @@ import me.orange.game.world.chunk.Chunk
 import me.orange.game.world.tile.Tile
 import me.orange.game.world.tile.Tiles
 import kotlin.math.floor
-import kotlin.math.sqrt
 
 class OverworldGenerator(
     seed: Long,
@@ -28,6 +27,13 @@ class OverworldGenerator(
         .perlin(seed + 53, Interpolation.COSINE, FadeFunction.QUINTIC_POLY)
         .scale(0.08)
         .build()
+
+    private val decorations = listOf(
+        PatchDecoration(Tiles.IRON_ORE, 0x517CC1B727220A95L),
+        PatchDecoration(Tiles.COAL_ORE, 0x27D4EB2F165667C5L),
+        ScatterDecoration(0.1f, { it == Tiles.GRASS }, { it == Tiles.AIR }, Tiles.RED_SHROOM, 0x3141592653589793L),
+         TreeDecoration(0.15f, 0x9E3779B9L)
+    )
 
     companion object {
         const val STONE_LAYER_DEPTH = 4
@@ -67,84 +73,18 @@ class OverworldGenerator(
         getTile: (Vec) -> Tile?,
         setTile: (Vec, Tile) -> Unit
     ) {
-        val originX = cornerChunkPos.x * Chunk.SIZE + Chunk.SIZE / 2
-        val originY = cornerChunkPos.y * Chunk.SIZE + Chunk.SIZE / 2
-
-        val rng = java.util.Random(
-            seed xor (cornerChunkPos.x.toLong() * 0x517CC1B727220A95L)
-                 xor (cornerChunkPos.y.toLong() * 0x6C62272E07BB0142L)
+        val origin = Vec(
+            cornerChunkPos.x * Chunk.SIZE + Chunk.SIZE / 2,
+            cornerChunkPos.y * Chunk.SIZE + Chunk.SIZE / 2
         )
 
-        var stoneCount = 0
-        for (dy in 0 until Chunk.SIZE)
-            for (dx in 0 until Chunk.SIZE)
-                if (getTile(Vec(originX + dx, originY + dy)) == Tiles.STONE) stoneCount++
-
-        val patchCount = when {
-            stoneCount >= 80 -> rng.nextInt(3)
-            stoneCount >= 30 -> rng.nextInt(2)
-            else -> 0
-        }
-
-        repeat(patchCount) {
-            val cx = originX + rng.nextInt(Chunk.SIZE)
-            val cy = originY + rng.nextInt(Chunk.SIZE)
-            val radius = 1.5f + rng.nextFloat() * 1.5f
-            placePatch(Vec(cx, cy), radius, rng, getTile, setTile)
-        }
-
-        val coalRng = java.util.Random(
-            seed xor (cornerChunkPos.x.toLong() * 0x27D4EB2F165667C5L)
-                 xor (cornerChunkPos.y.toLong() * 0x2545F4914F6CDD1DL)
-        )
-        val coalPatchCount = when {
-            stoneCount >= 80 -> coalRng.nextInt(3)
-            stoneCount >= 30 -> coalRng.nextInt(2)
-            else -> 0
-        }
-        repeat(coalPatchCount) {
-            val cx = originX + coalRng.nextInt(Chunk.SIZE)
-            val cy = originY + coalRng.nextInt(Chunk.SIZE)
-            val radius = 1.5f + coalRng.nextFloat() * 1.5f
-            placePatch(Vec(cx, cy), radius, coalRng, getTile, setTile, Tiles.COAL_ORE)
-        }
-
-        val shroomRng = java.util.Random(
-            seed xor (cornerChunkPos.x.toLong() * 0x3141592653589793L)
-                 xor (cornerChunkPos.y.toLong() * 0x2718281828459045L)
-        )
-        for (dx in 0 until Chunk.SIZE) {
-            val wx = originX + dx
-            for (dy in 0 until Chunk.SIZE) {
-                val wy = originY + dy
-                if (getTile(Vec(wx, wy)) == Tiles.GRASS &&
-                    getTile(Vec(wx, wy + 1)) == Tiles.AIR &&
-                    shroomRng.nextFloat() < 0.15f
-                ) {
-                    setTile(Vec(wx, wy + 1), Tiles.RED_SHROOM)
-                }
-            }
-        }
-    }
-
-    private fun placePatch(
-        center: Vec,
-        radius: Float,
-        rng: java.util.Random,
-        getTile: (Vec) -> Tile?,
-        setTile: (Vec, Tile) -> Unit,
-        targetTile: Tile = Tiles.IRON_ORE,
-    ) {
-        val r = radius.toInt() + 1
-        for (dy in -r..r) {
-            for (dx in -r..r) {
-                val dist = sqrt((dx * dx + dy * dy).toFloat())
-                if (dist > radius) continue
-                val pos = center.plus(dx, dy)
-                if (getTile(pos) != Tiles.STONE) continue
-                if (rng.nextFloat() < 1f - (dist / radius) * 0.5f)
-                    setTile(pos, targetTile)
-            }
+        decorations.forEach { decoration ->
+            val rng = java.util.Random(
+                seed xor (cornerChunkPos.x.toLong() * 0x517CC1B727220A95L)
+                     xor (cornerChunkPos.y.toLong() * 0x6C62272E07BB0142L)
+                     xor decoration.salt
+            )
+            decoration.generate(origin, rng, getTile, setTile)
         }
     }
 

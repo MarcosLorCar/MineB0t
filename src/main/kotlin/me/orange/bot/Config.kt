@@ -1,6 +1,9 @@
 package me.orange.bot
 
 object Config {
+    val DEV_MODE = System.getenv("DEV_MODE")?.toBoolean() ?: false
+    val PERSISTENCE_ENABLED = !DEV_MODE && (System.getenv("PERSISTENCE_ENABLED")?.toBoolean() ?: true)
+
     const val GAME_DATA_DIR = "data/games"
     const val PLAYER_DATA_DIR = "data/players"
 

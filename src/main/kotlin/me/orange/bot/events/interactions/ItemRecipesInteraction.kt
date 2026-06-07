@@ -4,7 +4,7 @@ import me.orange.bot.events.base.BaseInteraction
 import me.orange.game.GamesManager
 import me.orange.game.craft.CraftingStationType
 import me.orange.game.craft.RecipeRegistry
-import me.orange.game.inventory.ItemStack
+import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 
@@ -41,5 +41,5 @@ object ItemRecipesInteraction : BaseInteraction(
 
 private fun stackStr(stack: ItemStack) = "**${stack.count}x** ${stack.item.emoji.formatted}"
 
-private fun me.orange.game.inventory.Item.displayName() =
+private fun me.orange.game.inventory.item.Item.displayName() =
     key.split("_").joinToString(" ") { it.replaceFirstChar(Char::titlecase) }

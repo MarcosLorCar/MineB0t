@@ -5,7 +5,7 @@ import me.orange.console.ConsoleCommandHandler
 import me.orange.bot.events.EventHandler
 import me.orange.game.GamesManager
 import me.orange.game.craft.Recipes
-import me.orange.game.inventory.Items
+import me.orange.game.inventory.item.Items
 import me.orange.game.world.tile.Tiles
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -26,6 +26,9 @@ object MineB0t {
     fun start() = runBlocking {
         installPromptAwareOutput()
         log("Bot starting...")
+        if (Config.DEV_MODE) log("⚠ DEV_MODE is active: Persistence is disabled!")
+        else if (!Config.PERSISTENCE_ENABLED) log("⚠ Persistence is disabled via configuration!")
+
         val token = System.getenv("DISCORD_BOT_TOKEN") ?: error("Missing token!")
         jda = JDABuilder.createDefault(token).build()
         EventHandler.registerEvents(jda)

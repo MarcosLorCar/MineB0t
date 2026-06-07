@@ -1,6 +1,7 @@
 package me.orange.game.player.data
 
 import kotlinx.serialization.json.Json
+import me.orange.bot.Config
 import me.orange.game.Game
 import me.orange.game.player.Player
 import me.orange.game.preferences.PreferencesManager
@@ -10,6 +11,7 @@ class PlayerDataManager(
     private val player: Player
 ) {
     fun saveData() = with(player) {
+        if (!Config.PERSISTENCE_ENABLED) return@with
         PreferencesManager.savePreferences(id)
         val data = PlayerData(pos, gameMode, inventory.getData(), recipeManager.knownRecipes.toSet(), recentItems = recentItems)
 
@@ -22,6 +24,7 @@ class PlayerDataManager(
 
     companion object {
         fun loadData(id: Long, game: Game): PlayerData? {
+            if (!Config.PERSISTENCE_ENABLED) return null
             val file = fileOf(id, game.gameDataDir)
 
             return if (file.exists() && file.isFile) {

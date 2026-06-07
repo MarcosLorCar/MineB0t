@@ -50,9 +50,9 @@ class PlayerActionMenu(
         actions.add(
             ActionRow.of(
                 if (moreActions) dualActionButton("left_and_up_left", Emojis.get("left_and_up_left"), style) else getPlaceholderButton(),
-                actionButton("up_left", Emojis.get("left"), style),
+                actionButton("up_left", Emojis.get(if (moreActions) "left" else "up_left"), style),
                 row2Center,
-                actionButton("up_right", Emojis.get("right"), style),
+                actionButton("up_right", Emojis.get(if (moreActions) "right" else "up_right"), style),
                 if (moreActions) dualActionButton("right_and_up_right", Emojis.get("right_and_up_right"), style) else getInventoryButton(),
             )
         )

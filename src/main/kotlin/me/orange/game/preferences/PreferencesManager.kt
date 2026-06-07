@@ -2,10 +2,13 @@ package me.orange.game.preferences
 
 import kotlinx.serialization.json.Json
 import me.orange.bot.Config
+import me.orange.bot.Emojis
 import me.orange.bot.MineB0t
 import me.orange.game.GamesManager
 import net.dv8tion.jda.api.interactions.InteractionHook
 import net.dv8tion.jda.api.interactions.components.ActionRow
+import net.dv8tion.jda.api.interactions.components.buttons.Button
+import net.dv8tion.jda.api.interactions.components.selections.SelectOption
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -24,7 +27,25 @@ object PreferencesManager {
                 }
                 it.setPlaceholder("Choose a setting")
             }.build()
-        hook.editOriginalComponents(ActionRow.of(selectionMenu)).queue()
+        hook.editOriginal("User Preferences\nSelect a setting to modify it:")
+            .setComponents(ActionRow.of(selectionMenu)).queue()
+    }
+
+    fun showSettingMenu(hook: InteractionHook, setting: Preference, feedback: String? = null) {
+        val playerId = hook.interaction.user.idLong
+        val current = getEffectivePreference(playerId, setting).toString()
+        val selectionMenu = StringSelectMenu.create(setting.name)
+            .addOptions(setting.options.map {
+                SelectOption.of(it.toString(), it.toString())
+            })
+            .build()
+        val backButton = Button.secondary("settings_back", Emojis.get("return"))
+
+        val message = (if (feedback != null) "$feedback\n" else "") +
+                "Currently: $current\nChoose a new value for ${setting.name}"
+
+        hook.editOriginal(message)
+            .setComponents(ActionRow.of(selectionMenu), ActionRow.of(backButton)).queue()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -61,8 +82,9 @@ object PreferencesManager {
         setPreference(playerId, setting, value)
         savePreferences(playerId)
         MineB0t.log("Player $playerName ($playerId) set ${setting.name} = $value")
-        hook.editOriginal("Successfully set ${setting.name} to $value").queue()
-        hook.editOriginalComponents().queue()
+
+        showSettingMenu(hook, setting, "✅ Successfully set ${setting.name} to $value")
+
         val guildId = hook.interaction.guild?.id ?: return
         GamesManager.games[guildId]?.let { game ->
             game.playerEnvUiCache.remove(playerId)
@@ -71,6 +93,7 @@ object PreferencesManager {
     }
 
     fun loadPreferences(id: Long, fallback: Map<String, String> = emptyMap()) {
+        if (!Config.PERSISTENCE_ENABLED) return
         val file = fileOf(id)
         val raw = if (file.exists()) Json.decodeFromString<Map<String, String>>(file.readText()) else fallback
         if (raw.isEmpty()) return
@@ -86,6 +109,7 @@ object PreferencesManager {
     }
 
     fun savePreferences(id: Long) {
+        if (!Config.PERSISTENCE_ENABLED) return
         val prefs = playerPreferences[id] ?: return
         val data = prefs.entries.associate { (pref, value) -> pref.name to value.toString() }
         val file = fileOf(id)

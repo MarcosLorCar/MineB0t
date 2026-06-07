@@ -1,4 +1,4 @@
-package me.orange.game.inventory
+package me.orange.game.inventory.item
 
 import me.orange.bot.Emojis
 import me.orange.game.world.tile.Tiles
@@ -9,6 +9,7 @@ object Items {
     val STONE          = ItemRegistry.register("stone",          Emojis.get("stone"))          { placeable { Tiles.STONE };          description("Found deep underground") }
     val IRON_CHUNK     = ItemRegistry.register("iron_chunk",     Emojis.get("iron_chunk"))     { description("Raw iron ore, needs smelting") }
     val RED_SHROOM     = ItemRegistry.register("red_shroom",     Emojis.get("red_shroom"))     { placeable { Tiles.RED_SHROOM };     description("Wild red shroom, found in the surface") }
+    val LOG            = ItemRegistry.register("log",            Emojis.get("log"))            { placeable { Tiles.LOG };            description("Wood log from trees") }
     @Suppress("unused")
     val IRON_INGOT     = ItemRegistry.register("iron_ingot",     Emojis.get("iron_ingot"))     { description("Smelted iron used in crafting") }
     val CRAFTING_TABLE = ItemRegistry.register("crafting_table", Emojis.get("crafting_table")) { placeable { Tiles.CRAFTING_TABLE }; description("Unlocks crafting recipes") }

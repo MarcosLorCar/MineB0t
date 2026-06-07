@@ -14,6 +14,7 @@ import me.orange.bot.events.interactions.HotbarInteraction
 import me.orange.bot.events.interactions.ItemRecipesInteraction
 import me.orange.bot.events.interactions.PlayInteraction
 import me.orange.bot.events.interactions.SelectSettingInteraction
+import me.orange.bot.events.interactions.SettingsBackInteraction
 import me.orange.game.preferences.Preference
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
@@ -76,6 +77,7 @@ object EventHandler {
         CraftSelectInteraction,
         ItemInfoInteraction,
         ItemRecipesInteraction,
+        SettingsBackInteraction,
     )
 
     fun registerEvents(jda: JDA) {

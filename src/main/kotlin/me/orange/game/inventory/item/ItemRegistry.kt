@@ -1,4 +1,4 @@
-package me.orange.game.inventory
+package me.orange.game.inventory.item
 
 import net.dv8tion.jda.api.entities.emoji.Emoji
 

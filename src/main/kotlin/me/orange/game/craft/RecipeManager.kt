@@ -2,7 +2,7 @@ package me.orange.game.craft
 
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
-import me.orange.game.inventory.ItemStack
+import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 
 class RecipeManager(

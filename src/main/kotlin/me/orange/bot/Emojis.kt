@@ -66,11 +66,16 @@ object Emojis {
         loadEmoji("red_shroom_tile", "_", 1512378160115875880)
         loadEmoji("red_shroom_tile_1", "_", 1512378161294475367)
 
+        loadEmoji("log_tile", "_", 1513164648227016865)
+        loadEmoji("leaves", "_", 1513164646721523813)
+        loadEmoji("canopy", "_", 1513164645534400735)
+
         loadEmoji("chest", "_", 1512553817298702347)
 
         // Item emojis
         loadEmoji("iron_chunk", "iron_chunk", 1512391416322719804)
         loadEmoji("coal", "coal", 1512391415265628200)
+        loadEmoji("log", "_", 1513171531717673011)
         loadEmoji("red_shroom", "red_shroom", 1512378159054717009)
     }
 

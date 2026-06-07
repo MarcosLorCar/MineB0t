@@ -1,7 +1,7 @@
 package me.orange.game.craft
 
-import me.orange.game.inventory.Item
-import me.orange.game.inventory.ItemStack
+import me.orange.game.inventory.item.Item
+import me.orange.game.inventory.item.ItemStack
 
 object RecipeRegistry {
     val recipes = mutableListOf<Recipe>()

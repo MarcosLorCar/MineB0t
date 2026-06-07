@@ -1,9 +1,10 @@
 package me.orange.game.world.tile
 
 import me.orange.game.craft.CraftingStationType
-import me.orange.game.inventory.Item
-import me.orange.game.inventory.ItemStack
+import me.orange.game.inventory.item.Item
+import me.orange.game.inventory.item.ItemStack
 import me.orange.game.utils.Vec
+import me.orange.game.world.World
 import net.dv8tion.jda.api.entities.emoji.Emoji
 
 class Tile(
@@ -14,7 +15,7 @@ class Tile(
     val breakable: Boolean,
     val drop: ItemStack?,
     val interaction: TileInteraction = TileInteraction.BareHanded,
-    val onBreak: () -> Unit = {},
+    val onBreak: (World, Vec) -> Unit = { world, pos -> world.setTile(pos, Tiles.AIR) },
 ) {
     val emoji: String get() = emojiVariants[0]
 
@@ -31,7 +32,7 @@ class Tile(
         private val weightedVariants: MutableList<Pair<Emoji, Int>> = mutableListOf(primaryEmoji to 1)
         var airy: Boolean = false
         var breakable: Boolean = false
-        var onBreak: () -> Unit = {}
+        var onBreak: (World, Vec) -> Unit = { world, pos -> world.setTile(pos, Tiles.AIR) }
         var drop: ItemStack? = null
         var interaction: TileInteraction = TileInteraction.BareHanded
 
@@ -41,7 +42,7 @@ class Tile(
         }
         fun airy() = apply { airy = true }
         fun breakable() = apply { breakable = true }
-        fun onBreak(onBreak: () -> Unit) = apply { this.onBreak = onBreak }
+        fun onBreak(onBreak: (World, Vec) -> Unit) = apply { this.onBreak = onBreak }
         fun drops(item: Item, count: Int = 1) = apply { this.drop = ItemStack(item, count) }
         fun interaction(interaction: TileInteraction) = apply { this.interaction = interaction }
         fun craftingStation(type: CraftingStationType) = interaction(TileInteraction.CraftingStation(type))
