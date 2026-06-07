@@ -57,8 +57,8 @@ object Emojis {
         loadEmoji("stone", "_", 1512111539551862944)
         loadEmoji("stone_2", "_", 1512111541028388895)
 
-        loadEmoji("iron_ore", "_", 1512121554392322118)
-        loadEmoji("iron_ore_1", "_", 1512121555440762941)
+        loadEmoji("iron_ore", "_", 1513185510510563339)
+        loadEmoji("iron_ore_1", "_", 1513185511965986917)
 
         loadEmoji("coal_ore", "_", 1512124423623409855)
         loadEmoji("coal_ore_1", "_", 1512124424588103842)
@@ -73,7 +73,8 @@ object Emojis {
         loadEmoji("chest", "_", 1512553817298702347)
 
         // Item emojis
-        loadEmoji("iron_chunk", "iron_chunk", 1512391416322719804)
+        loadEmoji("iron_chunk", "iron_chunk", 1513185506614182040)
+        loadEmoji("iron_ingot", "iron_ingot", 1513183647220633631)
         loadEmoji("coal", "coal", 1512391415265628200)
         loadEmoji("log", "_", 1513171531717673011)
         loadEmoji("red_shroom", "red_shroom", 1512378159054717009)
