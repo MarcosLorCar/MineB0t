@@ -44,9 +44,7 @@ class ChestRenderer(private val player: Player) {
         } else {
             inventory.contents.forEachIndexed { index, stack ->
                 val indicator = if (showCursor && activeSlot == index) cursor else air
-                val digits = stack.count.toString().map { c -> Emojis.getNumber(c.digitToInt()) }
-                val countRow = if (digits.size == 1) "${digits[0]}$air" else digits.joinToString("")
-                builder.addField("${stack.item.emoji.formatted}$indicator", countRow, true)
+                builder.addField("${stack.item.emoji.formatted}$indicator", Emojis.renderCountEmoji(stack.count), true)
             }
             val remainder = inventory.contents.size % InventoryRenderer.INVENTORY_COLS
             if (remainder != 0) {

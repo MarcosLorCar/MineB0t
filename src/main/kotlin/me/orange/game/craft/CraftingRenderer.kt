@@ -89,10 +89,10 @@ class CraftingRenderer(
         return embed to components
     }
 
-    private fun stackString(stack: ItemStack): String = "**${stack.count}x** ${stack.item.emoji.formatted}"
+    private fun stackString(stack: ItemStack): String = Emojis.renderStack(stack.item.emoji.formatted, stack.count)
 
     private fun semiStackString(stack: ItemStack): String {
         val have = player.inventory.countOf(stack.itemKey)
-        return "**($have/${stack.count})x** ${stack.item.emoji.formatted}"
+        return Emojis.renderSemiStack(stack.item.emoji.formatted, have, stack.count)
     }
 }

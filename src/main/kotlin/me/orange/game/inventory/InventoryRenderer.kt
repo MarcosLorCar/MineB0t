@@ -21,10 +21,7 @@ class InventoryRenderer(
 
         contents.forEachIndexed { index, stack ->
             val indicator = if (selectedSlot == index) selectedIndicator else air
-            val digits = stack.count.toString().map { c -> Emojis.getNumber(c.digitToInt()) }
-            val countRow = if (digits.size == 1) "${digits[0]}$air" else digits.joinToString("")
-
-            builder.addField("${stack.item.emoji.formatted}$indicator", countRow, true)
+            builder.addField("${stack.item.emoji.formatted}$indicator", Emojis.renderCountEmoji(stack.count), true)
         }
 
         val remainder = contents.size % INVENTORY_COLS

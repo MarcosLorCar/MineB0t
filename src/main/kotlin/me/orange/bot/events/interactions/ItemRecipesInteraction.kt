@@ -1,5 +1,6 @@
 package me.orange.bot.events.interactions
 
+import me.orange.bot.Emojis
 import me.orange.bot.events.base.BaseInteraction
 import me.orange.game.GamesManager
 import me.orange.game.craft.CraftingStationType
@@ -39,7 +40,7 @@ object ItemRecipesInteraction : BaseInteraction(
     }
 )
 
-private fun stackStr(stack: ItemStack) = "**${stack.count}x** ${stack.item.emoji.formatted}"
+private fun stackStr(stack: ItemStack) = Emojis.renderStack(stack.item.emoji.formatted, stack.count)
 
 private fun me.orange.game.inventory.item.Item.displayName() =
     key.split("_").joinToString(" ") { it.replaceFirstChar(Char::titlecase) }

@@ -84,7 +84,7 @@ class PlayerActionMenu(
             actions.add(ActionRow.of(buildHotbarSlots().map { slotIndex ->
                 if (slotIndex == null) return@map getPlaceholderButton()
                 val stack = player.inventory.contents[slotIndex]
-                Button.of(ButtonStyle.SECONDARY, "hotbar_$slotIndex", " ${stack.count}", stack.item.emoji)
+                Button.of(ButtonStyle.SECONDARY, "hotbar_$slotIndex", Emojis.renderCountText(stack.count), stack.item.emoji)
             }))
         }
 
@@ -171,7 +171,7 @@ class PlayerActionMenu(
         return if (selectedItemStack == null)
             Button.of(ButtonStyle.SECONDARY, "inventoryPreview", Emojis.get("null")).asDisabled()
         else
-            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", " ${selectedItemStack.count}", selectedItemStack.item.emoji).asDisabled()
+            Button.of(ButtonStyle.SECONDARY, "inventoryPreview", Emojis.renderCountText(selectedItemStack.count), selectedItemStack.item.emoji).asDisabled()
     }
 
     private fun getItemInfoButton(): Button {

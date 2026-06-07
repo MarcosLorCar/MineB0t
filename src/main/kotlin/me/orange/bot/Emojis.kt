@@ -131,4 +131,15 @@ object Emojis {
         9 -> "9️⃣"
         else -> getFormatted("null")
     }
+
+    fun renderCountEmoji(count: Int): String {
+        val digits = count.toString().map { c -> getNumber(c.digitToInt()) }
+        return if (digits.size == 1) "${digits[0]}${getFormatted("air")}" else digits.joinToString("")
+    }
+
+    fun renderCountText(count: Int): String = " $count"
+
+    fun renderStack(itemEmoji: String, count: Int): String = "**${count}x** $itemEmoji"
+
+    fun renderSemiStack(itemEmoji: String, have: Int, need: Int): String = "**($have/$need)x** $itemEmoji"
 }
