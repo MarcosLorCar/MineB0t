@@ -2,13 +2,12 @@ package me.orange.game
 
 import me.orange.bot.MineB0t
 import me.orange.game.gameData.GameDataManager
+import java.util.concurrent.ConcurrentHashMap
 
 object GamesManager {
-    val games: MutableMap<String, Game> = mutableMapOf()
+    val games: ConcurrentHashMap<String, Game> = ConcurrentHashMap()
 
-    fun startGame(guildId: String) : Game {
-        if (games.containsKey(guildId)) return games[guildId]!!
-
+    private fun startGame(guildId: String) : Game {
         val game = GameDataManager.loadGame(guildId) ?: run {
             MineB0t.log("No save data for guild $guildId, creating new game")
             newGame(guildId)
@@ -21,20 +20,15 @@ object GamesManager {
         return game
     }
 
-    fun newGame(guildId: String): Game {
-        val game = Game(
-            guildId,
-        )
-        games[guildId] = game
-
-        return game
+    private fun newGame(guildId: String): Game {
+        return Game(guildId)
     }
 
     fun getGame(guildId: String): Game =
-         games[guildId] ?: startGame(guildId)
+         games.computeIfAbsent(guildId) { startGame(it) }
 
     fun saveAll() {
-        games.forEach { (guildId, game) ->
+        games.forEach { (_, game) ->
             game.saveAll()
         }
     }

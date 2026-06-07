@@ -1,20 +1,9 @@
 package me.orange.bot.events
 
 import me.orange.bot.MineB0t
-import me.orange.bot.events.commands.PlayCommand
-import me.orange.bot.events.commands.PreferencesCommand
-import me.orange.bot.events.commands.SetBodyCommand
-import me.orange.bot.events.commands.SetHeadCommand
-import me.orange.bot.events.commands.TestCommand
-import me.orange.bot.events.interactions.ChangeSettingInteraction
-import me.orange.bot.events.interactions.CraftSelectInteraction
-import me.orange.bot.events.interactions.InputInteraction
-import me.orange.bot.events.interactions.ItemInfoInteraction
-import me.orange.bot.events.interactions.HotbarInteraction
-import me.orange.bot.events.interactions.ItemRecipesInteraction
-import me.orange.bot.events.interactions.PlayInteraction
-import me.orange.bot.events.interactions.SelectSettingInteraction
-import me.orange.bot.events.interactions.SettingsBackInteraction
+import me.orange.bot.events.base.SlashCommand
+import me.orange.bot.events.commands.*
+import me.orange.bot.events.interactions.*
 import me.orange.game.preferences.Preference
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
@@ -83,40 +72,25 @@ object EventHandler {
     fun registerEvents(jda: JDA) {
         MineB0t.log("Registering events")
 
-        // Slash commands
-        commands.forEach(jda::addEventListener)
-        jda.addEventListener(RegisterCommandsListener)
-
-        // interactions
-        interactions.forEach(jda::addEventListener)
-
-        // ChangeSetting Interactions
+        // Populate preference interactions
         Preference.entries.forEach { pref ->
-            jda.addEventListener(ChangeSettingInteraction(pref))
+            interactions.add(ChangeSettingInteraction(pref))
         }
 
+        val interactionListener = InteractionListener(commands + interactions)
+        jda.addEventListener(interactionListener)
+        jda.addEventListener(RegisterCommandsListener)
     }
 
     object RegisterCommandsListener : ListenerAdapter() {
-        override fun onGuildReady(event: GuildReadyEvent) {
-            registerCommands(event.guild)
-        }
-
-        override fun onGuildJoin(event: GuildJoinEvent) {
-            registerCommands(event.guild)
-        }
+        override fun onGuildReady(event: GuildReadyEvent) = registerCommands(event.guild)
+        override fun onGuildJoin(event: GuildJoinEvent) = registerCommands(event.guild)
 
         private fun registerCommands(guild: Guild) {
             val updateCommands = guild.updateCommands()
-
             commands.forEach { command ->
-                // Register signature
-                updateCommands.addCommands(Commands.slash(
-                    command.id,
-                    command.description
-                ).addOptions(command.options))
+                updateCommands.addCommands(Commands.slash(command.id, command.description).addOptions(command.options))
             }
-
             updateCommands.queue(
                 { MineB0t.log("Registered ${it.size} commands in guild ${guild.name} (${guild.id})") },
                 { MineB0t.log("Failed to register commands in guild ${guild.name} (${guild.id}): ${it.message}") }

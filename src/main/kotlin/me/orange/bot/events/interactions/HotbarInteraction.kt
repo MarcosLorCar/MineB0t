@@ -1,22 +1,21 @@
 package me.orange.bot.events.interactions
 
-import me.orange.bot.MineB0t
+import me.orange.bot.events.base.ButtonInteraction
+import me.orange.bot.events.base.Interaction
 import me.orange.game.GamesManager
-import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
-import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.InteractionHook
 
-object HotbarInteraction : ListenerAdapter() {
-    override fun onGenericEvent(event: GenericEvent) {
-        if (event !is ButtonInteractionEvent) return
-        val buttonId = event.button.id ?: return
-        if (!buttonId.startsWith("hotbar_")) return
+object HotbarInteraction : Interaction {
+    override val id: String = "hotbar"
+    override val edit: Boolean = true
 
-        event.deferEdit().queue { hook ->
-            MineB0t.launch {
-                val game = GamesManager.getGame(event.guild!!.id)
-                game.handleInput(hook, buttonId)
-            }
-        }
+    override fun matches(id: String): Boolean = id.startsWith("hotbar_")
+
+    override val execute: suspend (InteractionHook, Any) -> Unit = { hook, event ->
+        val buttonEvent = event as ButtonInteractionEvent
+        val buttonId = buttonEvent.button.id!!
+        val game = GamesManager.getGame(buttonEvent.guild!!.id)
+        game.handleInput(hook, buttonId)
     }
 }

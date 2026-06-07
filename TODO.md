@@ -1,6 +1,13 @@
 # MineB0t TODO
 
+## Completed in recent checkup
+
+- **Interaction Handler Consolidation** — Refactored the fragmented `EventHandler` system into a centralized `InteractionListener` with a registry-based lookup. This significantly improves efficiency by reducing the number of listeners per event and avoids the "Failed to acknowledge" error by providing a fallback for unhandled/stale interactions.
+- **Thread-safe GamesManager** — Synchronized game initialization using `ConcurrentHashMap.computeIfAbsent` to prevent race conditions when multiple players join a new guild simultaneously.
+- **Improved Documentation** — Expanded `README.md` and updated `GEMINI.md` to reflect architectural changes.
+
 ## Crafting UX gaps
+
 
 - **Silent craft failure** — selecting a recipe you can't craft (wrong station, not enough items) re-renders unchanged with no feedback. Consider a short ephemeral error message or disabled select option.
 - **`canFit` false-negative on full inventory** — rejects a craft that would free a slot via ingredient consumption. Rare, but solvable by simulating removal before the capacity check.

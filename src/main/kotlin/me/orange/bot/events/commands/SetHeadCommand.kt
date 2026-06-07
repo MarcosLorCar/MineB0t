@@ -15,16 +15,16 @@ object SetHeadCommand : SlashCommand(
         OptionData(OptionType.STRING, "emoji", "The emoji to use as your head", true)
     ),
     execute = execute@{ hook, event ->
-        event as SlashCommandInteractionEvent
-        val raw = event.getOption("emoji")?.asString?.trim() ?: return@execute
+        val slashEvent = event as SlashCommandInteractionEvent
+        val raw = slashEvent.getOption("emoji")?.asString?.trim() ?: return@execute
 
         if (!isValidHeadEmoji(raw)) {
             hook.editOriginal("Invalid input. Please provide a single emoji (e.g. 🦊 or a custom Discord emoji).").queue()
             return@execute
         }
 
-        val game = GamesManager.getGame(event.guild!!.id)
-        val userId = event.user.idLong
+        val game = GamesManager.getGame(slashEvent.guild!!.id)
+        val userId = slashEvent.user.idLong
         game.preferencesManager.setPreference(userId, Preference.HEAD_EMOJI, raw)
         game.preferencesManager.savePreferences(userId)
         game.playerEnvUiCache.remove(userId)

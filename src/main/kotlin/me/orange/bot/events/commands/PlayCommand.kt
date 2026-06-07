@@ -8,7 +8,8 @@ object PlayCommand : SlashCommand(
     id = "play",
     description = "Plays the game",
     execute = { hook, event ->
-        val game = GamesManager.getGame((event as SlashCommandInteractionEvent).guild!!.id)
+        val slashEvent = event as SlashCommandInteractionEvent
+        val game = GamesManager.getGame(slashEvent.guild!!.id)
         game.updateHook(hook, showWorld = true)
     }
 )

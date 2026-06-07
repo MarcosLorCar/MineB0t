@@ -57,9 +57,15 @@ MineB0t is a Discord bot that allows users to play a 2D Terraria-like sandbox ga
 - **Data Persistence:** Use `GameDataManager` and `ChunkDataManager` for saving/loading state.
 - **Type Safety:** Leverage Kotlin's strong typing and serialization for data structures.
 
+### Interaction Flow
+- **Centralized Handling:** Interactions are handled by `InteractionListener`, which routes events to registered `Interaction` objects based on their ID or custom matching logic.
+- **Immediate Acknowledgement:** All interactions use `deferEdit()` (for components) or `deferReply()` (for slash commands) immediately to avoid Discord's 3-second timeout.
+- **Background Execution:** Once acknowledged, the interaction's logic executes in a coroutine on `Dispatchers.Default`, ensuring the gateway thread remains responsive.
+- **Fallback Acknowledgment:** Unhandled interactions (e.g., from stale messages) are automatically logged and acknowledged with an ephemeral message to prevent UI errors.
+
 ### Design Principles
+- **Thread Safety:** `GamesManager` uses `ConcurrentHashMap` and thread-safe initialization patterns to manage per-guild `Game` instances.
 - **Surgical Updates:** When updating Discord views, use cache-gating (e.g., `playerEnvUiCache`) to avoid redundant API calls and UI flickering.
-- **Interaction Flow:** Use the `BaseInteraction` hierarchy for handling buttons, slash commands, and select menus.
 
 ## TODOs and Future Work
 - Expand test coverage in `src/test/kotlin`.

@@ -8,7 +8,8 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 class ChangeSettingInteraction(val setting: Preference) : StringSelectInteraction(
     id = setting.name,
     execute = { hook, event ->
-        val game = GamesManager.getGame((event as StringSelectInteractionEvent).guild!!.id)
-        game.preferencesManager.setPreference(setting, hook, event.selectedOptions.first().value)
+        val selectEvent = event as StringSelectInteractionEvent
+        val game = GamesManager.getGame(selectEvent.guild!!.id)
+        game.preferencesManager.setPreference(setting, hook, selectEvent.selectedOptions.first().value)
     }
 )

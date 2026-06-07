@@ -1,22 +1,21 @@
 package me.orange.bot.events.interactions
 
 import me.orange.bot.Emojis
-import me.orange.bot.events.base.BaseInteraction
+import me.orange.bot.events.base.ButtonInteraction
 import me.orange.game.GamesManager
-import me.orange.game.craft.CraftingStationType
+import me.orange.game.craft.recipe.CraftingStationType
 import me.orange.game.craft.recipe.RecipeRegistry
 import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 
-object ItemRecipesInteraction : BaseInteraction(
+object ItemRecipesInteraction : ButtonInteraction(
     id = "itemRecipes",
-    getIdentifier = { (it as? ButtonInteractionEvent)?.button?.id },
     edit = false,
     execute = { hook, event ->
-        event as ButtonInteractionEvent
-        val game = GamesManager.getGame(event.guild!!.id)
-        val player = game.players[event.user.idLong] as? Player
+        val buttonEvent = event as ButtonInteractionEvent
+        val game = GamesManager.getGame(buttonEvent.guild!!.id)
+        val player = game.players[buttonEvent.user.idLong] as? Player
         val item = player?.inventory?.getSelectedItemStack()?.item
 
         val msg = if (item == null) {
@@ -29,9 +28,9 @@ object ItemRecipesInteraction : BaseInteraction(
                 val lines = recipes.joinToString("\n") { recipe ->
                     val inputs = recipe.ingredients.joinToString(" + ") { stackStr(it) }
                     val result = stackStr(recipe.result)
-                    val stationPrefix = if (recipe.requiredStation != CraftingStationType.NONE)
-                        "[${recipe.requiredStation.emoji.formatted}] " else ""
-                    "$stationPrefix$inputs ➔ $result"
+                    val stationStr = if (recipe.requiredStation != CraftingStationType.NONE)
+                        "${recipe.requiredStation.emoji.formatted} " else ""
+                    "$stationStr$inputs ➔ $result"
                 }
                 "**Recipes using ${item.displayName()}:**\n$lines"
             }

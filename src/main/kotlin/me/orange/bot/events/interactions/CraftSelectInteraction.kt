@@ -12,10 +12,10 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 object CraftSelectInteraction : StringSelectInteraction(
     id = "craft_select",
     execute = { hook, event ->
-        val e = event as StringSelectInteractionEvent
-        val game = GamesManager.getGame(e.guild!!.id)
-        (game.players[e.user.idLong] as? Player)?.let { player ->
-            val recipeId = e.selectedOptions.first().value
+        val selectEvent = event as StringSelectInteractionEvent
+        val game = GamesManager.getGame(selectEvent.guild!!.id)
+        (game.players[selectEvent.user.idLong] as? Player)?.let { player ->
+            val recipeId = selectEvent.selectedOptions.first().value
             game.refreshPlayer(player)
             player.hook = hook
             player.queueAction {

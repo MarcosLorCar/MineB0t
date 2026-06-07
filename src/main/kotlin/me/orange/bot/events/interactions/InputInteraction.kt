@@ -7,7 +7,8 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 class InputInteraction(input: String) : ButtonInteraction(
     id = input,
     execute = { hook, event ->
-        val game = GamesManager.getGame((event as ButtonInteractionEvent).guild!!.id)
+        val buttonEvent = event as ButtonInteractionEvent
+        val game = GamesManager.getGame(buttonEvent.guild!!.id)
         game.handleInput(hook, input)
     }
 )

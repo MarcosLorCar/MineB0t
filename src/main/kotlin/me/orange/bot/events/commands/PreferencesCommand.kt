@@ -8,7 +8,8 @@ object PreferencesCommand : SlashCommand(
     id = "settings",
     description = "Tweak user preferences",
     execute = { hook, event ->
-        val game = GamesManager.getGame((event as SlashCommandInteractionEvent).guild!!.id)
+        val slashEvent = event as SlashCommandInteractionEvent
+        val game = GamesManager.getGame(slashEvent.guild!!.id)
         game.preferencesManager.showMenu(hook)
     }
 )
