@@ -188,7 +188,7 @@ class PlayerActionMenu(
     private fun getItemRecipesButton(): Button {
         val item = player.inventory.getSelectedItemStack()?.item
         val hasRecipes = item != null && RecipeRegistry.getRecipesByIngredient(item).isNotEmpty()
-        return Button.of(ButtonStyle.SECONDARY, "itemRecipes", Emojis.get("crafting_table")).withDisabled(!hasRecipes)
+        return Button.of(ButtonStyle.SECONDARY, "itemRecipes", Emojis.get("crafting")).withDisabled(!hasRecipes)
     }
 
     private fun moveButton(move: Vec, inputStr: String, emoji: Emoji): Button = with(player) {

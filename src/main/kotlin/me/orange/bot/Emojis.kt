@@ -18,10 +18,7 @@ object Emojis {
         "info" to Emoji.fromUnicode("ℹ️"),
         "store" to Emoji.fromUnicode("📥"),
         "retrieve" to Emoji.fromUnicode("📤"),
-        // Crafting station / item fallbacks (no custom Discord emoji yet)
-        "crafting_table" to Emoji.fromUnicode("🛠️"),
-        "furnace" to Emoji.fromUnicode("🏭"),
-        "iron_ingot" to Emoji.fromUnicode("🔩"),
+        "crafting" to Emoji.fromUnicode("🛠️"),
     )
 
     fun loadEmojis() {
@@ -71,6 +68,7 @@ object Emojis {
         loadEmoji("canopy", "_", 1513164645534400735)
 
         loadEmoji("chest", "_", 1512553817298702347)
+        loadEmoji("furnace", "_", 1513203337670037574)
 
         // Item emojis
         loadEmoji("iron_chunk", "iron_chunk", 1513185506614182040)

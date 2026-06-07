@@ -12,7 +12,6 @@ object Items {
     val LOG            = ItemRegistry.register("log",            Emojis.get("log"))            { placeable { Tiles.LOG };            description("Wood log from trees") }
     @Suppress("unused")
     val IRON_INGOT     = ItemRegistry.register("iron_ingot",     Emojis.get("iron_ingot"))     { description("Smelted iron used in crafting") }
-    val CRAFTING_TABLE = ItemRegistry.register("crafting_table", Emojis.get("crafting_table")) { placeable { Tiles.CRAFTING_TABLE }; description("Unlocks crafting recipes") }
     val FURNACE        = ItemRegistry.register("furnace",        Emojis.get("furnace"))        { placeable { Tiles.FURNACE };        description("Used to smelt ores") }
     val COAL           = ItemRegistry.register("coal",           Emojis.get("coal"))           { description("Fuel for the furnace") }
     val CHEST          = ItemRegistry.register("chest",          Emojis.get("chest"))          { placeable { Tiles.CHEST };          description("Storage container") }

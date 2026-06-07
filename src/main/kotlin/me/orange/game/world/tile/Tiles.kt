@@ -33,12 +33,6 @@ object Tiles {
         drops(Items.IRON_CHUNK, 1)
         variant(Emojis.get("iron_ore_1"))
     }
-    @Suppress("unused")
-    val CRAFTING_TABLE: Tile = TileRegistry.register("crafting_table", Emojis.get("crafting_table")) {
-        breakable()
-        drops(Items.CRAFTING_TABLE, 1)
-        craftingStation(CraftingStationType.CRAFTING_TABLE)
-    }
     val FURNACE: Tile = TileRegistry.register("furnace", Emojis.get("furnace")) {
         breakable()
         drops(Items.FURNACE, 1)

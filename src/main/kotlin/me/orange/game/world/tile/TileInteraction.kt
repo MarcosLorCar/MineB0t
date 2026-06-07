@@ -10,7 +10,7 @@ sealed class TileInteraction {
     object Chest : TileInteraction()
 
     val emoji: Emoji get() = when (this) {
-        is BareHanded -> Emojis.get("crafting_table")
+        is BareHanded -> Emojis.get("crafting")
         is CraftingStation -> type.emoji
         is Chest -> Emojis.get("chest")
     }
