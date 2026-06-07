@@ -14,7 +14,7 @@ interface Interaction {
     val edit: Boolean
     val execute: suspend (InteractionHook, Any) -> Unit
 
-    fun matches(id: String): Boolean = this.id == id
+    fun matches(id: String, event: Any): Boolean = this.id == id
 
     fun handle(event: Any) {
         if (edit) (event as IMessageEditCallback)
@@ -39,16 +39,21 @@ abstract class SlashCommand(
     override val execute: suspend (InteractionHook, Any) -> Unit
 ) : Interaction {
     override val edit: Boolean = false
+    override fun matches(id: String, event: Any): Boolean = event is SlashCommandInteractionEvent && this.id == id
 }
 
 abstract class ButtonInteraction(
     override val id: String,
     override val edit: Boolean = true,
     override val execute: suspend (InteractionHook, Any) -> Unit
-) : Interaction
+) : Interaction {
+    override fun matches(id: String, event: Any): Boolean = event is ButtonInteractionEvent && this.id == id
+}
 
 abstract class StringSelectInteraction(
     override val id: String,
     override val edit: Boolean = true,
     override val execute: suspend (InteractionHook, Any) -> Unit
-) : Interaction
+) : Interaction {
+    override fun matches(id: String, event: Any): Boolean = event is StringSelectInteractionEvent && this.id == id
+}

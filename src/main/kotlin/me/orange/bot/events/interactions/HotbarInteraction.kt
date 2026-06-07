@@ -10,7 +10,7 @@ object HotbarInteraction : Interaction {
     override val id: String = "hotbar"
     override val edit: Boolean = true
 
-    override fun matches(id: String): Boolean = id.startsWith("hotbar_")
+    override fun matches(id: String, event: Any): Boolean = event is ButtonInteractionEvent && id.startsWith("hotbar_")
 
     override val execute: suspend (InteractionHook, Any) -> Unit = { hook, event ->
         val buttonEvent = event as ButtonInteractionEvent

@@ -23,7 +23,7 @@ class InteractionListener(private val interactions: List<Interaction>) : Listene
     }
 
     private fun findAndHandle(id: String, event: Any) {
-        val interaction = interactions.find { it.matches(id) }
+        val interaction = interactions.find { it.matches(id, event) }
         if (interaction != null) {
             interaction.handle(event)
         } else {
