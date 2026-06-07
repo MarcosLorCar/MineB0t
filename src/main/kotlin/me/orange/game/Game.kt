@@ -15,6 +15,7 @@ import me.orange.game.preferences.PreferencesManager
 import me.orange.game.utils.Vec
 import me.orange.game.world.World
 import me.orange.game.world.tile.TileInteraction
+import me.orange.game.world.tile.Tiles
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.InteractionHook
 import java.util.concurrent.ConcurrentHashMap
@@ -133,7 +134,13 @@ class Game(
             age = time,
             hook = hook,
             game = this,
-        )
+        ).apply {
+            if (Config.DEV_MODE) {
+                Config.STARTING_KIT.forEach { (item, count) ->
+                    inventory.addItem(ItemStack(item, count))
+                }
+            }
+        }
         player.name = hook.interaction.user.name
         guildName = hook.interaction.guild?.name ?: guildId
         MineB0t.log("Player ${player.name} ($id) ${if (isNew) "joined" else "reconnected to"} guild $guildName ($guildId)")
@@ -308,14 +315,20 @@ class Game(
         tile.onBreak(world, pos)
     }
 
-    fun placeTile(player: Player, pos: Vec) {
-        if (world.getTile(pos)?.airy != true) return
-        val stack = player.inventory.getSelectedItemStack() ?: return
-        val tile = stack.item.getTile() ?: return
+    fun placeTile(player: Player, pos: Vec): Boolean {
+        val currentTile = world.getTile(pos) ?: return false
+        if (!currentTile.airy) return false
 
-        if (!world.setTile(pos, tile)) return
+        // Only allow replacing strictly AIR (prevents destroying grass/mushrooms/etc accidentally)
+        if (currentTile != Tiles.AIR) return false
+
+        val stack = player.inventory.getSelectedItemStack() ?: return false
+        val tile = stack.item.getTile() ?: return false
+
+        if (!world.setTile(pos, tile)) return false
 
         player.inventory.removeFromSlot(player.inventory.selectedSlot, 1)
+        return true
     }
 
     fun saveAll() {

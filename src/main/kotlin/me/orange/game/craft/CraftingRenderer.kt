@@ -1,6 +1,7 @@
 package me.orange.game.craft
 
 import me.orange.bot.Emojis
+import me.orange.game.craft.recipe.CraftingStationType
 import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 import me.orange.game.preferences.Preference
@@ -37,26 +38,44 @@ class CraftingRenderer(
         val station = player.game.world.getCraftingStationAt(player.pos)
         val pageRecipes = all.subList(page * perPage, minOf(all.size, (page + 1) * perPage))
 
-        val description = pageRecipes.joinToString("\n") { recipe ->
+        val descriptionBuilder = StringBuilder()
+        var lastCategory: String? = null
+
+        pageRecipes.forEach { recipe ->
+            val category = when (recipe.id) {
+                in craftableIds -> "Craftable"
+                in semiIds -> "Ingredients Owned"
+                else -> "Known"
+            }
+
+            if (category != lastCategory) {
+                if (lastCategory != null) descriptionBuilder.append("\n")
+                descriptionBuilder.append("**$category**\n")
+                lastCategory = category
+            }
+
             val id = "[${recipe.id.replace("_", "\\_")}]"
             val result = stackString(recipe.result)
-            val stationPrefix = if (recipe.requiredStation != CraftingStationType.NONE)
-                "[${recipe.requiredStation.emoji.formatted}] " else ""
-            when (recipe.id) {
+            val stationStr = if (recipe.requiredStation != CraftingStationType.NONE)
+                "${recipe.requiredStation.emoji.formatted} " else ""
+            
+            val line = when (recipe.id) {
                 in craftableIds -> {
                     val inputs = recipe.ingredients.joinToString(" + ") { stackString(it) }
-                    "$stationPrefix$id $inputs ➔ $result"
+                    "$id $stationStr$inputs ➔ $result"
                 }
                 in semiIds -> {
                     val inputs = recipe.ingredients.joinToString(" + ") { semiStackString(it) }
-                    "$stationPrefix◆ $id $inputs ➔ $result"
+                    "$id $stationStr◆ $inputs ➔ $result"
                 }
                 else -> {
                     val inputs = recipe.ingredients.joinToString(" + ") { stackString(it) }
-                    "~~$stationPrefix$id $inputs ➔ $result~~"
+                    "~~$id ${stationStr}$inputs ➔ $result~~"
                 }
             }
+            descriptionBuilder.append("$line\n")
         }
+        val description = descriptionBuilder.toString().trim()
 
         val feedback = player.feedback
         player.feedback = null

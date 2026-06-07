@@ -78,7 +78,7 @@ class Player(
     fun getInventoryActions(): MutableList<LayoutComponent> = actionMenu.getInventoryActions()
     fun queueAction(action: (Player) -> Unit) = actionQueue.queueAction(action)
     fun applyQueuedActions() = actionQueue.applyQueuedActions()
-    fun placeTile(player: Player, pos: Vec) = game.placeTile(player, pos)
+    fun placeTile(player: Player, pos: Vec): Boolean = game.placeTile(player, pos)
     fun breakTile(player: Player, vec: Vec) = game.breakTile(player, vec)
     fun handle(input: String) = inputHandler.handle(input)
     fun saveData() = playerDataManager.saveData()

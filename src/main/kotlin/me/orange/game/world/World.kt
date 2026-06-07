@@ -3,7 +3,7 @@ package me.orange.game.world
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
 import me.orange.game.Game
-import me.orange.game.craft.CraftingStationType
+import me.orange.game.craft.recipe.CraftingStationType
 import me.orange.game.inventory.Inventory
 import me.orange.game.world.tile.TileEntityData
 import me.orange.game.world.tile.TileInteraction

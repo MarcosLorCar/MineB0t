@@ -2,7 +2,6 @@ package me.orange.game.craft.recipe
 
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
-import me.orange.game.craft.CraftingStationType
 import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 
@@ -22,8 +21,13 @@ class RecipeManager(
         fun isEmpty(): Boolean = all.isEmpty()
     }
 
-    private fun isCraftable(recipe: Recipe): Boolean =
-        recipe.ingredients.all { player.inventory.countOf(it.itemKey) >= it.count }
+    private fun isCraftable(recipe: Recipe): Boolean {
+        if (recipe.requiredStation != CraftingStationType.NONE &&
+            player.game.world.getCraftingStationAt(player.pos) != recipe.requiredStation
+        ) return false
+
+        return recipe.ingredients.all { player.inventory.countOf(it.itemKey) >= it.count }
+    }
 
     private fun getSemiRecipes(): Set<Recipe> {
         val result = mutableSetOf<Recipe>()

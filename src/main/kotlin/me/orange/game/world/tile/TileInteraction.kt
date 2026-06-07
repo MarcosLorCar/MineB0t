@@ -1,7 +1,7 @@
 package me.orange.game.world.tile
 
 import me.orange.bot.Emojis
-import me.orange.game.craft.CraftingStationType
+import me.orange.game.craft.recipe.CraftingStationType
 import net.dv8tion.jda.api.entities.emoji.Emoji
 
 sealed class TileInteraction {

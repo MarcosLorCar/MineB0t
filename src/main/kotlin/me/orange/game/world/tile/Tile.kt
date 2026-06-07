@@ -1,6 +1,6 @@
 package me.orange.game.world.tile
 
-import me.orange.game.craft.CraftingStationType
+import me.orange.game.craft.recipe.CraftingStationType
 import me.orange.game.inventory.item.Item
 import me.orange.game.inventory.item.ItemStack
 import me.orange.game.utils.Vec

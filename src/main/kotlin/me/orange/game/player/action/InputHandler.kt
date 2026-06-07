@@ -7,6 +7,7 @@ import me.orange.game.player.GameMode
 import me.orange.game.player.Player
 import me.orange.game.player.ViewState
 import me.orange.game.utils.Vec
+import me.orange.game.world.tile.Tiles
 
 class InputHandler(
     val player: Player
@@ -274,7 +275,21 @@ class InputHandler(
         }
 
         if (vec == Vec(0, -1)) {
-            if (player.game.world.getTile(player.pos.plus(0, 2))?.airy == false) return@queueAction
+            val world = player.game.world
+            val targetPos = player.pos // Where the tile will end up (relative to new pos)
+            val currentTile = world.getTile(targetPos) ?: return@queueAction
+            val stack = player.inventory.getSelectedItemStack() ?: return@queueAction
+
+            // Conditions to allow towering (instantly jumping up to place a block at your feet):
+            // 1. Target tile must be AIR (per the new airy restriction)
+            // 2. There must be room for your head after moving up
+            // 3. You must have a placeable item
+            if (currentTile != Tiles.AIR ||
+                world.getTile(player.pos.plus(0, 2))?.airy == false ||
+                stack.item.getTile() == null
+            ) {
+                return@queueAction
+            }
 
             player.move(0, 1)
         }

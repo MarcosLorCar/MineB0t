@@ -1,6 +1,6 @@
 package me.orange.game.craft.recipe
 
-import me.orange.game.craft.CraftingStationType.FURNACE
+import me.orange.game.craft.recipe.CraftingStationType.FURNACE
 
 /**
  * Recipe definitions. `object`s init lazily in Kotlin, so [count] is touched once at startup

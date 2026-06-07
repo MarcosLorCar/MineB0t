@@ -1,4 +1,4 @@
-package me.orange.game.craft
+package me.orange.game.craft.recipe
 
 import me.orange.bot.Emojis
 import net.dv8tion.jda.api.entities.emoji.Emoji

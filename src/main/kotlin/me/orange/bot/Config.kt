@@ -17,4 +17,13 @@ object Config {
 
     // World
     const val CHUNK_UNLOAD_DELAY = 30_000L
+
+    val STARTING_KIT = mapOf(
+        "furnace" to 1,
+        "chest" to 1,
+        "log" to 16,
+        "stone" to 16,
+        "coal" to 16,
+        "iron_chunk" to 16
+    )
 }
