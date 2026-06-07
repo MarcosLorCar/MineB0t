@@ -1,7 +1,7 @@
 package me.orange.game.player.action
 
 import me.orange.bot.Emojis
-import me.orange.game.craft.RecipeRegistry
+import me.orange.game.craft.recipe.RecipeRegistry
 import me.orange.game.player.Player
 import me.orange.game.player.GameMode
 import me.orange.game.world.tile.TileInteraction

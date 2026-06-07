@@ -1,5 +1,6 @@
-package me.orange.game.craft
+package me.orange.game.craft.recipe
 
+import me.orange.game.craft.CraftingStationType
 import me.orange.game.inventory.item.Item
 import me.orange.game.inventory.item.ItemStack
 

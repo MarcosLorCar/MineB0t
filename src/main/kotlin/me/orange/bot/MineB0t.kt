@@ -4,7 +4,7 @@ import kotlinx.coroutines.*
 import me.orange.console.ConsoleCommandHandler
 import me.orange.bot.events.EventHandler
 import me.orange.game.GamesManager
-import me.orange.game.craft.Recipes
+import me.orange.game.craft.recipe.Recipes
 import me.orange.game.inventory.item.Items
 import me.orange.game.world.tile.Tiles
 import net.dv8tion.jda.api.JDA

@@ -1,7 +1,7 @@
 package me.orange.game.player
 
 import me.orange.game.Game
-import me.orange.game.craft.RecipeManager
+import me.orange.game.craft.recipe.RecipeManager
 import me.orange.game.inventory.Inventory
 import me.orange.game.player.action.InputHandler
 import me.orange.game.player.action.PlayerActionMenu

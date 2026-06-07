@@ -4,7 +4,7 @@ import me.orange.bot.Emojis
 import me.orange.bot.events.base.BaseInteraction
 import me.orange.game.GamesManager
 import me.orange.game.craft.CraftingStationType
-import me.orange.game.craft.RecipeRegistry
+import me.orange.game.craft.recipe.RecipeRegistry
 import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent

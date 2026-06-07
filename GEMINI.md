@@ -18,7 +18,8 @@ MineB0t is a Discord bot that allows users to play a 2D Terraria-like sandbox ga
         - `world/`: World, chunk, and tile management
         - `player/`: Player state, actions, and movement
         - `inventory/`: Item and inventory systems
-        - `craft/`: Recipe and crafting logic
+        - `craft/`: Crafting UI and logic
+            - `recipe/`: Recipe definitions and data
         - `gameData/`: Data persistence
         - `utils/`: Common utilities (e.g., `Vec` for coordinates)
     - `events/`: JDA event handlers for slash commands and interactions

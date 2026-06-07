@@ -1,7 +1,8 @@
-package me.orange.game.craft
+package me.orange.game.craft.recipe
 
 import me.orange.bot.Config
 import me.orange.bot.MineB0t
+import me.orange.game.craft.CraftingStationType
 import me.orange.game.inventory.item.ItemStack
 import me.orange.game.player.Player
 
