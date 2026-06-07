@@ -27,11 +27,18 @@ class Player(
     val recipeManager = RecipeManager(this, knownRecipes)
     var falling = false
     var viewState: ViewState = ViewState.WORLD
-        set(value) { if (field != value) feedback = null; field = value }
+        set(value) {
+            if (field != value) {
+                feedback = null
+                feedbackItems.clear()
+            }
+            field = value
+        }
     val recentItems: MutableList<String> = recentItems.toMutableList()
     var name: String = "unknown"
     var feedback: String? = null
     var feedbackExpiry: Long = 0
+    private val feedbackItems: MutableList<me.orange.game.inventory.item.ItemStack> = mutableListOf()
     var openChestPos: Vec? = null
     var chestSelectedSlot: Int = 0
     var chestCursorOnPlayer: Boolean = true
@@ -82,6 +89,25 @@ class Player(
     fun breakTile(player: Player, vec: Vec) = game.breakTile(player, vec)
     fun handle(input: String) = inputHandler.handle(input)
     fun saveData() = playerDataManager.saveData()
+
+    fun clearFeedbackItems() = feedbackItems.clear()
+
+    fun addPickupFeedback(itemStack: me.orange.game.inventory.item.ItemStack) {
+        if (game.time > feedbackExpiry) {
+            feedbackItems.clear()
+        }
+
+        val existing = feedbackItems.find { it.itemKey == itemStack.itemKey }
+        if (existing != null) {
+            existing.count += itemStack.count
+        } else {
+            feedbackItems.add(me.orange.game.inventory.item.ItemStack(itemStack.itemKey, itemStack.count))
+        }
+
+        feedback = feedbackItems.joinToString(", ") { "+ ${it.count}x ${it.item.emoji.formatted}" }
+        feedbackExpiry = game.time + me.orange.bot.Config.FPS * 3
+    }
+
     fun update() {
         fall()
         applyQueuedActions()

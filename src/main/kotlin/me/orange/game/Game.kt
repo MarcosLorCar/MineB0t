@@ -174,7 +174,10 @@ class Game(
         // changes (mode, selected slot, stack count) still force a redraw.
         val selected = player.inventory.getSelectedItemStack()
         val feedbackActive = player.feedback != null && time <= player.feedbackExpiry
-        if (!feedbackActive) player.feedback = null
+        if (!feedbackActive) {
+            player.feedback = null
+            player.clearFeedbackItems()
+        }
         val cacheKey = "$env${player.gameMode}|${player.inventory.selectedSlot}|" +
                 "${selected?.itemKey}|${selected?.count}|${player.inventory.contents.size}|$feedbackActive"
         val cache = playerEnvUiCache[player.id]
@@ -306,10 +309,10 @@ class Game(
         }
 
         tile.drop?.let { drop ->
-            player.inventory.addItem(ItemStack(drop.item, drop.count))
+            val stack = ItemStack(drop.item, drop.count)
+            player.inventory.addItem(stack)
             if (preferencesManager.getPreference<Boolean>(player.id, Preference.ITEM_PICKUP_FEEDBACK)) {
-                player.feedback = "+ ${drop.count}x ${drop.item.emoji.formatted}"
-                player.feedbackExpiry = time + Config.FPS * 3
+                player.addPickupFeedback(stack)
             }
         }
         tile.onBreak(world, pos)
