@@ -1,5 +1,6 @@
 package me.orange.bot.events
 
+import me.orange.bot.MineB0t
 import me.orange.bot.events.base.Interaction
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
@@ -18,7 +19,7 @@ class InteractionListener(private val interactions: List<Interaction>) : Listene
     }
 
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
-        findAndHandle(event.selectMenu.id, event)
+        findAndHandle(event.selectMenu.id ?: return, event)
     }
 
     private fun findAndHandle(id: String, event: Any) {
