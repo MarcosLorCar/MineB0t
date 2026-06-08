@@ -32,7 +32,7 @@ class OverworldGenerator(
         PatchDecoration(Tiles.IRON_ORE, 0x517CC1B727220A95L),
         PatchDecoration(Tiles.COAL_ORE, 0x27D4EB2F165667C5L),
         ScatterDecoration(0.1f, { it == Tiles.GRASS }, { it == Tiles.AIR }, Tiles.RED_SHROOM, 0x3141592653589793L),
-         TreeDecoration(0.15f, 0x9E3779B9L)
+        TreeDecoration(0.25f, 0x9E3779B9L)
     )
 
     companion object {
