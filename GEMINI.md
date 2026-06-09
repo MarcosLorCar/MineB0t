@@ -1,6 +1,8 @@
-# MineB0t Project Overview
+# MineB0t Project Overview & Development Guide
 
 MineB0t is a Discord bot that allows users to play a 2D Terraria-like sandbox game directly within Discord. The game features terrain generation, mining, crafting, inventory management, and persistent worlds.
+
+---
 
 ## Core Technologies
 - **Language:** Kotlin (JVM 21)
@@ -11,64 +13,110 @@ MineB0t is a Discord bot that allows users to play a 2D Terraria-like sandbox ga
 - **Noise Generation:** jnoise (for procedural world generation)
 - **Logging:** SLF4J with Logback
 
-## Project Structure
-- `src/main/kotlin/me/orange/`: Root package
-    - `bot/`: Bot lifecycle, JDA setup, and configuration (`MineB0t.kt`, `Config.kt`)
-    - `game/`: Core game engine
-        - `world/`: World, chunk, and tile management
-        - `player/`: Player state, actions, and movement
-        - `inventory/`: Item and inventory systems
-        - `craft/`: Crafting UI and logic
-            - `recipe/`: Recipe definitions and data
-        - `gameData/`: Data persistence
-        - `utils/`: Common utilities (e.g., `Vec` for coordinates)
-    - `events/`: JDA event handlers for slash commands and interactions
-    - `console/`: Bot administration via terminal console commands
-- `data/`: Directory where game and player data is persisted (not committed)
+---
 
-## Key Commands
+## Build, Run, and Test Commands
+All commands should be executed from the project root directory.
 
-### Building and Running
 - **Build:** `./gradlew build`
-- **Run:** `./gradlew run`
-    - **Note:** Requires the `DISCORD_BOT_TOKEN` environment variable to be set.
+- **Run:** `./gradlew run` (Requires the `DISCORD_BOT_TOKEN` environment variable to be set, or a `.env` file at the root containing the token)
 - **Clean:** `./gradlew clean`
-
-### Testing
-- **Run Tests:** `./gradlew test` (Note: Currently minimal test coverage)
+- **Run Tests:** `./gradlew test`
 
 ### Console Commands (while running)
-- `help`: List available console commands
-- `stop`: Gracefully stop the bot and save all data
-- `save`: Manually trigger an autosave for all guilds
-- `status`: Show bot status and online players
+The bot starts a console listener thread. Type commands in the terminal:
+- `help`: List available console commands.
+- `stop`: Gracefully stop the bot, save all data (guilds, players, chunks), and shutdown JDA.
+- `save`: Manually trigger an autosave for all guild instances.
+- `status`: Show bot status and online players.
 
-## Development Conventions
+---
 
-### Architecture Patterns
-- **Per-Guild Instances:** Each Discord server (guild) has its own `Game` instance managed by `GamesManager`.
-- **Game Loop:** Each `Game` runs its own tick-based loop (default 5 FPS) using Coroutines.
-- **Chunked World:** The world is divided into chunks that are loaded/unloaded dynamically based on player proximity.
-- **Emoji Rendering:** Visuals are rendered using custom emojis in Discord embeds. Emojis are registered and validated on startup (`Emojis.kt`).
-- **Singletons:** Game-wide registries for tiles, items, and recipes use Kotlin `object` declarations (e.g., `Tiles`, `Items`, `Recipes`).
+## Project Structure & Key Types
 
-### Coding Style
-- **Asynchronous Code:** Use Coroutines (`launch`, `async`, `suspend`) for non-blocking operations, especially I/O and Discord API calls.
-- **Data Persistence:** Use `GameDataManager` and `ChunkDataManager` for saving/loading state.
-- **Type Safety:** Leverage Kotlin's strong typing and serialization for data structures.
+### Root Package: `me.orange`
+- **Main.kt** -> Entry point; calls `MineB0t.start()`.
 
-### Interaction Flow
-- **Centralized Handling:** Interactions are handled by `InteractionListener`, which routes events to registered `Interaction` objects based on their ID or custom matching logic.
-- **Immediate Acknowledgement:** All interactions use `deferEdit()` (for components) or `deferReply()` (for slash commands) immediately to avoid Discord's 3-second timeout.
-- **Background Execution:** Once acknowledged, the interaction's logic executes in a coroutine on `Dispatchers.Default`, ensuring the gateway thread remains responsive.
-- **Fallback Acknowledgment:** Unhandled interactions (e.g., from stale messages) are automatically logged and acknowledged with an ephemeral message to prevent UI errors.
+### Bot & Configuration: `me.orange.bot`
+- **MineB0t.kt**: Singleton orchestrating JDA, console commands, and the main coroutine scope (`MineB0t.launch`).
+  - `start()`: Registers handlers, JDA, and hooks up the console scanner.
+  - `stop()`: Handles graceful shutdown, synchronized on `stopped`.
+  - Also registers JVM shutdown hook and schedules periodic auto-saving.
+- **Emojis.kt**: Custom emoji registry loaded from Discord on startup. All tiles/UI elements resolve their visuals here.
+- **Config.kt**: Filesystem paths and gameplay constants (e.g., base `data/` path).
 
-### Design Principles
-- **Thread Safety:** `GamesManager` uses `ConcurrentHashMap` and thread-safe initialization patterns to manage per-guild `Game` instances.
-- **Surgical Updates:** When updating Discord views, use cache-gating (e.g., `playerEnvUiCache`) to avoid redundant API calls and UI flickering.
+### Event Routing: `me.orange.bot.events`
+- **InteractionListener.kt**: Centralized JDA listener that catches slash commands, buttons, and select menus.
+- **Interaction.kt**: Interface/Base for routing (e.g. `PlayCommand`, `PreferencesCommand`, `ChangeSettingInteraction`, `CraftSelectInteraction`).
+- **InputInteraction.kt**: Handles gameplay button presses (movement, actions), routing them to `Game.handleInput()`.
 
-## TODOs and Future Work
-- Expand test coverage in `src/test/kotlin`.
-- Implement more complex tile entities and world features.
-- Optimize chunk loading/unloading logic.
-- Enhance the rendering engine for better performance and visual variety.
+### Game Engine: `me.orange.game`
+- **GamesManager.kt**: Thread-safe manager tracking `Game` instances per Discord guild using `ConcurrentHashMap.computeIfAbsent`.
+- **Game.kt**: Represents a guild's persistent world. Runs a tick loop at 5 FPS using Coroutines.
+  - `update()`: Executes every tick. Updates online players, loads/unloads chunks, and handles player timeouts (30s).
+  - `updateHook()`: Gate-cached update rendering for `WORLD` and `CRAFTING` views to prevent redundant Discord API updates.
+  - `breakTile()` / `placeTile()`: Mutates world tiles, handles item drops, and consumes materials.
+- **GameRenderer.kt**: Formats and renders the emoji grid representing the game world for a player.
+- **gameData/GameDataManager.kt**: Saves and loads the seed and time of each guild's game state via CBOR.
+
+### Player State: `me.orange.game.player`
+- **OfflinePlayer.kt**: Persistent player state (ID, position, gameMode).
+- **Player.kt**: Online player state inheriting from `OfflinePlayer`. Adds active Discord `InteractionHook`, inventory, `ViewState`, etc.
+- **InputHandler.kt**: Parses input string actions from button clicks and routes them to movement/actions.
+- **PlayerActionQueue.kt**: Gathers inputs/actions during the tick to apply them atomically on the next tick.
+- **PlayerActionMenu.kt**: Builds JDA button rows for the standard game HUD (movement cross, mode toggle, inventory/crafting).
+- **ViewState.kt**: Enum for current UI state (`WORLD`, `INVENTORY`, `CRAFTING`).
+
+### Inventory & Items: `me.orange.game.inventory`
+- **Item.kt**: Definition of items (key, emoji, maxCount, associated tileKey). Built using a DSL.
+- **Items.kt**: Registry of all game items (e.g., `GRASS`, `DIRT`, `STONE`, `IRON_CHUNK`, `FURNACE`, `IRON_INGOT`, `COAL`).
+- **Inventory.kt**: List of `ItemStack`s per player, selected slot, and helpers.
+- **InventoryRenderer.kt**: Formats player inventory pages using JDA Embed fields (3-column layout).
+
+### World & Tile Management: `me.orange.game.world`
+- **World.kt**: Main world coordinator wrapping `ChunkManager`.
+- **Chunk.kt**: A 16x16 grid of tile IDs.
+- **ChunkManager.kt**: Handles asynchronous chunk loading/unloading (using `Dispatchers.IO`) with an idle TTL of 30 seconds.
+- **ChunkDataManager.kt**: Persists chunks to CBOR files (`data/games/<guildId>/world/<x>.<y>.dat`).
+- **OverworldGenerator.kt**: Implements world generation. Uses Perlin noise for terrain height, cave carving (coal patches, ore generation).
+- **tile/Tile.kt**: Definition of tiles (breakable, airy, drops, crafting stations).
+- **tile/TileRegistry.kt**: Stores tiles in a HashMap using `key.hashCode()` as the persistent tile ID.
+- **tile/Tiles.kt**: Registry of all game tiles (e.g., `AIR`, `DIRT`, `GRASS`, `STONE`, `IRON_ORE`, `CRAFTING_TABLE`, `FURNACE`, `COAL_ORE`).
+
+### Crafting System: `me.orange.game.craft`
+- **CraftingStationType.kt**: Enum representing stations (`NONE`, `CRAFTING_TABLE`, `FURNACE`).
+- **Recipe.kt**: Recipe details (station requirement, ingredient list, output stack).
+- **Recipes.kt**: Lazy-loaded recipe definitions (must be touched at startup to trigger registration).
+- **RecipeManager.kt**: Tracks player's current crafting page and handles validation/execution of item crafting.
+- **CraftingRenderer.kt**: Renders the recipe list embed and interaction menus.
+
+### Preferences: `me.orange.game.preferences`
+- **Preference.kt**: Options configuration (e.g., coordinates visibility, action modes, head emoji).
+- **PreferencesManager.kt**: Handles per-player preferences persistence.
+
+---
+
+## Development Conventions & Design Patterns
+
+### Architecture & Concurrency
+- **Per-Guild Separation**: Guilds run independent games. Use `GamesManager` to obtain the correct `Game` instance.
+- **Game Loops**: Loop is tick-based (5 FPS). Avoid running blocking work in the tick loop. Use coroutines with JDA deferred events.
+- **Immediate Acknowledgment**: Always acknowledge JDA interactions (`deferEdit()` or `deferReply()`) immediately to avoid the 3-second Gateway timeout. Complete heavy logic in coroutines on `Dispatchers.Default`.
+- **Thread Safety**: Ensure all multi-user updates (e.g., `GamesManager`, active player lists) are guarded or use concurrent collections.
+
+### Rendering & Cache Gating
+- **Surgical View Updates**: Updating Discord message components/embeds is rate-limited and expensive.
+- **UI Cache**: Use state caches (like `playerEnvUiCache` and `playerCraftUiCache`) to verify if the UI state has actually changed before invoking edit operations.
+
+### Data Persistence
+- **CBOR Serialization**: Save data (chunks, player files, game worlds) is serialized using CBOR for speed and size.
+- **Stable Tile IDs**: Tile IDs are calculated using `key.hashCode()`. This ensures that updating the registration order or adding/removing tiles does not corrupt existing saves, unlike ordinal-based IDs.
+
+---
+
+## Core Constraints & Rules
+- **Item Keys & Emojis**: Every registered `Item`'s key must exactly match a registered emoji key in `Emojis` to render properly.
+- **Tile Keys in Items**: `tileKey` in `Item` must match a registered tile key in `Tiles` for the item to be placeable.
+- **Initialization**: Kotlin `object` registries (like `Recipes`) load lazily. Ensure they are explicitly referenced during startup to trigger registration.
+- **Recipe Mapping**: All recipes must be registered via `RecipeRegistry.registerRecipe` to correctly populate the ingredient lookup map.
+- **View Rendering**: `ViewState.INVENTORY` is rendered on-demand in `InputHandler`. `WORLD` and `CRAFTING` are updated via `Game.updateHook` on the tick loop.

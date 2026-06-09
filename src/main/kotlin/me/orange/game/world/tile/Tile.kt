@@ -13,11 +13,16 @@ class Tile(
     val id: Int,
     val airy: Boolean,
     val breakable: Boolean,
-    val drop: ItemStack?,
+    val dropProvider: (() -> ItemStack?)? = null,
     val interaction: TileInteraction = TileInteraction.BareHanded,
     val onBreak: (World, Vec) -> Unit = { world, pos -> world.setTile(pos, Tiles.AIR) },
+    val climbable: Boolean = false,
 ) {
     val emoji: String get() = emojiVariants[0]
+
+    val isPassable: Boolean get() = airy || climbable
+
+    val drop: ItemStack? get() = dropProvider?.invoke()
 
     fun getEmoji(pos: Vec): String {
         if (emojiVariants.size == 1) return emojiVariants[0]
@@ -31,9 +36,10 @@ class Tile(
     class Builder(val key: String, primaryEmoji: Emoji) {
         private val weightedVariants: MutableList<Pair<Emoji, Int>> = mutableListOf(primaryEmoji to 1)
         var airy: Boolean = false
+        var climbable: Boolean = false
         var breakable: Boolean = false
         var onBreak: (World, Vec) -> Unit = { world, pos -> world.setTile(pos, Tiles.AIR) }
-        var drop: ItemStack? = null
+        var dropProvider: (() -> ItemStack?)? = null
         var interaction: TileInteraction = TileInteraction.BareHanded
 
         fun variant(emoji: Emoji, weight: Int = 1) = apply {
@@ -41,9 +47,11 @@ class Tile(
             if (i >= 0) weightedVariants[i] = emoji to weight else weightedVariants.add(emoji to weight)
         }
         fun airy() = apply { airy = true }
+        fun climbable() = apply { climbable = true }
         fun breakable() = apply { breakable = true }
         fun onBreak(onBreak: (World, Vec) -> Unit) = apply { this.onBreak = onBreak }
-        fun drops(item: Item, count: Int = 1) = apply { this.drop = ItemStack(item, count) }
+        fun drops(item: Item, count: Int = 1) = apply { this.dropProvider = { ItemStack(item, count) } }
+        fun drops(dropProvider: () -> ItemStack?) = apply { this.dropProvider = dropProvider }
         fun interaction(interaction: TileInteraction) = apply { this.interaction = interaction }
         fun craftingStation(type: CraftingStationType) = interaction(TileInteraction.CraftingStation(type))
 
@@ -53,9 +61,10 @@ class Tile(
             id = id,
             airy = airy,
             breakable = breakable,
-            drop = drop,
+            dropProvider = dropProvider,
             interaction = interaction,
             onBreak = onBreak,
+            climbable = climbable,
         )
     }
 }

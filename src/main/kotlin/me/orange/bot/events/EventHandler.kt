@@ -1,7 +1,6 @@
 package me.orange.bot.events
 
 import me.orange.bot.MineB0t
-import me.orange.bot.events.base.SlashCommand
 import me.orange.bot.events.commands.*
 import me.orange.bot.events.interactions.*
 import me.orange.game.preferences.Preference
@@ -60,6 +59,7 @@ object EventHandler {
         InputInteraction("chest_navDown"),
         InputInteraction("chest_navLeft"),
         InputInteraction("chest_navRight"),
+        InputInteraction("ladder_teleport"),
         HotbarInteraction,
         PlayInteraction,
         SelectSettingInteraction,

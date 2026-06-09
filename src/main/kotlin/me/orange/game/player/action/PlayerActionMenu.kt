@@ -161,7 +161,7 @@ class PlayerActionMenu(
         val button = Button.of(ButtonStyle.SECONDARY, interaction.buttonId, interaction.emoji)
 
         return when (interaction) {
-            is TileInteraction.Chest -> button
+            is TileInteraction.Chest, TileInteraction.Ladder -> button
             else -> button.withDisabled(!player.recipeManager.hasViewableRecipes())
         }
     }
@@ -225,11 +225,14 @@ class PlayerActionMenu(
             })
     }
 
-    fun canWalkThrough(vec: Vec): Boolean = with(player) {
+    fun canWalkThrough(vec: Vec, ignoreHead: Boolean = false): Boolean = with(player) {
         val tileBottom = game.world.getTile(vec) ?: return false
+        if (ignoreHead) {
+            return tileBottom.isPassable
+        }
         val tileTop = game.world.getTile(vec + Vec(0, 1)) ?: return false
 
-        return tileTop.airy && tileBottom.airy
+        return tileTop.isPassable && tileBottom.isPassable
     }
     fun canStepUp(pos: Vec, move: Vec): Boolean = canWalkThrough(pos.plus(0, 1)) && canWalkThrough((pos + move).plus(0, 1))
 }

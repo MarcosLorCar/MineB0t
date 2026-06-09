@@ -78,7 +78,7 @@ class Player(
 
     fun move(vec: Vec) = movement.move(vec)
     fun move(x: Int, y: Int) = move(Vec(x, y))
-    fun canWalkThrough(vec: Vec): Boolean = actionMenu.canWalkThrough(vec)
+    fun canWalkThrough(vec: Vec, ignoreHead: Boolean = false): Boolean = actionMenu.canWalkThrough(vec, ignoreHead)
     fun canStepUp(pos: Vec, move: Vec): Boolean = actionMenu.canStepUp(pos, move)
     fun fall() = movement.fall()
     fun getActions(): MutableList<LayoutComponent> = actionMenu.getActions()

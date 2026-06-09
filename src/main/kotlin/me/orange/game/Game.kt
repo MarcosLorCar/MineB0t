@@ -1,4 +1,4 @@
-﻿package me.orange.game
+package me.orange.game
 
 import kotlinx.coroutines.delay
 import me.orange.bot.Config
@@ -86,14 +86,17 @@ class Game(
             if (player is Player) return@forEach
             val feet = world.getTile(player.pos) ?: return@forEach
             val oldChunk = player.pos.toChunkPos()
-            if (!feet.airy) {
+            if (feet.climbable) {
+                // Standing/holding onto climbable, do not move/fall
+            } else if (!feet.isPassable) {
                 // Inside a block — push up one tile
                 player.pos.move(0, 1)
             } else {
                 val below = world.getTile(player.pos.minus(0, 1)) ?: return@forEach
-                if (!below.airy) return@forEach
-                // Floating — fall down one tile
-                player.pos.move(0, -1)
+                if (below.isPassable && !below.climbable) {
+                    // Floating — fall down one tile
+                    player.pos.move(0, -1)
+                }
             }
             val newChunk = player.pos.toChunkPos()
             if (newChunk != oldChunk) {

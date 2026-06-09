@@ -13,7 +13,13 @@ class PlayerMovement(
         val oldChunk = pos.toChunkPos()
 
         val newPos = pos + vec
-        if (!canWalkThrough(newPos)) {
+        val allowed = if (falling && vec == Vec(0, -1)) {
+            canWalkThrough(newPos, ignoreHead = true)
+        } else {
+            canWalkThrough(newPos)
+        }
+
+        if (!allowed) {
             if (canStepUp(pos, vec))
                 pos.move(vec.plus(0, 1))
         } else {

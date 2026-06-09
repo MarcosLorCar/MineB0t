@@ -51,17 +51,17 @@ class World(
      */
     fun settle(pos: Vec): Vec {
         var y = pos.y
-        // Push up until both feet and head are airy (or chunk unloaded — stop there)
+        // Push up until both feet and head are passable (or chunk unloaded — stop there)
         for (i in 0 until 64) {
             val feet = getTile(Vec(pos.x, y)) ?: break
             val head = getTile(Vec(pos.x, y + 1)) ?: break
-            if (feet.airy && head.airy) break
+            if (feet.isPassable && head.isPassable) break
             y++
         }
         // Fall down to rest on the first solid tile
         while (true) {
             val below = getTile(Vec(pos.x, y - 1)) ?: break
-            if (!below.airy) break
+            if (!below.isPassable || below.climbable) break
             y--
         }
         return Vec(pos.x, y)

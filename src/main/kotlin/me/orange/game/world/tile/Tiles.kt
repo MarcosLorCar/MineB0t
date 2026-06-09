@@ -104,6 +104,17 @@ object Tiles {
         drops(Items.CHEST, 1)
         interaction(TileInteraction.Chest)
     }
+    val LADDER: Tile = TileRegistry.register("ladder", Emojis.get("ladder")) {
+        breakable()
+        drops(Items.LADDER, 1)
+        climbable()
+        interaction(TileInteraction.Ladder)
+    }
+    val CRATE: Tile = TileRegistry.register("crate", Emojis.get("crate_1")) {
+        breakable()
+        variant(Emojis.get("crate_2"))
+        // TODO: Drop pool / Loot table
+    }
 
     val count: Int get() = TileRegistry.count
 }

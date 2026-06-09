@@ -37,6 +37,7 @@ class InputHandler(
 
             "craft" -> handleCraft(inputArgs[0])
             "chest" -> handleChest(inputArgs[0])
+            "ladder" -> handleLadder(inputArgs[0])
         }
     }
 
@@ -285,7 +286,7 @@ class InputHandler(
             // 2. There must be room for your head after moving up
             // 3. You must have a placeable item
             if (currentTile != Tiles.AIR ||
-                world.getTile(player.pos.plus(0, 2))?.airy == false ||
+                world.getTile(player.pos.plus(0, 2))?.isPassable == false ||
                 stack.item.getTile() == null
             ) {
                 return@queueAction
@@ -317,4 +318,58 @@ class InputHandler(
             "up" -> Vec(0, 1)
             else -> Vec(0, 0)
         }
+
+    private fun handleLadder(arg: String) {
+        if (arg != "teleport") return
+
+        player.queueAction { player ->
+            val world = player.game.world
+            val x = player.pos.x
+
+            // Search climbable tiles around player vertically
+            val startY = listOf(player.pos.y, player.pos.y - 1, player.pos.y + 1)
+                .firstOrNull { y -> world.getTile(Vec(x, y))?.climbable == true } ?: return@queueAction
+
+            // Scan up and down to find the bounds of the ladder segment
+            var topLadderY = startY
+            while (world.getTile(Vec(x, topLadderY + 1))?.climbable == true) {
+                topLadderY++
+            }
+
+            var bottomLadderY = startY
+            while (world.getTile(Vec(x, bottomLadderY - 1))?.climbable == true) {
+                bottomLadderY--
+            }
+
+            // Calculate midpoint
+            val midpoint = (bottomLadderY + topLadderY) / 2.0
+
+            // Determine target position
+            val targetY = if (player.pos.y.toDouble() > midpoint) {
+                // Player is closer to top (or standing on top). Teleport to bottom of segment.
+                bottomLadderY
+            } else {
+                // Player is closer to bottom (or standing inside bottom tile). Teleport to top of segment.
+                // Try to teleport to the block immediately above the top ladder tile (standing on top).
+                // If that's blocked, teleport inside the topmost ladder tile itself.
+                if (player.canWalkThrough(Vec(x, topLadderY + 1))) {
+                    topLadderY + 1
+                } else {
+                    topLadderY
+                }
+            }
+
+            // Only teleport if position actually changes and the target is walkable
+            if (targetY != player.pos.y && player.canWalkThrough(Vec(x, targetY))) {
+                val oldChunk = player.pos.toChunkPos()
+                player.pos.y = targetY
+                val newChunk = player.pos.toChunkPos()
+                if (newChunk != oldChunk) {
+                    world.chunkManager.removePlayer(player.id)
+                    world.chunkManager.players.getOrPut(newChunk) { mutableListOf() }.add(player.id)
+                }
+                player.game.playerEnvUiCache.remove(player.id)
+            }
+        }
+    }
 }

@@ -8,15 +8,18 @@ sealed class TileInteraction {
     object BareHanded : TileInteraction()
     data class CraftingStation(val type: CraftingStationType) : TileInteraction()
     object Chest : TileInteraction()
+    object Ladder : TileInteraction()
 
     val emoji: Emoji get() = when (this) {
         is BareHanded -> Emojis.get("crafting")
         is CraftingStation -> type.emoji
         is Chest -> Emojis.get("chest")
+        is Ladder -> Emojis.get("ladder")
     }
 
     val buttonId: String get() = when (this) {
         is BareHanded, is CraftingStation -> "craft_open"
         is Chest -> "chest_open"
+        is Ladder -> "ladder_teleport"
     }
 }

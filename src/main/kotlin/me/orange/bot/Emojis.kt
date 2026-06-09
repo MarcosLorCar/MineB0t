@@ -18,7 +18,7 @@ object Emojis {
         "info" to Emoji.fromUnicode("ℹ️"),
         "store" to Emoji.fromUnicode("📥"),
         "retrieve" to Emoji.fromUnicode("📤"),
-        "crafting" to Emoji.fromUnicode("🛠️"),
+        "crafting" to Emoji.fromUnicode("🛠️")
     )
 
     fun loadEmojis() {
@@ -69,6 +69,9 @@ object Emojis {
 
         loadEmoji("chest", "_", 1512553817298702347)
         loadEmoji("furnace", "_", 1513203337670037574)
+        loadEmoji("ladder", "_", 1513519778159923230)
+        loadEmoji("crate_1", "_", 1513545943755260014)
+        loadEmoji("crate_2", "_", 1513545945650958526)
 
         // Item emojis
         loadEmoji("iron_chunk", "iron_chunk", 1513185506614182040)
