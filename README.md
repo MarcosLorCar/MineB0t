@@ -2,6 +2,8 @@
 
 A Discord bot that lets you play a 2D Terraria-like sandbox game directly within Discord messages.
 
+> **Status:** This was a personal project to see how far a Discord-native sandbox game could go. It's functional and fun to poke at, but it's no longer under active development. Feel free to fork it, learn from it, or build on top of it.
+
 ## Features
 
 - **Procedural World Generation:** Infinite-feeling worlds with terrain, caves, and ores.
@@ -61,3 +63,7 @@ MineB0t is built with Kotlin, JDA (Java Discord API), and uses Coroutines for it
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
