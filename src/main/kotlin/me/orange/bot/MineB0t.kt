@@ -1,4 +1,4 @@
-﻿package me.orange.bot
+package me.orange.bot
 
 import kotlinx.coroutines.*
 import me.orange.console.ConsoleCommandHandler
@@ -26,8 +26,8 @@ object MineB0t {
     fun start() = runBlocking {
         installPromptAwareOutput()
         log("Bot starting...")
-        if (Config.DEV_MODE) log("⚠ DEV_MODE is active: Persistence is disabled!")
-        else if (!Config.PERSISTENCE_ENABLED) log("⚠ Persistence is disabled via configuration!")
+        if (Config.DEV_MODE) log("⚠ DEV_MODE is active: Players will receive starting kits.")
+        if (!Config.PERSISTENCE_ENABLED) log("⚠ Persistence is disabled via configuration!")
 
         val token = System.getenv("DISCORD_BOT_TOKEN") ?: error("Missing token!")
         jda = JDABuilder.createDefault(token).build()

@@ -22,10 +22,20 @@ A Discord bot that lets you play a 2D Terraria-like sandbox game directly within
 - JDK 21
 - A Discord Bot Token (with `applications.commands` and `guilds` scopes)
 
+### Environment Variables
+
+You can configure the bot by setting the following environment variables (either in your system environment or in a `.env` file at the root of the project):
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `DISCORD_BOT_TOKEN` | **Required.** The authentication token for your Discord Bot. | None |
+| `DEV_MODE` | If set to `true`, the bot runs in development mode. Players will receive starting kits upon joining/reconnecting. | `false` |
+| `PERSISTENCE_ENABLED` | Determines whether player data and world states are saved. | `true` |
+
 ### Installation
 
 1. Clone the repository.
-2. Set the `DISCORD_BOT_TOKEN` environment variable.
+2. Create a `.env` file in the root directory and define `DISCORD_BOT_TOKEN` (and optionally `DEV_MODE` or `PERSISTENCE_ENABLED`).
 3. Run with `./gradlew run`.
 
 ## How to Play
